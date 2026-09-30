@@ -1,0 +1,17 @@
+# upstream code, weights and data are fetched by each baseline's setup.sh
+baselines/*/third_party/
+baselines/*/weights/
+work/
+results/predictions/
+results/detections/
+results/replay/
+results/flow/
+*.egg-info/
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+baselines/*/cache/
+*.log
+results/gt/
+results/e2vid/

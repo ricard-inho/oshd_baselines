@@ -1,0 +1,71 @@
+# SPNv2 full configuration, phi = 3, BN backbone / GN heads: upstream's
+# experiments/offline_train_full_config_phi3_BN.yaml with only these changes
+#   * single GPU (no DDP / SyncBN): 4 images per batch (upstream: 4 per GPU x 4 GPUs)
+#   * NUM_KEYPOINTS 8 (cube-body corners), no style (texture) randomisation (needs a
+#     pre-stylised copy of every image; upstream makes it with a separate repo)
+#   * dataset paths / sizes are filled in by spnv2_pooh.common.build_cfg per sensor
+SEED: 2021
+CUDA: True
+FP16: True
+VERBOSE: False
+DIST:
+  MULTIPROCESSING_DISTRIBUTED: False
+CUDNN:
+  BENCHMARK: True
+  DETERMINISTIC: False
+  ENABLED: True
+DATASET:
+  OUTPUT_SIZE: [4, 8, 16, 32, 64, 128]
+  MAX_NUM_OBJECTS: 1
+  NUM_KEYPOINTS: 8
+  NUM_ANCHORS: 9
+  SIGMA: 2
+AUGMENT:
+  P: 0.5
+  APPLY_TEXTURE_RANDOMIZATION: False
+  ADJUST_BRIGHTNESS_CONTRAST: True
+  APPLY_BLUR: True
+  APPLY_SOLAR_FLARE: True
+  APPLY_RANDOM_ERASE: True
+  APPLY_NOISE: True
+TRAIN:
+  BEGIN_EPOCH: 0
+  END_EPOCH: 20
+  IMAGES_PER_GPU: 4
+  OPTIMIZER: AdamW
+  LR: 1.0e-3
+  SCHEDULER: 'step'
+  LR_FACTOR: 0.1
+  LR_STEP: [15, 18]
+  GAMMA1: 0.9
+  GAMMA2: 0.999
+  WD: 1.0e-4
+  WORKERS: 6
+TEST:
+  IMAGES_PER_GPU: 1
+  HEAD: ['heatmap', 'efficientpose', 'segmentation']
+  BBOX_THRESHOLD: 0.0
+  HEATMAP_THRESHOLD: 0.5
+  SPEED_THRESHOLD_Q: 0.169
+  SPEED_THRESHOLD_T: 2.173e-3
+ODR:
+  MIN_ENTROPY: False
+  NUM_TRAIN_SAMPLES: 1024
+  IMAGES_PER_BATCH: 4
+MODEL:
+  BACKBONE:
+    NAME: 'efficientdet_d3'
+  HEAD:
+    NAMES: ['heatmap', 'efficientpose', 'segmentation']
+    LOSS_HEADS: ['heatmap', 'efficientpose', 'segmentation']
+    LOSS_FACTORS: [1.0, 1.0, 1.0]
+    LOSS_NUMS: [1, 3, 1]
+    EFFICIENTPOSE_LOSS_FACTOR: [1.0, 1.0, 1.0]
+    POSE_REGRESSION_LOSS: 'speed'
+    ANCHOR_SCALE: '[2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)]'
+    ANCHOR_RATIO: [[1.0, 1.0], [1.4, 0.7], [0.7, 1.4]]
+  EFFICIENTDET_PHI: 3
+  USE_GROUPNORM_BACKBONE: False
+  USE_GROUPNORM_HEADS: True
+  GROUPNORM_SIZE: 16
+  FIND_UNUSED_PARAM: False

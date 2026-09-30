@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pooh-megapose"
+version = "0.1.0"
+description = "MegaPose (happypose) baseline for POOH-D: RGB Firefly / RealSense and E2VID frames."
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "pooh-bench",
+    "happypose[cu124,pypi]",
+    "cosypose",
+    "torch>=2.5.1,<2.6",
+    "torchvision>=0.20.1,<0.21",
+    "numpy<2",
+    "pillow",
+]
+
+[project.scripts]
+megapose-predict = "megapose_baseline.predict:cli"
+megapose-train = "megapose_baseline.train:main"
+megapose-overlay = "megapose_baseline.overlay:main"
+megapose-events-standin = "megapose_baseline.events_standin:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/megapose_baseline"]
+
+[tool.uv]
+dependency-metadata = [
+  {name = "torchnet", requires-dist = ["six"]},
+  {name = "torchtnt", requires-dist = ["fsspec", "numpy", "packaging", "psutil", "pyre-extensions",
+                                        "setuptools", "tabulate", "tensorboard", "tqdm", "typing-extensions"]},
+]
+
+[[tool.uv.index]]
+explicit = true
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+
+[tool.uv.sources]
+pooh-bench = { path = "../../bench", editable = true }
+happypose = { path = "third_party/happypose", editable = true }
+cosypose = { path = "third_party/happypose/happypose/pose_estimators/cosypose", editable = true }
+bop-toolkit-lib = { git = "https://github.com/agimus-project/bop_toolkit" }
+torch = { index = "pytorch-cu124" }
+torchvision = { index = "pytorch-cu124" }

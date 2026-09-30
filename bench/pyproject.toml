@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pooh-bench"
+version = "0.1.0"
+description = "Shared ground truth, prediction formats and metrics for the POOH-D baselines."
+requires-python = ">=3.10"
+dependencies = [
+    "pooh-dataset[mesh]>=0.2",
+    "numpy>=1.23",
+    "pandas>=2.0",
+    "pyarrow>=14",
+    "pyyaml>=6.0",
+    "tqdm>=4.60",
+]
+
+[project.scripts]
+pooh-bench = "pooh_bench.cli:main"
+
+[tool.uv.sources]
+pooh-dataset = { git = "https://github.com/ricard-inho/pooh-dataset", branch = "main" }
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[tool.ruff]
+line-length = 110
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B905"]

@@ -1,0 +1,34 @@
+[project]
+name = "pooh-e2vid"
+version = "0.1.0"
+description = "E2VID event-to-frame reconstruction for the POOH-D baselines (runs upstream rpg_e2vid)."
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "pooh-bench",
+    "torch==2.6.0",
+    "numpy>=1.23,<2.3",
+    "pandas>=2.0",
+    "pillow>=10",
+    "scipy>=1.10",               # imported by upstream utils/inference_utils.py
+    "opencv-python-headless>=4.8",  # imported by upstream utils/inference_utils.py
+    "tqdm>=4.60",
+]
+
+[project.scripts]
+e2vid-reconstruct = "e2vid_pooh.reconstruct:main"
+
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/e2vid_pooh"]
+
+[tool.uv.sources]
+pooh-bench = { path = "../../bench", editable = true }
+torch = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true

@@ -1,0 +1,107 @@
+# Policy replay (Table II): how the 26-dim PPO observation is rebuilt from the recordings.
+#
+# Everything the user may need to check or correct lives here. Items marked
+#   CONFIRM  = inferred from the training source / logs, please confirm
+#   UNKNOWN  = not recoverable from the logs, a guess
+# Source of truth for the layout: rans_v2_priv/.../tasks/go_through_poses.py::get_observations
+# (13 task dims) followed by robots/pingu.py::get_observations (13 = the robot's
+# `_previous_actions`), concatenated in environments/auto_env_gen.py::_get_observations.
+
+policy:
+  onnx: /home/ricard/pooh_training/2026-09-22_17-01-14_ppo_Pingu_GoThroughPoses_rsl_rl_seed_42/exported/policy.onnx
+  # rsl_rl actor MLP 26-64-64-13 (ELU), no observation normaliser (obs_normalization: false),
+  # deterministic mean output. The exported ONNX is bit-identical to model_7999.pt.
+  clip: [-1.0, 1.0]            # pingu.py::process_actions clamps to [-1, 1] before use
+  step_hz: 10                  # sim dt 1/60 s x decimation 6
+
+robot:
+  base_body: floatingplatform  # = VRPN RigidBody_011 / FloatingPlatform, the body the node subscribed to (confirmed)
+  ref_body: SensorStack        # rigid body carrying the sensors (calibration reference body)
+  heading_offset_rad: 0.0      # the node's heading is the yaw of that body's +x (confirmed)
+  # T_ref_base (SensorStack -> floatingplatform) = median of inv(T_w_ref) T_w_base over each
+  # trajectory; for trajectories without floatingplatform tracking, the median over all others.
+
+velocity:
+  # task_data[0:2] = root_com_lin_vel_b[:2] (body frame), task_data[2] = root_com_ang_vel_w[z].
+  # mode buffer_mean = the robot's OptitrackStatePreProcessor (RANS_DeployToRobot @433b963):
+  # mean finite difference over the last 30 pose samples, divided by (t_last - t_first)/30
+  # (so x 30/29). CONFIRM against the code that actually ran (the local checkout predates the
+  # policy). mode fit = causal least-squares line over (t - window_ms, t].
+  # The same filter is applied to mocap and to estimator poses. Body frame = rotated by the yaw
+  # only (the platform is planar; roll/pitch < 1 deg).
+  mode: buffer_mean
+  buffer_size: 30              # buffer_mean: samples of the pose stream (0 velocity until full)
+  window_ms: 300               # fit only
+  min_samples: 3               # fit only: fewer samples in the window -> hold the last velocity
+
+timing:
+  obs_latency_ms: 0            # state sampled this long before the logged action stamp
+  prev_action_lag: 1           # obs at step k holds the action of step k - lag (CONFIRM)
+  # NOTE: in simulation `_previous_actions` is the action *two* steps back at the time the
+  # observation is computed (process_actions shifts _actions -> _previous_actions before the new
+  # one is stored). lag 1 and 2 give the same mocap delta_a to within 0.02.
+
+actions:
+  topic: /autonomous_control_input      # 15 floats at ~10 Hz, one row per policy step
+  # layout (confirmed from PinguInterface): [bearing, thruster_enable, thruster_1..8 in [0,1], arm x4 (always 0), rw effort (N m)]
+  active_flags: {0: 1.0, 1: 1.0}        # rows that are policy steps (the last rows are 1,0 / 0,0)
+  thruster_cols: [2, 3, 4, 5, 6, 7, 8, 9]   # u = (a + 1) / 2 * max_thrust, max_thrust = 1
+  arm_cols: [10, 11, 12, 13]            # logged 0: the arms are fixed on hardware (UNKNOWN raw values)
+  rw_col: 14
+  # On the robot, PinguInterface.cast_actions sends rw = clip(a[-1]) * rw_scaler (pingu.yaml: 0.05)
+  # straight to ros2_control, so `linear` (a = rw / scale) is what ran. `invert_wheel_model`
+  # instead inverts the simulator's wheel model (pingu.py::process_actions in rans_v2_priv):
+  #   cmd = a * scale; tau = (cmd - b * omega) * exp(-b dt / J); omega <- cmd/b + (omega - cmd/b) exp(..)
+  rw_mode: linear
+  rw_scale: 0.05
+  rw_b: 5.372473380648529e-05
+  rw_J: 0.00112703295596
+  rw_dt: 0.1
+  arms_prev: zero                        # value of the 4 arm entries of the previous action
+  # action indices compared in delta_a: the arms are not logged, so only thrusters + wheel.
+  compare_idx: [0, 1, 2, 3, 4, 5, 6, 7, 12]
+  names: [thr1, thr2, thr3, thr4, thr5, thr6, thr7, thr8, l_shoulder, l_elbow, r_shoulder, r_elbow, rw]
+
+goal:
+  topic: /observation_formater_input     # one PoseStamped in the mocap world frame
+  # With a single goal and loop=True, the "subsequent goal" of GoThroughPoses is the same goal
+  # (Python index -1 on a 1-element list): distance 0, angle atan2(0,0) - h_goal, heading 0.
+  subsequent_goals: self_loop            # self_loop | zeros (UNKNOWN which one ran on the robot)
+
+# The 26 entries, in order. `feature` names are implemented in policy_replay/observation.py.
+observation:
+  - {feature: lin_vel_body_x}            # 0  task_data[0]
+  - {feature: lin_vel_body_y}            # 1
+  - {feature: ang_vel_z}                 # 2
+  - {feature: goal_distance}             # 3  ||goal_xy - base_xy||
+  - {feature: cos_bearing_error}         # 4  bearing to goal minus heading ("target_heading_error")
+  - {feature: sin_bearing_error}         # 5
+  - {feature: cos_heading_error}         # 6  goal heading minus heading ("heading_error")
+  - {feature: sin_heading_error}         # 7
+  - {feature: next_goal_distance}        # 8  subsequent goal, in the current goal's frame
+  - {feature: next_goal_cos_bearing}     # 9
+  - {feature: next_goal_sin_bearing}     # 10
+  - {feature: next_goal_cos_heading}     # 11
+  - {feature: next_goal_sin_heading}     # 12
+  - {feature: prev_action, index: 0}     # 13..20 thrusters 1..8
+  - {feature: prev_action, index: 1}
+  - {feature: prev_action, index: 2}
+  - {feature: prev_action, index: 3}
+  - {feature: prev_action, index: 4}
+  - {feature: prev_action, index: 5}
+  - {feature: prev_action, index: 6}
+  - {feature: prev_action, index: 7}
+  - {feature: prev_action, index: 8}     # 21..24 arms (left shoulder, left elbow, right shoulder, right elbow)
+  - {feature: prev_action, index: 9}
+  - {feature: prev_action, index: 10}
+  - {feature: prev_action, index: 11}
+  - {feature: prev_action, index: 12}    # 25 reaction wheel
+
+estimator:
+  object: cubesat
+  cube_pose: median                      # T_world_cube from mocap, one per trajectory (static cube)
+  # Estimators return T_sensor_model up to the cube's 24 symmetries. Each estimate is replaced by
+  # the symmetric pose whose derived SensorStack "up" axis is closest to the mounting's (median
+  # over the trajectory's mocap: a calibration constant, not per-frame ground truth).
+  symmetry_resolution: gravity           # gravity | none
+  add_runtime_latency: false             # estimate usable at t + runtime_ms (CLI --latency)
