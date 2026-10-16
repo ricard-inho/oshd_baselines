@@ -39,11 +39,18 @@ def main() -> None:
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(parents=True)
+    # Real data only: the simulated recordings (sim_* folders, sim_manifest.json, metadata/)
+    # don't fit the dev setup. splits.json is written below: never symlink it, or the write
+    # would go through to the real cache.
     for p in src.iterdir():
-        if p.name in ("calibration", "manifest.json"):
+        if p.name in ("calibration", "manifest.json", "splits.json", "sim_manifest.json", "metadata") \
+                or p.name.startswith("sim_"):
             continue
         (out / p.name).symlink_to(p.resolve())
-    shutil.copytree(src / "calibration", out / "calibration")
+    real = set(json.loads((src / "manifest.json").read_text())["trajectories"])
+    shutil.copytree(src / "calibration", out / "calibration",
+                    ignore=lambda d, names: [n for n in names if n.startswith("trajectory_")
+                                             and n.endswith(".yaml") and n[:-5] not in real])
 
     rig_p = out / "calibration" / "rig.yaml"
     rig = yaml.safe_load(rig_p.read_text())
