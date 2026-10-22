@@ -1,0 +1,46 @@
+{
+  "hardware": {
+    "host": "hera",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "method": "FoundationPose",
+  "upstream": "https://github.com/NVlabs/FoundationPose",
+  "commit": "a1b694b83e633c2cb6115b9063d940a687759392",
+  "weights": {
+    "refiner": "2023-10-28-18-33-37",
+    "scorer": "2024-01-11-20-02-45"
+  },
+  "mode": "per-frame register() (no tracking)",
+  "refine_iters": 5,
+  "mask": "simulator semantic mask of class 'target' (oracle)",
+  "input": "sim rgb + depth, pinhole K",
+  "runtime": "register() only",
+  "prepare": {
+    "dataset_root": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test",
+    "domain": "sim_zerog",
+    "task": "docking",
+    "split": "test",
+    "stride": 10,
+    "min_mask_px": 100,
+    "n_trajectories": 72,
+    "n_samples": 5465,
+    "objects": {
+      "satellite_mockup": 3874,
+      "cubesat1034538678": 229,
+      "cubesat1600360009": 232,
+      "cubesat1053301660": 226,
+      "cubesat1859922245": 229,
+      "cubesat691492398": 217,
+      "cubesat1232003790": 230,
+      "cubesat715072435": 228
+    }
+  },
+  "setting": "ORACLE_MASK",
+  "stride": 1,
+  "limit": null,
+  "n_samples": 5465,
+  "n_no_depth_in_mask": 0,
+  "n_predicted": 5465,
+  "wall_s": 8359
+}

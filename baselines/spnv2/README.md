@@ -81,7 +81,7 @@ This is the full SPNv2 configuration from upstream's `experiments/offline_train_
 ```bash
 cd /home/ricard/pooh_baselines
 baselines/spnv2/setup.sh
-# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 P="uv run --project baselines/spnv2"
 L="flock work/gpu.lock"
 for S in firefly realsense_color; do

@@ -74,7 +74,7 @@ Outputs go to `results/predictions/{rgb_firefly,rgb_realsense}/megapose/<setting
 
 ```bash
 cd /home/ricard/pooh_baselines
-export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 for s in realsense_color firefly events; do uv run --project bench pooh-bench oracle-detections --sensor $s; done
 cd baselines/megapose
 uv run megapose-events-standin --out ../../work/megapose_e2vid_standin --limit 20   # event-count images, E2VID layout

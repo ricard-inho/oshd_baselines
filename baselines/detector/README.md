@@ -55,7 +55,7 @@ with `pooh_bench.predictions.rle_to_mask`) and runtime_ms.
 ```bash
 cd /home/ricard/pooh_baselines
 ./baselines/detector/setup.sh
-# dev: export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+# dev: export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 # events only: first run baselines/e2vid (reconstruct --all) so the train + test frames exist
 cd baselines/detector
 L="flock ../../work/gpu.lock"

@@ -1,0 +1,22 @@
+{
+  "dataset_root": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test",
+  "benchmark": "v1",
+  "revision": "8205a1129f1fbb64cf7a4d0fc342b0a9e5c90509",
+  "domain": "sim_zerog",
+  "task": "docking",
+  "split": "test",
+  "stride": 10,
+  "min_mask_px": 100,
+  "n_trajectories": 72,
+  "n_samples": 5465,
+  "objects": {
+    "satellite_mockup": 3874,
+    "cubesat1034538678": 229,
+    "cubesat1600360009": 232,
+    "cubesat1053301660": 226,
+    "cubesat1859922245": 229,
+    "cubesat691492398": 217,
+    "cubesat1232003790": 230,
+    "cubesat715072435": 228
+  }
+}

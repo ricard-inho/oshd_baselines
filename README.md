@@ -25,8 +25,16 @@ results/               gt/, predictions/, detections/, replay/, flow/, tables/
 
 ## Pipeline
 
+All paper numbers use the frozen benchmark **`benchmark_v1`** of pooh-dataset (≥ 0.5.0, from
+TestPyPI): the data of Hub revision `8205a11` (2195 sim + 3 real trajectories) and its fixed train
+/ test split. `configs/bench.yaml` (`dataset.benchmark: v1`) makes every `ds.split()` of the
+bench and the baselines use it. Download its data with `--benchmark v1`, which pins the
+revision. Daily uploads after the freeze don't change it.
+
 ```bash
-cd bench && uv sync && cd ..
+cd bench && uv sync && cd ..                  # pooh-dataset 0.5.0 from TestPyPI
+uv run --project bench pooh download --benchmark v1 --domain all   # or narrow: -m ..., --split, --task
+uv run --project bench pooh splits --benchmark v1
 uv run --project bench pooh-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet
 # per baseline: see baselines/<name>/README.md  (setup.sh, then train / predict)
 uv run --project bench pooh-bench eval        # results/tables/*.csv|json|tex|dat
@@ -81,7 +89,7 @@ The GT sample lists in `results/gt/` define exactly which samples to run on. Inf
 
 ```bash
 uv run --project bench python scripts/make_dev_dataset.py
-export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 uv run --project bench pooh-bench gt
 ```
 

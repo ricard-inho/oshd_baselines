@@ -52,7 +52,7 @@ The sample lists' `T` column is never read.
 ```bash
 cd /home/ricard/pooh_baselines
 ./baselines/e2vid/setup.sh
-# dev: export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+# dev: export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 cd baselines/e2vid
 flock ../../work/gpu.lock uv run python -m e2vid_pooh.reconstruct --all          # every gt/events/*.parquet (train + test)
 flock ../../work/gpu.lock uv run python -m e2vid_pooh.reconstruct --domain real --split test [--limit N]

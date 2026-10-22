@@ -4,6 +4,10 @@
 dataset:
   root: null            # null = pooh-dataset's default cache (~/.cache/pooh_dataset/<repo>)
   repo_id: r3m3c3/off_test
+  # Frozen split for the paper: pooh-dataset's benchmark_v1 (Hub revision 8205a11, its train /
+  # test lists). Download its data with `pooh download --benchmark v1 ...`. $POOH_BENCHMARK
+  # overrides it ("none": the dataset's own splits.json, e.g. the dev dataset).
+  benchmark: v1
 results_dir: results
 
 objects: [cubesat]

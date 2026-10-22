@@ -2,6 +2,8 @@
 # FoundationPose baseline setup: upstream code (pinned), weights, Docker image.
 #   bash baselines/foundationpose/setup.sh            # all three steps
 #   SKIP_BUILD=1 bash baselines/foundationpose/setup.sh
+#   FP_CUDA_ARCH=8.6 FP_IMAGE=pooh-foundationpose:a1b694b-sm86 bash baselines/foundationpose/setup.sh   # RTX 3090
+#   (FP_CUDA_ARCH: compute capability of the GPU, `nvidia-smi --query-gpu=compute_cap --format=csv`)
 set -euo pipefail
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 COMMIT=a1b694b83e633c2cb6115b9063d940a687759392   # NVlabs/FoundationPose main, 2026-04-29
@@ -27,7 +29,8 @@ fi
 need 2023-10-28-18-33-37 && need 2024-01-11-20-02-45 || { echo "weights missing, see above" >&2; exit 1; }
 ls -la "$HERE"/weights/*/
 
-# 3. Docker image (compiles pytorch3d, nvdiffrast and mycpp for sm_89; ~20-40 min)
+# 3. Docker image (compiles pytorch3d, nvdiffrast and mycpp for FP_CUDA_ARCH, default sm_89; ~20-40 min)
 if [ "${SKIP_BUILD:-0}" != 1 ]; then
-  docker build --network=host -t "$IMAGE" -f "$HERE/docker/Dockerfile" "$HERE"
+  docker build --network=host --build-arg TORCH_CUDA_ARCH_LIST="${FP_CUDA_ARCH:-8.9}" -t "$IMAGE" \
+      -f "$HERE/docker/Dockerfile" "$HERE"
 fi

@@ -8,7 +8,7 @@ Also marks trajectory_008 as `synthetic` so sim-training code paths can be exerc
 train = 007 (real) + 008 ("synthetic"), test = 009 (real).
 
     uv run --project bench python scripts/make_dev_dataset.py [--src ~/.cache/pooh_dataset/r3m3c3--off_test]
-    export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+    export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 """
 
 from __future__ import annotations

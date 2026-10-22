@@ -48,11 +48,15 @@ def repo_root() -> Path:
 
 
 def open_dataset(cfg: dict | None = None) -> PoohDataset:
-    """The benchmark dataset: ``$POOH_DATASET_ROOT``, else ``dataset.root`` of the config."""
+    """The benchmark dataset: ``$POOH_DATASET_ROOT``, else ``dataset.root`` of the config. Its
+    splits come from the frozen benchmark ``dataset.benchmark`` (``$POOH_BENCHMARK``; "none" =
+    the dataset's ``splits.json``)."""
     cfg = cfg if cfg is not None else load_config(repo_root() / "configs" / "bench.yaml")
     d = cfg.get("dataset", {})
+    bench = os.environ.get("POOH_BENCHMARK", d.get("benchmark"))
     return PoohDataset(os.environ.get("POOH_DATASET_ROOT") or d.get("root"),
-                       repo_id=d.get("repo_id", "r3m3c3/off_test"))
+                       repo_id=d.get("repo_id", "r3m3c3/off_test"),
+                       benchmark=None if bench in (None, "", "none") else str(bench))
 
 
 def results_dir(cfg: dict | None = None) -> Path:

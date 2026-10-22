@@ -34,7 +34,7 @@ The trainer is upstream's `IterBasedTrainer` with the ModelNet `model.py` / `los
 
 ```bash
 cd baselines/geotransformer && ./setup.sh && cd ../..
-# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 L=work/gpu.lock
 flock $L uv run --project baselines/geotransformer geotr-train --setting ZS --iters 2000   # -> weights/pooh-ZS.pth.tar
 flock $L uv run --project baselines/geotransformer geotr-train --setting FT --iters 1000   # -> weights/pooh-FT.pth.tar

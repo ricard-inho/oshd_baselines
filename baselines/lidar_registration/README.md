@@ -15,7 +15,7 @@ The package `pooh_lidar` also holds the **shared target crop** that `baselines/g
 
 ```bash
 cd baselines/lidar_registration && ./setup.sh && cd ../..
-# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 uv run --project baselines/lidar_registration lidar-reg-predict --setting ZS --domain real --split test
 uv run --project baselines/lidar_registration lidar-reg-predict --setting ZS --domain synthetic --split test
 uv run --project bench pooh-bench eval

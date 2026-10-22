@@ -1,0 +1,106 @@
+{
+  "satellite_mockup": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/satellite_mockup/model.obj",
+    "source": "satellite_mockup.usdz",
+    "kind": "satellite_mockup",
+    "extent_m": [
+      0.3076,
+      1.2998,
+      0.3
+    ],
+    "diameter_m": 1.3689756180597228,
+    "n_vertices": 118565,
+    "n_faces": 42009
+  },
+  "cubesat1034538678": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat1034538678/model.obj",
+    "source": "cubesat1034538678.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2164,
+      0.3802,
+      0.11
+    ],
+    "diameter_m": 0.4510968518134437,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1600360009": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat1600360009/model.obj",
+    "source": "cubesat1600360009.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2012,
+      0.3393,
+      0.1224
+    ],
+    "diameter_m": 0.41302294028298236,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1053301660": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat1053301660/model.obj",
+    "source": "cubesat1053301660.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.3407,
+      0.3407,
+      0.1215
+    ],
+    "diameter_m": 0.4969174458368311,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "cubesat1859922245": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat1859922245/model.obj",
+    "source": "cubesat1859922245.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.3251,
+      0.1935,
+      0.1208
+    ],
+    "diameter_m": 0.3971352994131849,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat691492398": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat691492398/model.obj",
+    "source": "cubesat691492398.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4996,
+      0.4996,
+      0.167
+    ],
+    "diameter_m": 0.7259981408405947,
+    "n_vertices": 504,
+    "n_faces": 252
+  },
+  "cubesat1232003790": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat1232003790/model.obj",
+    "source": "cubesat1232003790.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.49,
+      0.2422,
+      0.1594
+    ],
+    "diameter_m": 0.5693312865107626,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat715072435": {
+    "cad": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test/models/sim/cubesat715072435/model.obj",
+    "source": "cubesat715072435.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4385,
+      0.2253,
+      0.1368
+    ],
+    "diameter_m": 0.511621158273385,
+    "n_vertices": 424,
+    "n_faces": 212
+  }
+}

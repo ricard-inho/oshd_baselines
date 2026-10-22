@@ -69,7 +69,7 @@ Useful flags:
 
 ```bash
 cd /home/ricard/pooh_baselines
-export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results
+export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
 uv run --project bench pooh-bench oracle-detections --sensor realsense_color --split test --domain real
 baselines/foundationpose/docker/run.sh python -m fp_pooh.predict --setting ORACLE --detector oracle \
     --limit 20 --stride 25 --debug-dir $PWD/work/debug/foundationpose
@@ -90,9 +90,173 @@ The dev dataset's `realsense_depth` extrinsics are a placeholder, so the depth i
 * **ICP on dev.** On dev, ICP is often rejected or makes things slightly worse, because the depth extrinsics are a placeholder.
 * **ICP itself is verified.** On synthetic depth rendered at the GT pose, ICP recovers a 2 cm perturbation to about 1 mm.
 
+## Simulated docking: `sim_zerog` / `docking` / `test`
+
+FoundationPose single-frame RGB-D, CAD-based and training-free, on the eval runs of the Zero-G
+lab docking task in simulation: the Floating Platform docks to a satellite mockup or a CubeSat
+held by the wall arm, the ceiling arm or floating. This is not a Table I cell; it runs on its own
+sample list and writes everything to `results/sim_zerog_docking_test/` in this folder.
+
+| | |
+|---|---|
+| Split | the frozen **`benchmark_v1`** (pooh-dataset ≥ 0.5.0; Hub revision `8205a11`): `test` = the eval runs, ~20% of the recording runs of each scenario config, whole runs only. 72 trajectories (24 runs x 3 episodes): 51 satellite mockup, 21 CubeSat |
+| Samples | every 10th RGB frame (2 Hz of 20 Hz) where the target's semantic mask has ≥ 100 px: 5465 samples |
+| Input | sim RGB + depth (320x240, ideal pinhole `K` from `calibration/<traj>.yaml`), no undistortion |
+| Mask | the simulator's semantic mask of class `target` (**oracle 2D segmentation**, setting `ORACLE_MASK`). No detector is trained or run |
+| CAD | the dataset's target model, `models/sim/<model>/model.obj` on the Hub (`traj.target_mesh()`): `satellite_mockup`, or the run's procedural `cubesat<seed>`, scaled by the run's `scale` |
+| GT | `T_cam_target = inv(T_world_cam) @ T_world_target` from the sim mocap (`pooh_dataset.labels.camera_pose`, `traj.body_pose("target")`), in the rgb optical frame and the target's root frame |
+| Method | `FoundationPose.register()` on **every frame** from scratch (252 rotation hypotheses, 5 refiner iterations, scorer); no `track_one`, no ICP |
+
+### Step by step
+
+The paths assume this repo at `~/pooh_dataset/pooh_baselines`. Everything else, including the
+targets' CAD, comes from the Hub through pooh-dataset.
+
+Needs an NVIDIA GPU with Docker + the NVIDIA container toolkit, and `hf auth login` for the
+download.
+
+**1. Install uv** (once):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh     # -> ~/.local/bin/uv
+```
+
+**2. Host environment.** This `uv` venv runs the dataset download, the CAD export (`usd-core`)
+and the evaluation. It needs `pooh-dataset` ≥ 0.5.0 (sim tasks, `benchmark_v1`), from TestPyPI.
+Only `pooh-dataset` itself comes from TestPyPI (`--no-deps`); its dependencies come from PyPI.
+`pooh-bench` is installed without dependencies too.
+
+```bash
+cd ~/pooh_dataset/pooh_baselines/baselines/foundationpose
+uv venv -p 3.11 .venv
+uv pip install --python .venv/bin/python --no-deps --index-url https://test.pypi.org/simple/ "pooh-dataset==0.5.0"
+uv pip install --python .venv/bin/python "numpy>=1.23" "pyarrow>=14" "huggingface_hub>=0.23" "pillow>=9" \
+    "pyyaml>=6" "tqdm>=4.60" trimesh usd-core pandas scipy matplotlib
+uv pip install --python .venv/bin/python --no-deps -e ../../bench
+.venv/bin/python -c "import pooh_dataset; print(pooh_dataset.__version__)"    # 0.5.0
+```
+
+To work on unreleased pooh-dataset changes, install the local checkout instead:
+`uv pip install --python .venv/bin/python -e "../../../pooh-dataset[mesh]"`.
+
+**3. The frozen split.** The paper uses `benchmark_v1`: Hub revision `8205a11` and its fixed
+train / test lists, shipped inside pooh-dataset. The growing daily split in the Hub's
+`splits.json` is not used here.
+
+```bash
+.venv/bin/pooh splits --benchmark v1          # sim_zerog/docking: train 300, test 72
+```
+
+**4. Download the docking test runs** of the benchmark (about 5 GB, only the modalities used).
+`--benchmark v1` pins the download to revision `8205a11`:
+
+```bash
+.venv/bin/pooh download --benchmark v1 --domain sim_zerog --task docking --split test \
+    -m rgb -m depth -m semantic -m mocap
+```
+
+**5. FoundationPose: upstream code, weights, Docker image.** Build the image for your GPU's
+compute capability (`nvidia-smi --query-gpu=compute_cap --format=csv`): 8.6 for the RTX 3090
+here, 8.9 for a 4090. The build takes about 30 min.
+
+```bash
+cd ~/pooh_dataset/pooh_baselines
+FP_CUDA_ARCH=8.6 FP_IMAGE=pooh-foundationpose:a1b694b-sm86 bash baselines/foundationpose/setup.sh
+```
+
+**6. Target CAD, sample list and ground truth** (host, about 1 min):
+
+```bash
+cd baselines/foundationpose
+.venv/bin/python -m fp_pooh.sim_prepare --benchmark v1 --domain sim_zerog --task docking --split test --stride 10
+#  -> results/sim_zerog_docking_test/{samples,gt}.parquet, objects.json, prepare.json
+```
+
+The CAD is the one the dataset publishes for each trajectory. `models/sim/targets.json` maps the
+trajectory to its model (`satellite_mockup`, or `cubesat<seed>`: SimForge's procedural CubeSat,
+generated from the scenario seed) and scale. The OBJ is in metres, in the frame of the mocap body
+`target`, unscaled. `pooh download` fetches the models of the downloaded trajectories; for
+`benchmark_v1` they come from Hub revision `22a8431`, because they were uploaded after the freeze.
+The ground truth was checked by projecting the scaled CAD with it: 99% of the points fall inside
+the target's semantic mask (median, for every target).
+
+**7. Run FoundationPose** in the container (about 1.5 s per frame on the 3090, about 2.3 h for
+5465 samples). The image installs pooh-dataset 0.5.0 from TestPyPI. To use a local checkout
+instead, set `POOH_DATASET_SRC=~/pooh_dataset/pooh-dataset`; it is mounted ahead of the image's copy.
+
+```bash
+cd ~/pooh_dataset/pooh_baselines
+export FP_IMAGE=pooh-foundationpose:a1b694b-sm86
+# smoke test (20 samples, overlays):
+baselines/foundationpose/docker/run.sh python -m fp_pooh.predict_sim --setting SMOKE --limit 20 --stride 40 --debug-every 5
+# full run (--resume continues an interrupted run; it saves every 200 samples):
+baselines/foundationpose/docker/run.sh python -m fp_pooh.predict_sim --setting ORACLE_MASK --debug-every 100 --resume \
+    > baselines/foundationpose/results/sim_zerog_docking_test/predict_ORACLE_MASK.log 2>&1
+```
+
+**8. Evaluate** (host):
+
+```bash
+cd baselines/foundationpose
+.venv/bin/python -m fp_pooh.eval_sim --run-dir results/sim_zerog_docking_test --setting ORACLE_MASK
+```
+
+### Outputs (`results/sim_zerog_docking_test/`)
+
+| file | contents |
+|---|---|
+| `samples.parquet` / `gt.parquet` | sample list (what inference reads) / plus `T` and `range_m` (only eval reads it) |
+| `objects.json`, `prepare.json` | CAD per target (source USD, extent, diameter), sample-list settings |
+| `predictions_ORACLE_MASK.parquet` / `.json` | `pooh_bench.PoseWriter` format: `T` (T_cam_target), FoundationPose score, `runtime_ms`; settings + hardware |
+| `per_sample_ORACLE_MASK.parquet` | per-sample e_t, e_q, e_q_sym, ADD, ADD_sym, ADD-S, SPEED, range, target, mount |
+| `metrics_ORACLE_MASK.json` / `.csv`, `RESULTS_ORACLE_MASK.md` | overall and per target kind, mount and range bin |
+| `overlays_ORACLE_MASK/` | every 100th sample: mask contour (yellow), predicted CAD points + box (green) |
+| `predict_ORACLE_MASK.log` | the run's log |
+
+**Symmetries.** The satellite mockup (a box with two mirrored solar panels) maps onto itself
+under 180° rotations about all three bounding-box axes. Each flip moves the surface by 0.6% of
+the diameter (ADD-S), which is sampling noise. The CubeSats are symmetric under the flip about
+z only, and only when their parts happen to line up. FoundationPose often returns one of the
+flipped poses, which the depth and mask can't tell apart. So `eval_sim` reports e_q and ADD
+twice: strict, and `sym`, minimised over the flips measured on each mesh (`--sym-tol`, 1% of the
+diameter). ADD-S needs no symmetry list. The texture does break some of the mockup's symmetries;
+the strict columns are the upper bound on the error.
+
+### Result (2026-10-20, RTX 3090, oracle masks)
+
+`benchmark_v1` (Hub revision `8205a11`), 72 trajectories, 5465 samples at 2 Hz. Every sample
+got a pose. All files are in `results/sim_zerog_docking_test/`; the full table, also per mount, is
+`RESULTS_ORACLE_MASK.md`.
+
+| group | samples | e_t med (cm) | e_q med (°) | e_q sym med (°) | 5cm/5° sym | ADD sym < 0.1d | ADD-S < 0.1d | AUC ADD-S | Hz |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| **all** | 5465 | 1.19 | 121.9 | 3.03 | 0.590 | 0.652 | 0.830 | 0.670 | 0.64 |
+| satellite mockup | 3874 | 1.21 | 167.6 | 3.13 | 0.575 | 0.637 | 0.765 | 0.626 | 0.64 |
+| CubeSat | 1591 | 1.14 | 3.03 | 2.83 | 0.627 | 0.689 | 0.989 | 0.778 | 0.83 |
+| range < 0.3 m | 563 | 4.84 | 131.2 | 98.6 | 0.002 | 0.067 | 0.647 | 0.296 |  |
+| range 0.3–0.5 m | 2364 | 1.75 | 132.9 | 31.8 | 0.376 | 0.480 | 0.739 | 0.540 |  |
+| range 0.5–1 m | 1651 | 0.86 | 2.83 | 1.59 | 0.949 | 0.958 | 0.966 | 0.887 |  |
+| range 1–2 m | 780 | 0.89 | 5.46 | 1.60 | 0.895 | 0.933 | 0.951 | 0.867 |  |
+| range > 2 m | 107 | 1.15 | 106.1 | 2.54 | 0.664 | 0.776 | 0.832 | 0.734 |  |
+
+* **Translation is good everywhere** (median 1.2 cm). **Rotation depends on symmetry and range.**
+* **Symmetry.** The strict median rotation error of the mockup is 168°, because FoundationPose
+  usually returns one of its 180°-flipped poses, which look the same in shape. Counting the
+  measured flips as correct, the median is 3.1°.
+* **Range.** From 0.5 to 2 m it works: 90–95% of samples within 5 cm / 5° (sym). The final
+  docking approach fails: below 0.5 m the target fills the image (median mask 72–77k of 76.8k
+  px). Only one flat face is visible, so a single frame can't fix the rotation. Below 0.3 m only
+  0.2% of samples are within 5 cm / 5°. Over a third of the samples (2927 of 5465) are below
+  0.5 m, which pulls the overall numbers down. This is the regime where tracking or other
+  modalities would have to help.
+* **Floating targets** are the hardest mount (sym 5cm/5° 0.53 vs 0.61 for the arms).
+* **Speed.** `register()` takes a median of 1.5 s per frame on the RTX 3090 (0.64 Hz); wall time
+  was 2.3 h. The mask is an oracle, so these are upper bounds for a detector-based pipeline.
+
 ## Files
 
 * `docker/Dockerfile` and `docker/run.sh` are the image and the runner. The runner mounts the repo, the dataset root and its resolved symlinks, `~/.cache/pooh_dataset` and the results dir at their host paths, and mounts `weights/` at `/opt/FoundationPose/weights`. It runs as your uid.
 * `fp_pooh/predict.py` is the inference entry point. `fp_pooh/train.py` is the no-op described above.
 * `fp_pooh/geometry.py` holds the CAD loading, undistortion, ICP and overlays.
-* `third_party/` and `weights/` are gitignored and filled by `setup.sh`.
+* `fp_pooh/sim_prepare.py`, `fp_pooh/predict_sim.py` and `fp_pooh/eval_sim.py` are the simulated-data pipeline (see above): CAD export and sample list, inference, and metrics.
+* `third_party/` and `weights/` are gitignored and filled by `setup.sh`. `cache/` (the exported CAD) and `.venv/` are gitignored too.
