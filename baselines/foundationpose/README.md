@@ -99,7 +99,7 @@ sample list and writes everything to `results/sim_zerog_docking_test/` in this f
 
 | | |
 |---|---|
-| Split | the frozen **`benchmark_v1`** (pooh-dataset ≥ 0.5.0; Hub revision `8205a11`): `test` = the eval runs, ~20% of the recording runs of each scenario config, whole runs only. 72 trajectories (24 runs x 3 episodes): 51 satellite mockup, 21 CubeSat |
+| Split | the frozen **`benchmark_v1`** (pooh-dataset ≥ 1.0.0; Hub revision `8205a11`): `test` = the eval runs, ~20% of the recording runs of each scenario config, whole runs only. 72 trajectories (24 runs x 3 episodes): 51 satellite mockup, 21 CubeSat |
 | Samples | every 10th RGB frame (2 Hz of 20 Hz) where the target's semantic mask has ≥ 100 px: 5465 samples |
 | Input | sim RGB + depth (320x240, ideal pinhole `K` from `calibration/<traj>.yaml`), no undistortion |
 | Mask | the simulator's semantic mask of class `target` (**oracle 2D segmentation**, setting `ORACLE_MASK`). No detector is trained or run |
@@ -122,18 +122,18 @@ curl -LsSf https://astral.sh/uv/install.sh | sh     # -> ~/.local/bin/uv
 ```
 
 **2. Host environment.** This `uv` venv runs the dataset download, the CAD export (`usd-core`)
-and the evaluation. It needs `pooh-dataset` ≥ 0.5.0 (sim tasks, `benchmark_v1`), from TestPyPI.
+and the evaluation. It needs `pooh-dataset` ≥ 1.0.0 (sim tasks, `benchmark_v1`), from TestPyPI.
 Only `pooh-dataset` itself comes from TestPyPI (`--no-deps`); its dependencies come from PyPI.
 `pooh-bench` is installed without dependencies too.
 
 ```bash
 cd ~/pooh_dataset/pooh_baselines/baselines/foundationpose
 uv venv -p 3.11 .venv
-uv pip install --python .venv/bin/python --no-deps --index-url https://test.pypi.org/simple/ "pooh-dataset==0.5.0"
+uv pip install --python .venv/bin/python --no-deps --index-url https://test.pypi.org/simple/ "pooh-dataset==1.0.0"
 uv pip install --python .venv/bin/python "numpy>=1.23" "pyarrow>=14" "huggingface_hub>=0.23" "pillow>=9" \
     "pyyaml>=6" "tqdm>=4.60" trimesh usd-core pandas scipy matplotlib
 uv pip install --python .venv/bin/python --no-deps -e ../../bench
-.venv/bin/python -c "import pooh_dataset; print(pooh_dataset.__version__)"    # 0.5.0
+.venv/bin/python -c "import pooh_dataset; print(pooh_dataset.__version__)"    # 1.0.0
 ```
 
 To work on unreleased pooh-dataset changes, install the local checkout instead:
@@ -181,7 +181,7 @@ The ground truth was checked by projecting the scaled CAD with it: 99% of the po
 the target's semantic mask (median, for every target).
 
 **7. Run FoundationPose** in the container (about 1.5 s per frame on the 3090, about 2.3 h for
-5465 samples). The image installs pooh-dataset 0.5.0 from TestPyPI. To use a local checkout
+5465 samples). The image installs pooh-dataset 1.0.0 from TestPyPI. To use a local checkout
 instead, set `POOH_DATASET_SRC=~/pooh_dataset/pooh-dataset`; it is mounted ahead of the image's copy.
 
 ```bash

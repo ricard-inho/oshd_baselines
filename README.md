@@ -25,14 +25,16 @@ results/               gt/, predictions/, detections/, replay/, flow/, tables/
 
 ## Pipeline
 
-All paper numbers use the frozen benchmark **`benchmark_v1`** of pooh-dataset (≥ 0.5.0, from
+All paper numbers use the frozen benchmark **`benchmark_v1`** of pooh-dataset (≥ 1.0.0, from
 TestPyPI): the data of Hub revision `8205a11` (2195 sim + 3 real trajectories) and its fixed train
 / test split. `configs/bench.yaml` (`dataset.benchmark: v1`) makes every `ds.split()` of the
 bench and the baselines use it. Download its data with `--benchmark v1`, which pins the
-revision. Daily uploads after the freeze don't change it.
+revision. Daily uploads after the freeze don't change it. pooh-dataset 1.0.0 also has
+**`benchmark_v2`**, the final collection (Hub `df3530b`: 6413 sim + 92 real trajectories with the
+real mockups); it contains v1 with the same splits. Switch with `dataset.benchmark: v2`.
 
 ```bash
-cd bench && uv sync && cd ..                  # pooh-dataset 0.5.0 from TestPyPI
+cd bench && uv sync && cd ..                  # pooh-dataset 1.0.0 from TestPyPI
 uv run --project bench pooh download --benchmark v1 --domain all   # or narrow: -m ..., --split, --task
 uv run --project bench pooh splits --benchmark v1
 uv run --project bench pooh-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet

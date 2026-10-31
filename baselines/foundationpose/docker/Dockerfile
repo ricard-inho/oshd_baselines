@@ -13,7 +13,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TORCH_CUDA_ARCH_LIST="8.9"
 ARG PYTORCH3D_REF=v0.7.9
 ARG NVDIFFRAST_REF=v0.4.0
-ARG POOH_DATASET_VERSION=0.5.0
+ARG POOH_DATASET_VERSION=1.0.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates build-essential cmake ninja-build pkg-config \
