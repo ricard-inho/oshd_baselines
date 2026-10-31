@@ -9,10 +9,10 @@ camera need an entry under ``extrinsics.cameras`` in the rig calibration like an
 from __future__ import annotations
 
 import numpy as np
-from oshd_dataset import CameraIntrinsics, Trajectory
-from oshd_dataset.events import Events
-from oshd_dataset.geometry import transform_points
-from oshd_dataset.labels import nearest_indices
+from oshd import CameraIntrinsics, Trajectory
+from oshd.events import Events
+from oshd.geometry import transform_points
+from oshd.labels import nearest_indices
 
 __all__ = [
     "CAMERAS",

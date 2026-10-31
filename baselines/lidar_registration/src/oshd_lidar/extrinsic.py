@@ -68,8 +68,8 @@ def _cluster_near(p: np.ndarray, c: np.ndarray, radius: float, eps: float = 0.03
 
 def collect(ds, stride: int):
     """Per scan: (points, T_body_model(t), t_ns, trajectory)."""
+    from oshd.labels import object_pose
     from oshd_bench.sensors import lidar_points
-    from oshd_dataset.labels import object_pose
 
     obj = ds.objects[OBJECT]
     out = []
@@ -153,7 +153,7 @@ def estimate(scans, X0: np.ndarray, radii=(0.4, 0.3, 0.2, 0.15, 0.12, 0.12)) -> 
 
 
 def write_dataset(src: Path, out: Path, X: np.ndarray, info: dict) -> None:
-    from oshd_dataset.geometry import rotmat_to_quat
+    from oshd.geometry import rotmat_to_quat
 
     if out.exists():
         shutil.rmtree(out)
@@ -187,9 +187,9 @@ def main(argv=None) -> None:
     import oshd_bench
 
     ds = oshd_bench.open_dataset()
-    src = Path(os.environ.get("OSHD_DATASET_ROOT", "")).resolve()
+    src = Path(os.environ.get("OSH_DATASET_ROOT", "")).resolve()
     if not (src / "calibration" / "rig.yaml").exists() or "dev" not in str(src):
-        raise SystemExit("set OSHD_DATASET_ROOT to the dev dataset (this tool must not touch the real one)")
+        raise SystemExit("set OSH_DATASET_ROOT to the dev dataset (this tool must not touch the real one)")
     X0 = ds[ds.local_trajectory_names[0]].calibration.T_body_cam("lidar")
     scans = collect(ds, a.stride)
     print(f"{len(scans)} scans with mocap")

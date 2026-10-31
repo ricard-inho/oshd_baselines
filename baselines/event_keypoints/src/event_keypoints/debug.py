@@ -29,7 +29,7 @@ def main(argv=None):
     ap.add_argument("--out", default=None)
     a = ap.parse_args(argv)
     import oshd_bench
-    from oshd_dataset.events import voxel_grid
+    from oshd.events import voxel_grid
 
     res = oshd_bench.results_dir()
     df = C.read_samples(oshd_bench.gt_path(res, "events", a.domain, a.split), with_pose=True)
@@ -46,7 +46,7 @@ def main(argv=None):
         T = C.canonical_pose(np.asarray(r.T, float).reshape(4, 4), C.symmetry(obj))
         gt_uv, _ = intr.project((T[:3, :3] @ kp3.T).T + T[:3, 3])
         ev = C.load_window(traj, r.t_ns)
-        from oshd_dataset.events import Events
+        from oshd.events import Events
 
         vg = voxel_grid(Events(ev[2], ev[0].astype(np.uint16), ev[1].astype(np.uint16), ev[3]), C.NUM_BINS,
                         t_start_ns=int(r.t_ns) - int(C.WINDOW_MS * 1e6), t_end_ns=int(r.t_ns)).sum(0)

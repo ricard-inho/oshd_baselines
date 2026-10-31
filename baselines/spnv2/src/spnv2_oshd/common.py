@@ -90,8 +90,8 @@ class VirtualCamera:
         return cls(sensor, w, h, K.tolist())
 
     def intrinsics(self, scale: float = 1.0):
-        """oshd_dataset CameraIntrinsics of the virtual image (optionally rescaled)."""
-        from oshd_dataset import CameraIntrinsics
+        """oshd CameraIntrinsics of the virtual image (optionally rescaled)."""
+        from oshd import CameraIntrinsics
 
         ci = CameraIntrinsics(self.sensor + "_virtual", self.width, self.height, self.Km, np.zeros(5), "none")
         return ci if scale == 1.0 else ci.resized(round(self.width * scale), round(self.height * scale))

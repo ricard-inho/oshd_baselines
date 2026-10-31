@@ -103,7 +103,7 @@ def e2vid_frame_path(domain: str, split: str, trajectory: str, t_ns: int) -> Pat
 
 def sensor_size(ds, sensor: str, trajectory: str) -> tuple[int, int]:
     if sensor == "events":
-        from oshd_dataset.events import EVENT_SENSOR_SIZE
+        from oshd.events import EVENT_SENSOR_SIZE
 
         return EVENT_SENSOR_SIZE[1], EVENT_SENSOR_SIZE[0]
     return ds[trajectory].calibration.intrinsics(sensor).size
@@ -130,7 +130,7 @@ def to_input(img: np.ndarray, sensor: str) -> np.ndarray:
 def gt_mask(ds, sensor: str, trajectory: str, t_ns: int, obj_name: str, T: np.ndarray,
             size: tuple[int, int]) -> np.ndarray:
     """Rendered (CAD + GT pose, distorted projection) silhouette at image size ``size`` (W, H), cached."""
-    from oshd_dataset.labels import render_mask
+    from oshd.labels import render_mask
 
     p = CACHE / "masks" / sensor / f"{size[0]}x{size[1]}" / trajectory / f"{int(t_ns)}_{obj_name}.png"
     if p.exists():

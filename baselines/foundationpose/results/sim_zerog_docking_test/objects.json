@@ -1,6 +1,6 @@
 {
   "satellite_mockup": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/satellite_mockup/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/satellite_mockup/model.obj",
     "source": "satellite_mockup.usdz",
     "kind": "satellite_mockup",
     "extent_m": [
@@ -13,7 +13,7 @@
     "n_faces": 42009
   },
   "cubesat1034538678": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat1034538678/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1034538678/model.obj",
     "source": "cubesat1034538678.usdz",
     "kind": "cubesat",
     "extent_m": [
@@ -26,7 +26,7 @@
     "n_faces": 276
   },
   "cubesat1600360009": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat1600360009/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1600360009/model.obj",
     "source": "cubesat1600360009.usdz",
     "kind": "cubesat",
     "extent_m": [
@@ -39,7 +39,7 @@
     "n_faces": 276
   },
   "cubesat1053301660": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat1053301660/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1053301660/model.obj",
     "source": "cubesat1053301660.usdz",
     "kind": "cubesat",
     "extent_m": [
@@ -52,7 +52,7 @@
     "n_faces": 316
   },
   "cubesat1859922245": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat1859922245/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1859922245/model.obj",
     "source": "cubesat1859922245.usdz",
     "kind": "cubesat",
     "extent_m": [
@@ -65,7 +65,7 @@
     "n_faces": 276
   },
   "cubesat691492398": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat691492398/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat691492398/model.obj",
     "source": "cubesat691492398.usdz",
     "kind": "cubesat",
     "extent_m": [
@@ -78,7 +78,7 @@
     "n_faces": 252
   },
   "cubesat1232003790": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat1232003790/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1232003790/model.obj",
     "source": "cubesat1232003790.usdz",
     "kind": "cubesat",
     "extent_m": [
@@ -91,7 +91,7 @@
     "n_faces": 276
   },
   "cubesat715072435": {
-    "cad": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test/models/sim/cubesat715072435/model.obj",
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat715072435/model.obj",
     "source": "cubesat715072435.usdz",
     "kind": "cubesat",
     "extent_m": [

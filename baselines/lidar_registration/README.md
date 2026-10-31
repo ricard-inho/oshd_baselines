@@ -15,7 +15,7 @@ The package `oshd_lidar` also holds the **shared target crop** that `baselines/g
 
 ```bash
 cd baselines/lidar_registration && ./setup.sh && cd ../..
-# (dev) export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+# (dev) export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 uv run --project baselines/lidar_registration lidar-reg-predict --setting ZS --domain real --split test
 uv run --project baselines/lidar_registration lidar-reg-predict --setting ZS --domain synthetic --split test
 uv run --project bench oshd-bench eval

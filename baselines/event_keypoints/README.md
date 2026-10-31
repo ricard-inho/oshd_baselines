@@ -8,7 +8,7 @@ Method key `event_keypoints`, modality `events`, sensor `events`, settings ZS an
 
 ## Method
 
-1. **Input.** A voxel grid (5 bins, bilinear in time, polarity ±1, identical to `oshd_dataset.events.voxel_grid`) of the events in `[t − 50 ms, t)`. It is built on the GPU and standardised over its non-zero voxels.
+1. **Input.** A voxel grid (5 bins, bilinear in time, polarity ±1, identical to `oshd.events.voxel_grid`) of the events in `[t − 50 ms, t)`. It is built on the GPU and standardised over its non-zero voxels.
 2. **Stage A (target localisation).** A ResNet-18 with 3 deconvolutions runs on the 1/2-resolution grid (640×360, padded to 384). It outputs a centre heatmap (focal loss) and the log side of the square box around the projected cube corners, at stride 8 in full-resolution pixels.
 3. **Stage B (keypoints).** A 256×256 `roi_align` crop of the full-resolution grid, with side 1.3 × the predicted box, goes through a second ResNet-18 + 3 deconvolutions. It outputs 64×64 heatmaps for 9 keypoints: the 8 cube-body corners (`objects.yaml` keypoints) and the symmetry centre. It is trained with an MSE loss against Gaussians with σ = 1.5. Peaks are refined by a 5×5 soft-argmax.
 4. **Pose.** `cv2.solvePnPRansac` (EPnP, reprojection threshold 4 % of the box side, minimum 2 px) with the events intrinsics and distortion, then `solvePnPRefineLM` on the inliers. The score is the detection score × the mean inlier heatmap peak. Samples with no detection (peak < 0.1) or no valid PnP get no row, so they count against coverage.
@@ -26,7 +26,7 @@ Method key `event_keypoints`, modality `events`, sensor `events`, settings ZS an
 
 ```bash
 cd baselines/event_keypoints && ./setup.sh
-cd ../.. && export OSHD_DATASET_ROOT=... OSHD_BENCH_RESULTS=...   # omit both for the real benchmark
+cd ../.. && export OSH_DATASET_ROOT=... OSHD_BENCH_RESULTS=...   # omit both for the real benchmark
 cd baselines/event_keypoints
 flock ../../work/gpu.lock uv run ekp-train --setting ZS            # synthetic train
 flock ../../work/gpu.lock uv run ekp-train --setting FT            # + real train, from ZS.pt

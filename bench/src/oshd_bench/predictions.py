@@ -99,7 +99,7 @@ class DetectionWriter(_Writer):
             mask: np.ndarray | None = None, runtime_ms: float = float("nan")) -> None:
         rle = None
         if mask is not None:
-            from oshd_dataset.export.coco import mask_to_rle
+            from oshd.export.coco import mask_to_rle
 
             rle = json.dumps(mask_to_rle(mask))
         self.rows.append({"trajectory": trajectory, "sensor": sensor, "t_ns": int(t_ns), "object": object,
@@ -116,7 +116,7 @@ def load_detections(path: str | Path) -> pd.DataFrame:
 
 
 def rle_to_mask(rle_json: str) -> np.ndarray:
-    """Inverse of ``oshd_dataset.export.coco.mask_to_rle`` (uncompressed, column-major)."""
+    """Inverse of ``oshd.export.coco.mask_to_rle`` (uncompressed, column-major)."""
     rle = json.loads(rle_json)
     h, w = rle["size"]
     flat = np.zeros(h * w, bool)

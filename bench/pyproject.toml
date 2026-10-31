@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Shared ground truth, prediction formats and metrics for the OSHD baselines."
 requires-python = ">=3.10"
 dependencies = [
-    "oshd-dataset[mesh]>=1.0.0",   # benchmark_v1, benchmark_v2
+    "oshd[mesh]>=1.0.0",   # benchmark_v1, benchmark_v2
     "numpy>=1.23",
     "pandas>=2.0",
     "pyarrow>=14",
@@ -21,7 +21,7 @@ oshd-bench = "oshd_bench.cli:main"
 
 [tool.uv.sources]
 # from TestPyPI (its dependencies still come from PyPI: the index is explicit)
-oshd-dataset = { index = "testpypi" }
+oshd = { index = "testpypi" }
 
 [[tool.uv.index]]
 name = "testpypi"

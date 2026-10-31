@@ -68,14 +68,14 @@ def group_detections(det: pd.DataFrame, max_dets: int) -> dict[tuple, list]:
 @dataclass
 class Prepared:
     rgb: np.ndarray  # (H, W, 3) uint8, undistorted + resized
-    intr: object  # oshd_dataset CameraIntrinsics of ``rgb`` (pinhole, D = 0)
+    intr: object  # oshd CameraIntrinsics of ``rgb`` (pinhole, D = 0)
 
 
 class CameraPrep:
     """Raw sensor image -> undistorted, resized pinhole image (the pose stays in the sensor frame)."""
 
     def __init__(self, intr, size: tuple[int, int] | None):
-        from oshd_dataset.imaging import CameraView
+        from oshd.imaging import CameraView
 
         self.src = intr
         self.view = CameraView(intr, undistort=True, size=size)

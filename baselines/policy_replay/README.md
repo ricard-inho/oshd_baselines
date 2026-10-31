@@ -43,7 +43,7 @@ The policy runs on the `test` split of the real domain (`--split`, `--domain`).
 Smoke test on the dev dataset, with **fake** estimators (GT + noise + a random cube symmetry):
 
 ```bash
-export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 uv run policy-replay fake-predictions --modality rgb_realsense --symmetric   # method FAKE_gt_noise
 uv run policy-replay run --key rgb --source rgb_realsense/FAKE_gt_noise/ZS
 ```

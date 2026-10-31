@@ -60,7 +60,7 @@ def main(argv=None) -> int:
     import trimesh
     from estimater import FoundationPose, PoseRefinePredictor, ScorePredictor, dr, set_seed  # upstream
     from oshd_bench import PoseWriter
-    from oshd_dataset import OshdDataset
+    from oshd import OshDataset
 
     from .geometry import draw_overlay
 
@@ -71,7 +71,7 @@ def main(argv=None) -> int:
     samples = pd.read_parquet(run / "samples.parquet").iloc[::a.stride]
     if a.limit:
         samples = samples.iloc[:a.limit]
-    ds = OshdDataset(prep["dataset_root"])
+    ds = OshDataset(prep["dataset_root"])
 
     out = run / f"predictions_{a.setting}.parquet"
     meta = {"method": "FoundationPose", "upstream": "https://github.com/NVlabs/FoundationPose",

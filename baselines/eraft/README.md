@@ -44,7 +44,7 @@ There is no synthetic stage. The DSEC checkpoint is the zero-shot model.
 
 ```bash
 cd baselines/eraft && ./setup.sh
-cd ../.. && export OSHD_DATASET_ROOT=... OSHD_BENCH_RESULTS=...   # omit both for the real benchmark
+cd ../.. && export OSH_DATASET_ROOT=... OSHD_BENCH_RESULTS=...   # omit both for the real benchmark
 cd baselines/eraft
 flock ../../work/gpu.lock uv run eraft-predict --setting ZS --split test --domain real --debug 4
 flock ../../work/gpu.lock uv run eraft-train  --steps 5000             # -> weights/trained/FT.tar

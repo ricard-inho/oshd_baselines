@@ -1,5 +1,5 @@
 {
-  "dataset_root": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test",
+  "dataset_root": "/home/ricard/.cache/oshd/r3m3c3--oshd",
   "benchmark": "v1",
   "revision": "8205a1129f1fbb64cf7a4d0fc342b0a9e5c90509",
   "domain": "sim_zerog",

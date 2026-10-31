@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import yaml
-from oshd_dataset import OshdDataset
+from oshd import OshDataset
 
 from .gt import gt_poses
 from .metrics import FlowStats, auc, pose_errors, speed_score
@@ -47,15 +47,15 @@ def repo_root() -> Path:
     return Path.cwd()
 
 
-def open_dataset(cfg: dict | None = None) -> OshdDataset:
-    """The benchmark dataset: ``$OSHD_DATASET_ROOT``, else ``dataset.root`` of the config. Its
+def open_dataset(cfg: dict | None = None) -> OshDataset:
+    """The benchmark dataset: ``$OSH_DATASET_ROOT``, else ``dataset.root`` of the config. Its
     splits come from the frozen benchmark ``dataset.benchmark`` (``$OSHD_BENCHMARK``; "none" =
     the dataset's ``splits.json``)."""
     cfg = cfg if cfg is not None else load_config(repo_root() / "configs" / "bench.yaml")
     d = cfg.get("dataset", {})
     bench = os.environ.get("OSHD_BENCHMARK", d.get("benchmark"))
-    return OshdDataset(os.environ.get("OSHD_DATASET_ROOT") or d.get("root"),
-                       repo_id=d.get("repo_id", "r3m3c3/off_test"),
+    return OshDataset(os.environ.get("OSH_DATASET_ROOT") or d.get("root"),
+                       repo_id=d.get("repo_id", "r3m3c3/oshd"),
                        benchmark=None if bench in (None, "", "none") else str(bench))
 
 
@@ -80,10 +80,10 @@ def _nan_to_none(o):
 
 
 class Evaluator:
-    def __init__(self, cfg: dict, root: str | Path = ".", dataset: OshdDataset | None = None):
+    def __init__(self, cfg: dict, root: str | Path = ".", dataset: OshDataset | None = None):
         self.cfg = cfg
         self.root = Path(root)
-        # OSHD_BENCH_RESULTS / OSHD_DATASET_ROOT override the config (used by the dev dataset)
+        # OSHD_BENCH_RESULTS / OSH_DATASET_ROOT override the config (used by the dev dataset)
         self.results = Path(os.environ.get("OSHD_BENCH_RESULTS") or self.root / cfg.get("results_dir", "results"))
         self.out = self.results / "tables"
         self._ds = dataset
@@ -93,7 +93,7 @@ class Evaluator:
 
     # ------------------------------------------------------------- helpers
     @property
-    def ds(self) -> OshdDataset:
+    def ds(self) -> OshDataset:
         if self._ds is None:
             self._ds = open_dataset(self.cfg)
         return self._ds

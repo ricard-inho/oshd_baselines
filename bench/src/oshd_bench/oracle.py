@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pandas as pd
-from oshd_dataset.labels import mask_to_bbox, render_mask
+from oshd.labels import mask_to_bbox, render_mask
 from tqdm import tqdm
 
 from .gt import gt_poses

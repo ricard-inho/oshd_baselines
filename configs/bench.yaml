@@ -2,9 +2,9 @@
 # and the condition-analysis bins. Paths are relative to the repo root.
 
 dataset:
-  root: null            # null = oshd-dataset's default cache (~/.cache/oshd_dataset/<repo>)
-  repo_id: r3m3c3/off_test
-  # Frozen split for the paper: oshd-dataset's benchmark_v1 (Hub revision 8205a11, its train /
+  root: null            # null = oshd's default cache (~/.cache/oshd/<repo>)
+  repo_id: r3m3c3/oshd
+  # Frozen split for the paper: oshd's benchmark_v1 (Hub revision 8205a11, its train /
   # test lists). Download its data with `oshd download --benchmark v1 ...`. $OSHD_BENCHMARK
   # overrides it ("none": the dataset's own splits.json, e.g. the dev dataset).
   benchmark: v1

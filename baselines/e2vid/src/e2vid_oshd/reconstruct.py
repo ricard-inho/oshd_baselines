@@ -42,10 +42,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from oshd.events import EVENT_SENSOR_SIZE
 from oshd_bench import load_config, open_dataset, repo_root, results_dir
 from oshd_bench.gt import sample_times
 from oshd_bench.predictions import hardware
-from oshd_dataset.events import EVENT_SENSOR_SIZE
 from PIL import Image
 from tqdm import tqdm
 

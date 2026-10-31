@@ -29,8 +29,8 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
 
     import oshd_bench
+    from oshd.events import event_histogram
     from oshd_bench.sensors import events_window
-    from oshd_dataset.events import event_histogram
 
     ds = oshd_bench.open_dataset()
     s = load_samples(oshd_bench.results_dir(), "events", a.domain, a.split)

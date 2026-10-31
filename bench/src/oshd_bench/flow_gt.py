@@ -13,9 +13,9 @@ from __future__ import annotations
 from functools import lru_cache
 
 import numpy as np
-from oshd_dataset import CameraIntrinsics, ObjectModel, Trajectory
-from oshd_dataset.geometry import transform_points
-from oshd_dataset.labels import render_mask
+from oshd import CameraIntrinsics, ObjectModel, Trajectory
+from oshd.geometry import transform_points
+from oshd.labels import render_mask
 
 from .gt import pose_in_sensor
 

@@ -1,4 +1,4 @@
-"""oshd-dataset -> SPEED+-style training folder that upstream's SPEEDPLUSDataset reads.
+"""OSH dataset -> SPEED+-style training folder that upstream's SPEEDPLUSDataset reads.
 
 Layout (``<work>/data``)::
 
@@ -7,7 +7,7 @@ Layout (``<work>/data``)::
         vcam.json  canon.json                         # virtual camera, symmetry reference orientation
         <domain>_<split>/
             images_<W>x<H>_RGB/<traj>_<index>.jpg     # undistorted + resized + padded, grayscale x3
-            masks_<W/4>x<H/4>/<traj>_<index>.jpg      # oshd_dataset.labels.render_mask
+            masks_<W/4>x<H/4>/<traj>_<index>.jpg      # oshd.labels.render_mask
             labels/labels.csv                         # upstream CSV row format (tools/preprocess.py)
 
 CSV row: filename, bbox (xmin, ymin, xmax, ymax, normalised), q (qw, qx, qy, qz of R_cam_net),
@@ -92,8 +92,8 @@ def _init(sensor, vcam_d, R_ref, img_dir, mask_dir, gray):
 
 
 def _one(row: tuple) -> list | None:
-    from oshd_dataset.geometry import transform_points
-    from oshd_dataset.labels import projected_bbox, render_mask
+    from oshd.geometry import transform_points
+    from oshd.labels import projected_bbox, render_mask
 
     traj_name, index, T_flat = row
     w = _W

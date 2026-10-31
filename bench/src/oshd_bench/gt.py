@@ -5,7 +5,7 @@ list is what every baseline runs on; the ground-truth columns are only read by t
 evaluator (and by fine-tuning code on the *train* split).
 
 ``T_sensor_model = inv(T_world_body_ref @ T_body_sensor) @ T_world_body_obj @ T_body_model``
-comes from mocap + rig extrinsics + ``models/objects.yaml`` (``oshd_dataset.labels``).
+comes from mocap + rig extrinsics + ``models/objects.yaml`` (``oshd.labels``).
 
 Columns: trajectory, domain, illumination, sensor, index, t_ns, object, T (16 floats,
 row-major), range_m (sensor -> symmetry centre), ang_rate_dps (relative chaser-target
@@ -18,9 +18,9 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from oshd_dataset import ObjectModel, OshdDataset, Trajectory
-from oshd_dataset.geometry import transform_points
-from oshd_dataset.labels import object_pose_in_camera
+from oshd import ObjectModel, OshDataset, Trajectory
+from oshd.geometry import transform_points
+from oshd.labels import object_pose_in_camera
 from tqdm import tqdm
 
 from .sensors import sensor_kind
@@ -82,7 +82,7 @@ def _rates(traj, sensor, obj, ts, center, dt_ns=50_000_000):
     return ang, lin
 
 
-def build_gt(ds: OshdDataset, sensor: str, split: str = "test", domain: str | None = "real",
+def build_gt(ds: OshDataset, sensor: str, split: str = "test", domain: str | None = "real",
              objects: list[str] | None = None, stride: int = 1, symmetries: dict | None = None,
              events_rate_hz: float = 20.0, events_window_ms: float = 50.0,
              lidar_max_range: float = 15.0, progress: bool = True) -> pd.DataFrame:

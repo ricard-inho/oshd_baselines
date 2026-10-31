@@ -34,7 +34,7 @@ The trainer is upstream's `IterBasedTrainer` with the ModelNet `model.py` / `los
 
 ```bash
 cd baselines/geotransformer && ./setup.sh && cd ../..
-# (dev) export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+# (dev) export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 L=work/gpu.lock
 flock $L uv run --project baselines/geotransformer geotr-train --setting ZS --iters 2000   # -> weights/oshd-ZS.pth.tar
 flock $L uv run --project baselines/geotransformer geotr-train --setting FT --iters 1000   # -> weights/oshd-FT.pth.tar

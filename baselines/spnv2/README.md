@@ -31,7 +31,7 @@ This is a uv project. It uses Python 3.10–3.11 and torch 2.5.1+cu124. Upstream
 
 ## Data conversion (`spnv2-convert`, run automatically by `spnv2-train`)
 
-The converter turns oshd-dataset data into a SPEED+-style folder under `work/spnv2/<dataset>/data/speedplus_<sensor>/`. The CSV format is upstream's `tools/preprocess.py` output.
+The converter turns oshd data into a SPEED+-style folder under `work/spnv2/<dataset>/data/speedplus_<sensor>/`. The CSV format is upstream's `tools/preprocess.py` output.
 
 * **Virtual camera.** Every frame is undistorted and resampled into a fixed pinhole camera per sensor. The result is written as grayscale × 3, following upstream's preprocessing.
   * `firefly`: 3072×2048 → ×0.25 → **768×512**, upstream's input size. The image is area-downscaled first, then undistorted.
@@ -42,7 +42,7 @@ The converter turns oshd-dataset data into a SPEED+-style folder under `work/spn
   * 8 keypoints: the cube-body corners from `objects.yaml`.
   * q and t of `T_cam_net`, where the "net" frame is the CAD frame shifted to the cube centre, c = (0, 0.05, 0). In this frame the symmetries are pure rotations, so t does not depend on which of the 24 equivalent poses is chosen.
   * The bounding box, from the projected mesh.
-  * A mask from `oshd_dataset.labels.render_mask`, at 1/4 resolution.
+  * A mask from `oshd.labels.render_mask`, at 1/4 resolution.
 * **Symmetry (24-fold cube).** Labels are **canonicalised**:
   * For each ground-truth pose, the converter picks the equivalent `T·S_k` whose rotation, expressed in the viewing-ray (allocentric) frame, is closest to a fixed reference `R_ref`.
   * `R_ref` is the chordal mean of the ZS training orientations on SO(3)/cube (`canon.json`). It is placed at the centre of the data so few samples lie near a cell boundary.
@@ -81,7 +81,7 @@ This is the full SPNv2 configuration from upstream's `experiments/offline_train_
 ```bash
 cd /home/ricard/oshd_baselines
 baselines/spnv2/setup.sh
-# (dev) export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+# (dev) export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 P="uv run --project baselines/spnv2"
 L="flock work/gpu.lock"
 for S in firefly realsense_color; do

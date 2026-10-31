@@ -1,6 +1,6 @@
 # oshd_baselines
 
-Baselines for the OSHD dataset paper (Tables I–III, Fig. 1). This is the mother repo:
+Baselines for the OSHD paper (Tables I–III, Fig. 1). This is the mother repo:
 
 * `bench/` is the shared `oshd-bench` package. It holds the evaluation sample lists with ground truth, the file formats, the metrics and the table writer.
 * `baselines/<name>/` holds one baseline each. Every baseline has its **own** environment (a uv project or a Docker image), because the upstream codes need incompatible CUDA/PyTorch stacks.
@@ -25,16 +25,16 @@ results/               gt/, predictions/, detections/, replay/, flow/, tables/
 
 ## Pipeline
 
-All paper numbers use the frozen benchmark **`benchmark_v1`** of oshd-dataset (≥ 1.0.0, from
+All paper numbers use the frozen benchmark **`benchmark_v1`** of oshd (≥ 1.0.0, from
 TestPyPI): the data of Hub revision `8205a11` (2195 sim + 3 real trajectories) and its fixed train
 / test split. `configs/bench.yaml` (`dataset.benchmark: v1`) makes every `ds.split()` of the
 bench and the baselines use it. Download its data with `--benchmark v1`, which pins the
-revision. Daily uploads after the freeze don't change it. oshd-dataset 1.0.0 also has
+revision. Daily uploads after the freeze don't change it. oshd 1.0.0 also has
 **`benchmark_v2`**, the final collection (Hub `df3530b`: 6413 sim + 92 real trajectories with the
 real mockups); it contains v1 with the same splits. Switch with `dataset.benchmark: v2`.
 
 ```bash
-cd bench && uv sync && cd ..                  # oshd-dataset 1.0.0 from TestPyPI
+cd bench && uv sync && cd ..                  # oshd 1.0.0 from TestPyPI
 uv run --project bench oshd download --benchmark v1 --domain all   # or narrow: -m ..., --split, --task
 uv run --project bench oshd splits --benchmark v1
 uv run --project bench oshd-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet
@@ -56,7 +56,7 @@ The `.tex` files are table bodies in the template's row order, with `\tbd` where
 
 ## Definitions
 
-* **Ground truth.** The pose is `T_sensor_model` = inv(T_world_ref · T_ref_sensor) · T_world_cubesat · T_body_model. It comes from mocap, the rig calibration and `models/objects.yaml`, through `oshd_dataset.labels`.
+* **Ground truth.** The pose is `T_sensor_model` = inv(T_world_ref · T_ref_sensor) · T_world_cubesat · T_body_model. It comes from mocap, the rig calibration and `models/objects.yaml`, through `oshd.labels`.
 * **Samples.** For cameras, every frame where the cube projects into the image. For the lidar, every scan where the cube is inside the Mid-360 field of view and range. For events, reference times at 20 Hz, each using the events in `[t − 50 ms, t)`.
 * **Errors.** Rotation errors are minimised over the cube's 24 rotational symmetries. Translation errors are measured at the cube centre, which every symmetric pose maps to the same point (`bench/src/oshd_bench/symmetry.py`).
 * **SPEED score.** `e_t/‖t_gt‖ + e_q[rad]`, with the SPEED+ precision thresholds.
@@ -91,7 +91,7 @@ The GT sample lists in `results/gt/` define exactly which samples to run on. Inf
 
 ```bash
 uv run --project bench python scripts/make_dev_dataset.py
-export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 uv run --project bench oshd-bench gt
 ```
 

@@ -19,7 +19,7 @@ EDGES = [(0, 1), (0, 2), (1, 3), (2, 3), (4, 5), (4, 6), (5, 7), (6, 7), (0, 4),
 
 
 def _edges(draw, intr, T, kp, color, width):
-    from oshd_dataset.geometry import transform_points
+    from oshd.geometry import transform_points
 
     # sample each edge densely so the (distorted) projection is drawn as a curve
     for i, j in EDGES:
@@ -42,8 +42,8 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
 
     import oshd_bench
+    from oshd.labels import render_mask
     from oshd_bench import gt_path, prediction_path
-    from oshd_dataset.labels import render_mask
 
     m = MODALITIES[a.modality]
     ds = oshd_bench.open_dataset()

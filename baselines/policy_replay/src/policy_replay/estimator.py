@@ -17,9 +17,9 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-from oshd_dataset import ObjectModel, OshdDataset, Trajectory
-from oshd_dataset.geometry import invert_pose
-from oshd_dataset.labels import object_pose
+from oshd import ObjectModel, OshDataset, Trajectory
+from oshd.geometry import invert_pose
+from oshd.labels import object_pose
 
 from .tracks import PoseTrack
 
@@ -49,7 +49,7 @@ def _body_track(traj: Trajectory, body: str) -> tuple[np.ndarray, np.ndarray]:
 class RigConstants:
     """Per-trajectory constants from mocap: T_ref_base, the ref body's up axis, T_world_model."""
 
-    def __init__(self, ds: OshdDataset, cfg: dict):
+    def __init__(self, ds: OshDataset, cfg: dict):
         self.ds, self.cfg = ds, cfg
         self.base, self.ref = cfg["robot"]["base_body"], cfg["robot"]["ref_body"]
         self._ref_base: dict[str, np.ndarray | None] = {}
@@ -88,7 +88,7 @@ class RigConstants:
         return _median_pose(T[ok])
 
 
-def rig_constants(ds: OshdDataset, cfg: dict) -> RigConstants:
+def rig_constants(ds: OshDataset, cfg: dict) -> RigConstants:
     return RigConstants(ds, cfg)
 
 

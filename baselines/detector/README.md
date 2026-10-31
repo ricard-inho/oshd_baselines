@@ -29,7 +29,7 @@ Boxes and masks are always reported in **full-resolution raw (distorted) sensor 
 
 Training uses the GT sample lists `results/gt/<sensor>/<domain>_train.parquet`. Only the
 training code reads the `T` column, and only on train splits. For each sample, the CAD
-silhouette (`oshd_dataset.labels.render_mask`, which uses the sensor's distortion) is
+silhouette (`oshd.labels.render_mask`, which uses the sensor's distortion) is
 rendered from the GT pose at the network input resolution. Its tight box becomes the box
 label. Samples with fewer than 20 mask pixels are used as negatives. Rendered masks are
 cached in `cache/masks/` (set `DETECTOR_CACHE` to move them).
@@ -55,7 +55,7 @@ with `oshd_bench.predictions.rle_to_mask`) and runtime_ms.
 ```bash
 cd /home/ricard/oshd_baselines
 ./baselines/detector/setup.sh
-# dev: export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+# dev: export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 # events only: first run baselines/e2vid (reconstruct --all) so the train + test frames exist
 cd baselines/detector
 L="flock ../../work/gpu.lock"

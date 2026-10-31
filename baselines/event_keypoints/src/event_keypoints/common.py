@@ -2,7 +2,7 @@
 
 Conventions
 -----------
-* Image coordinates follow OpenCV / oshd-dataset (pixel centres at integers). Crops are
+* Image coordinates follow OpenCV / oshd (pixel centres at integers). Crops are
   axis-aligned squares ``(cx, cy, side)`` in full-resolution event-camera pixels.
 * Keypoints (model frame, metres): the 8 cube-body corners of ``models/objects.yaml``
   followed by the symmetry centre (0, 0.05, 0).
@@ -44,7 +44,7 @@ def dataset_and_results():
 
 
 @lru_cache(maxsize=1)
-def _dataset_cached(pid: int):  # one OshdDataset per process (DataLoader workers)
+def _dataset_cached(pid: int):  # one OshDataset per process (DataLoader workers)
     import oshd_bench
 
     return oshd_bench.open_dataset()
@@ -96,7 +96,7 @@ def read_samples(path, with_pose: bool = False) -> pd.DataFrame:
 # --------------------------------------------------------------------------- voxels
 def voxelize(x, y, t, p, bidx, B: int, H: int, W: int, t0, span, bins: int = NUM_BINS,
              down: int = 1) -> torch.Tensor:
-    """(B, bins, H, W) voxel grid, bilinear in time, polarity +-1 (== oshd_dataset.events.voxel_grid).
+    """(B, bins, H, W) voxel grid, bilinear in time, polarity +-1 (== oshd.events.voxel_grid).
 
     ``x, y`` int tensors in full-res pixels, ``t`` int64 ns, ``p`` 0/1, ``bidx`` sample index,
     ``t0`` (B,) window start (ns, int64), ``span`` window length (ns). ``down`` bins pixels.

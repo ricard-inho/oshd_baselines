@@ -17,7 +17,7 @@ from __future__ import annotations
 import itertools
 
 import numpy as np
-from oshd_dataset import ObjectModel
+from oshd import ObjectModel
 
 __all__ = ["cube_rotations", "Symmetry", "symmetry_for"]
 

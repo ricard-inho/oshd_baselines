@@ -41,7 +41,7 @@ With `--detector oracle`, MegaPose uses the GT boxes and masks from `oshd-bench 
 ## Details
 
 * **Camera handling:**
-  * Images are undistorted, and optionally resized, with `oshd_dataset.imaging.CameraView`. MegaPose gets the resulting pinhole K.
+  * Images are undistorted, and optionally resized, with `oshd.imaging.CameraView`. MegaPose gets the resulting pinhole K.
   * The detector's mask, or its filled box when there is no mask, is warped with the same map and gives the box in the MegaPose image.
   * The returned pose is in the sensor optical frame (undistorting and resizing only change the intrinsics), so it is written unchanged.
 * **Multiple detections:** only the best-scoring detection per sample is used by default. With `--max-dets k`, MegaPose runs on the top k and keeps the pose with the highest MegaPose score.
@@ -74,7 +74,7 @@ Outputs go to `results/predictions/{rgb_firefly,rgb_realsense}/megapose/<setting
 
 ```bash
 cd /home/ricard/oshd_baselines
-export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 for s in realsense_color firefly events; do uv run --project bench oshd-bench oracle-detections --sensor $s; done
 cd baselines/megapose
 uv run megapose-events-standin --out ../../work/megapose_e2vid_standin --limit 20   # event-count images, E2VID layout

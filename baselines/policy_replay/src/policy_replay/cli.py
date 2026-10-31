@@ -122,9 +122,9 @@ def cmd_verify(a) -> None:
 
 def cmd_fake(a) -> None:
     """GT poses + noise written as a clearly fake method (smoke tests; reads the GT ``T`` column)."""
+    from oshd.geometry import rotvec_to_rotmat
     from oshd_bench.gt import gt_poses
     from oshd_bench.symmetry import cube_rotations
-    from oshd_dataset.geometry import rotvec_to_rotmat
 
     pb, bcfg = _bench()
     results = pb.results_dir()

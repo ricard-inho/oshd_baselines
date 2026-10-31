@@ -52,7 +52,7 @@ The sample lists' `T` column is never read.
 ```bash
 cd /home/ricard/oshd_baselines
 ./baselines/e2vid/setup.sh
-# dev: export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+# dev: export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 cd baselines/e2vid
 flock ../../work/gpu.lock uv run python -m e2vid_oshd.reconstruct --all          # every gt/events/*.parquet (train + test)
 flock ../../work/gpu.lock uv run python -m e2vid_oshd.reconstruct --domain real --split test [--limit N]

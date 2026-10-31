@@ -10,9 +10,9 @@ __all__ = ["load_cad", "Undistorter", "icp_refine", "visible_model_points", "dra
 
 
 def load_cad(obj) -> trimesh.Trimesh:
-    """The oshd-dataset ObjectModel as a trimesh FoundationPose can use.
+    """The oshd ObjectModel as a trimesh FoundationPose can use.
 
-    ``obj.vertices`` are already in metres (``mesh_scale`` applied by oshd-dataset); the file is
+    ``obj.vertices`` are already in metres (``mesh_scale`` applied by oshd); the file is
     reloaded only for its material colours, which become vertex colours (the OBJ has
     per-group ``Kd`` colours but no texture image, which FoundationPose's renderer can't use).
     """

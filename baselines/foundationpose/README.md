@@ -24,7 +24,7 @@ For every sample of `results/gt/realsense_color/<domain>_<split>.parquet` (the `
    * Rejection: the ICP result is discarded, and the FoundationPose pose kept, when the target inlier ratio at 1 cm is below 0.3 or drops by more than 0.05, or when the pose moves more than half the object diameter or rotates more than 30°. The `.json` records how many frames were accepted (`n_icp_accepted`).
 5. **Output.** Poses are written with `oshd_bench.PoseWriter` to `results/predictions/rgbd_realsense/<row>/<setting>/<domain>_<split>.parquet`.
 
-**CAD.** The CAD is `models/CubeSat_U1.obj`, taken through oshd-dataset's `ObjectModel`. It is in metres, `mesh_scale` is applied, and `load_cad` refuses extents that don't look like metres. It is a 27k-vertex, 37k-face shell, and its material colours become vertex colours for FoundationPose's renderer. FoundationPose centres the mesh internally and `register()` returns the pose of the *original* CAD frame, so the output is `T_sensor_model` in the dataset's CAD frame. No symmetry prior is given to FoundationPose, because the marker holder breaks the cube symmetry. The evaluator applies the 24 cube symmetries itself.
+**CAD.** The CAD is `models/CubeSat_U1.obj`, taken through oshd's `ObjectModel`. It is in metres, `mesh_scale` is applied, and `load_cad` refuses extents that don't look like metres. It is a 27k-vertex, 37k-face shell, and its material colours become vertex colours for FoundationPose's renderer. FoundationPose centres the mesh internally and `register()` returns the pose of the *original* CAD frame, so the output is `T_sensor_model` in the dataset's CAD frame. No symmetry prior is given to FoundationPose, because the marker holder breaks the cube symmetry. The evaluator applies the 24 cube symmetries itself.
 
 **runtime_ms.** It is the detector's `runtime_ms` from the detections file, plus undistortion, plus `register()`, plus ICP for the `_icp` row. It does not include JPEG/PNG decoding or the depth-to-colour registration (the D455 can stream aligned depth on-device).
 
@@ -69,7 +69,7 @@ Useful flags:
 
 ```bash
 cd /home/ricard/oshd_baselines
-export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 uv run --project bench oshd-bench oracle-detections --sensor realsense_color --split test --domain real
 baselines/foundationpose/docker/run.sh python -m fp_oshd.predict --setting ORACLE --detector oracle \
     --limit 20 --stride 25 --debug-dir $PWD/work/debug/foundationpose
@@ -99,18 +99,18 @@ sample list and writes everything to `results/sim_zerog_docking_test/` in this f
 
 | | |
 |---|---|
-| Split | the frozen **`benchmark_v1`** (oshd-dataset ≥ 1.0.0; Hub revision `8205a11`): `test` = the eval runs, ~20% of the recording runs of each scenario config, whole runs only. 72 trajectories (24 runs x 3 episodes): 51 satellite mockup, 21 CubeSat |
+| Split | the frozen **`benchmark_v1`** (oshd ≥ 1.0.0; Hub revision `8205a11`): `test` = the eval runs, ~20% of the recording runs of each scenario config, whole runs only. 72 trajectories (24 runs x 3 episodes): 51 satellite mockup, 21 CubeSat |
 | Samples | every 10th RGB frame (2 Hz of 20 Hz) where the target's semantic mask has ≥ 100 px: 5465 samples |
 | Input | sim RGB + depth (320x240, ideal pinhole `K` from `calibration/<traj>.yaml`), no undistortion |
 | Mask | the simulator's semantic mask of class `target` (**oracle 2D segmentation**, setting `ORACLE_MASK`). No detector is trained or run |
 | CAD | the dataset's target model, `models/sim/<model>/model.obj` on the Hub (`traj.target_mesh()`): `satellite_mockup`, or the run's procedural `cubesat<seed>`, scaled by the run's `scale` |
-| GT | `T_cam_target = inv(T_world_cam) @ T_world_target` from the sim mocap (`oshd_dataset.labels.camera_pose`, `traj.body_pose("target")`), in the rgb optical frame and the target's root frame |
+| GT | `T_cam_target = inv(T_world_cam) @ T_world_target` from the sim mocap (`oshd.labels.camera_pose`, `traj.body_pose("target")`), in the rgb optical frame and the target's root frame |
 | Method | `FoundationPose.register()` on **every frame** from scratch (252 rotation hypotheses, 5 refiner iterations, scorer); no `track_one`, no ICP |
 
 ### Step by step
 
-The paths assume this repo at `~/oshd_dataset/oshd_baselines`. Everything else, including the
-targets' CAD, comes from the Hub through oshd-dataset.
+The paths assume this repo at `~/osh_dataset/oshd_baselines`. Everything else, including the
+targets' CAD, comes from the Hub through oshd.
 
 Needs an NVIDIA GPU with Docker + the NVIDIA container toolkit, and `hf auth login` for the
 download.
@@ -122,25 +122,25 @@ curl -LsSf https://astral.sh/uv/install.sh | sh     # -> ~/.local/bin/uv
 ```
 
 **2. Host environment.** This `uv` venv runs the dataset download, the CAD export (`usd-core`)
-and the evaluation. It needs `oshd-dataset` ≥ 1.0.0 (sim tasks, `benchmark_v1`), from TestPyPI.
-Only `oshd-dataset` itself comes from TestPyPI (`--no-deps`); its dependencies come from PyPI.
+and the evaluation. It needs `oshd` ≥ 1.0.0 (sim tasks, `benchmark_v1`), from TestPyPI.
+Only `oshd` itself comes from TestPyPI (`--no-deps`); its dependencies come from PyPI.
 `oshd-bench` is installed without dependencies too.
 
 ```bash
-cd ~/oshd_dataset/oshd_baselines/baselines/foundationpose
+cd ~/osh_dataset/oshd_baselines/baselines/foundationpose
 uv venv -p 3.11 .venv
-uv pip install --python .venv/bin/python --no-deps --index-url https://test.pypi.org/simple/ "oshd-dataset==1.0.0"
+uv pip install --python .venv/bin/python --no-deps --index-url https://test.pypi.org/simple/ "oshd==1.0.0"
 uv pip install --python .venv/bin/python "numpy>=1.23" "pyarrow>=14" "huggingface_hub>=0.23" "pillow>=9" \
     "pyyaml>=6" "tqdm>=4.60" trimesh usd-core pandas scipy matplotlib
 uv pip install --python .venv/bin/python --no-deps -e ../../bench
-.venv/bin/python -c "import oshd_dataset; print(oshd_dataset.__version__)"    # 1.0.0
+.venv/bin/python -c "import oshd; print(oshd.__version__)"    # 1.0.0
 ```
 
-To work on unreleased oshd-dataset changes, install the local checkout instead:
-`uv pip install --python .venv/bin/python -e "../../../oshd-dataset[mesh]"`.
+To work on unreleased oshd changes, install the local checkout instead:
+`uv pip install --python .venv/bin/python -e "../../../oshd[mesh]"`.
 
 **3. The frozen split.** The paper uses `benchmark_v1`: Hub revision `8205a11` and its fixed
-train / test lists, shipped inside oshd-dataset. The growing daily split in the Hub's
+train / test lists, shipped inside oshd. The growing daily split in the Hub's
 `splits.json` is not used here.
 
 ```bash
@@ -160,7 +160,7 @@ compute capability (`nvidia-smi --query-gpu=compute_cap --format=csv`): 8.6 for 
 here, 8.9 for a 4090. The build takes about 30 min.
 
 ```bash
-cd ~/oshd_dataset/oshd_baselines
+cd ~/osh_dataset/oshd_baselines
 FP_CUDA_ARCH=8.6 FP_IMAGE=oshd-foundationpose:a1b694b-sm86 bash baselines/foundationpose/setup.sh
 ```
 
@@ -181,11 +181,11 @@ The ground truth was checked by projecting the scaled CAD with it: 99% of the po
 the target's semantic mask (median, for every target).
 
 **7. Run FoundationPose** in the container (about 1.5 s per frame on the 3090, about 2.3 h for
-5465 samples). The image installs oshd-dataset 1.0.0 from TestPyPI. To use a local checkout
-instead, set `OSHD_DATASET_SRC=~/oshd_dataset/oshd-dataset`; it is mounted ahead of the image's copy.
+5465 samples). The image installs oshd 1.0.0 from TestPyPI. To use a local checkout
+instead, set `OSH_DATASET_SRC=~/osh_dataset/osh-dataset`; it is mounted ahead of the image's copy.
 
 ```bash
-cd ~/oshd_dataset/oshd_baselines
+cd ~/osh_dataset/oshd_baselines
 export FP_IMAGE=oshd-foundationpose:a1b694b-sm86
 # smoke test (20 samples, overlays):
 baselines/foundationpose/docker/run.sh python -m fp_oshd.predict_sim --setting SMOKE --limit 20 --stride 40 --debug-every 5
@@ -255,7 +255,7 @@ got a pose. All files are in `results/sim_zerog_docking_test/`; the full table, 
 
 ## Files
 
-* `docker/Dockerfile` and `docker/run.sh` are the image and the runner. The runner mounts the repo, the dataset root and its resolved symlinks, `~/.cache/oshd_dataset` and the results dir at their host paths, and mounts `weights/` at `/opt/FoundationPose/weights`. It runs as your uid.
+* `docker/Dockerfile` and `docker/run.sh` are the image and the runner. The runner mounts the repo, the dataset root and its resolved symlinks, `~/.cache/oshd` and the results dir at their host paths, and mounts `weights/` at `/opt/FoundationPose/weights`. It runs as your uid.
 * `fp_oshd/predict.py` is the inference entry point. `fp_oshd/train.py` is the no-op described above.
 * `fp_oshd/geometry.py` holds the CAD loading, undistortion, ICP and overlays.
 * `fp_oshd/sim_prepare.py`, `fp_oshd/predict_sim.py` and `fp_oshd/eval_sim.py` are the simulated-data pipeline (see above): CAD export and sample list, inference, and metrics.

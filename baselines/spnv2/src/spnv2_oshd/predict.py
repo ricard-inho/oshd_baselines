@@ -249,7 +249,7 @@ class _PrefixDict(dict):
 
 # ---------------------------------------------------------------------- overlays
 def overlay(img_net: np.ndarray, T_cam_model, info, model: Model, text: str) -> np.ndarray:
-    from oshd_dataset.geometry import transform_points
+    from oshd.geometry import transform_points
 
     out = img_net.copy()
     m = cv2.resize(info["mask"].astype(np.uint8), (out.shape[1], out.shape[0]), interpolation=cv2.INTER_NEAREST)

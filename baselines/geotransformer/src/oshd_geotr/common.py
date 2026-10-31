@@ -137,7 +137,7 @@ def build_pairs(domain: str, split: str, cache: Path | None = None) -> dict:
     from tqdm import tqdm
 
     ds, res = oshd_bench.open_dataset(), oshd_bench.results_dir()
-    droot = Path(os.environ.get("OSHD_DATASET_ROOT") or "default").resolve()
+    droot = Path(os.environ.get("OSH_DATASET_ROOT") or "default").resolve()
     tag = f"{droot.parent.name}-{droot.name}_{res.resolve().parent.name}-{res.name}_{domain}_{split}"
     cache = cache or WORK / "pairs" / f"{tag}.npz"
     if cache.exists():

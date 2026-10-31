@@ -1,15 +1,15 @@
 """Inputs for FoundationPose on simulated (SRB) trajectories: target CAD + sample list + GT.
 
-Runs on the host, in the baseline's uv environment (needs ``usd-core`` and oshd-dataset):
+Runs on the host, in the baseline's uv environment (needs ``usd-core`` and oshd):
 
     .venv/bin/python -m fp_oshd.sim_prepare --domain sim_zerog --task docking --split test --stride 10
 
-The split comes from the frozen benchmark ``--benchmark`` (default ``v1``: oshd-dataset's
+The split comes from the frozen benchmark ``--benchmark`` (default ``v1``: oshd's
 ``benchmark_v1``, Hub revision 8205a11; ``none`` = the dataset's growing ``splits.json``).
 For every trajectory of the split it
 
 1. takes the target's CAD from the dataset (``models/sim/<model>/model.obj``, published with the
-   sim data, see oshd_dataset_pipeline/sim/target_models.py): metres, in the frame of the mocap
+   sim data, see osh_dataset_pipeline/sim/target_models.py): metres, in the frame of the mocap
    body ``target``, unscaled; the run's scale is ``traj.target["scale"]``,
 2. writes the sample list: every ``--stride``-th RGB frame where the target's semantic mask
    (class ``target``) has at least ``--min-mask-px`` pixels.
@@ -39,7 +39,7 @@ HERE = Path(__file__).resolve().parents[1]
 def parse_args(argv=None):
     ap = argparse.ArgumentParser(prog="fp_oshd.sim_prepare", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--root", default=None, help="oshd-dataset root (default: oshd-dataset's default)")
+    ap.add_argument("--root", default=None, help="dataset root (default: oshd's default)")
     ap.add_argument("--domain", default="sim_zerog")
     ap.add_argument("--task", default="docking")
     ap.add_argument("--split", default="test")
@@ -60,7 +60,7 @@ def cad_entry(traj) -> dict:
 
     path = traj.target_model_path
     if path is None or not path.exists():
-        raise SystemExit(f"{traj.name}: no target CAD in the dataset; rerun `oshd download` (oshd-dataset >= 0.5.0 "
+        raise SystemExit(f"{traj.name}: no target CAD in the dataset; rerun `oshd download` (oshd >= 0.5.0 "
                          "fetches models/sim/ with the sim data)")
     info = json.loads((path.parent / "info.json").read_text())
     m = trimesh.load(path, force="mesh", process=False)
@@ -74,13 +74,13 @@ def cad_entry(traj) -> dict:
 
 
 def build(a) -> None:
-    from oshd_dataset import OshdDataset
-    from oshd_dataset.labels import camera_pose
-    from oshd_dataset.splits import load_benchmark
+    from oshd import OshDataset
+    from oshd.labels import camera_pose
+    from oshd.splits import load_benchmark
 
     warnings.filterwarnings("ignore", message=".*real trajectories have no official split.*")
     bench = None if a.benchmark in ("", "none") else a.benchmark
-    ds = OshdDataset(a.root, benchmark=bench)
+    ds = OshDataset(a.root, benchmark=bench)
     names = [t for t in ds.split(a.split, a.domain, task=a.task) if ds[t].has("rgb")]
     if a.limit_trajectories:
         names = names[:a.limit_trajectories]

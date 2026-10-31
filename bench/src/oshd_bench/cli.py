@@ -32,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     ev = Evaluator(cfg, root)
 
     if a.cmd == "gt":
-        from oshd_dataset import MissingCalibrationError
+        from oshd import MissingCalibrationError
 
         from .gt import build_gt
 
