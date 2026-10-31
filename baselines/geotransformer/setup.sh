@@ -10,7 +10,7 @@ if [ ! -d third_party/GeoTransformer ]; then
   git clone https://github.com/qinzheng93/GeoTransformer third_party/GeoTransformer
 fi
 git -C third_party/GeoTransformer checkout -q "$GEOTR_COMMIT"
-# the crop lives in ../lidar_registration (pooh-lidar); it needs no TEASER++ here
+# the crop lives in ../lidar_registration (oshd-lidar); it needs no TEASER++ here
 uv sync -p 3.12 --inexact
 PATH="$HERE/.venv/bin:$PATH" .venv/bin/python build_ext.py
 W=weights/geotransformer-modelnet.pth.tar

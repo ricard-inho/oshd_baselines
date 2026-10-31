@@ -1,12 +1,12 @@
-# pooh_baselines
+# oshd_baselines
 
-Baselines for the POOH-D dataset paper (Tables I–III, Fig. 1). This is the mother repo:
+Baselines for the OSHD dataset paper (Tables I–III, Fig. 1). This is the mother repo:
 
-* `bench/` is the shared `pooh-bench` package. It holds the evaluation sample lists with ground truth, the file formats, the metrics and the table writer.
+* `bench/` is the shared `oshd-bench` package. It holds the evaluation sample lists with ground truth, the file formats, the metrics and the table writer.
 * `baselines/<name>/` holds one baseline each. Every baseline has its **own** environment (a uv project or a Docker image), because the upstream codes need incompatible CUDA/PyTorch stacks.
 
 ```
-bench/                 pooh-bench: gt.py, metrics.py, predictions.py, flow_gt.py, evaluate.py
+bench/                 oshd-bench: gt.py, metrics.py, predictions.py, flow_gt.py, evaluate.py
 configs/bench.yaml     which predictions fill which table cell, metric settings, Fig. 1 bins
 baselines/
   detector/            Mask R-CNN target detector (sim -> ZS, + real -> FT), feeds the model-based methods
@@ -25,24 +25,24 @@ results/               gt/, predictions/, detections/, replay/, flow/, tables/
 
 ## Pipeline
 
-All paper numbers use the frozen benchmark **`benchmark_v1`** of pooh-dataset (≥ 1.0.0, from
+All paper numbers use the frozen benchmark **`benchmark_v1`** of oshd-dataset (≥ 1.0.0, from
 TestPyPI): the data of Hub revision `8205a11` (2195 sim + 3 real trajectories) and its fixed train
 / test split. `configs/bench.yaml` (`dataset.benchmark: v1`) makes every `ds.split()` of the
 bench and the baselines use it. Download its data with `--benchmark v1`, which pins the
-revision. Daily uploads after the freeze don't change it. pooh-dataset 1.0.0 also has
+revision. Daily uploads after the freeze don't change it. oshd-dataset 1.0.0 also has
 **`benchmark_v2`**, the final collection (Hub `df3530b`: 6413 sim + 92 real trajectories with the
 real mockups); it contains v1 with the same splits. Switch with `dataset.benchmark: v2`.
 
 ```bash
-cd bench && uv sync && cd ..                  # pooh-dataset 1.0.0 from TestPyPI
-uv run --project bench pooh download --benchmark v1 --domain all   # or narrow: -m ..., --split, --task
-uv run --project bench pooh splits --benchmark v1
-uv run --project bench pooh-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet
+cd bench && uv sync && cd ..                  # oshd-dataset 1.0.0 from TestPyPI
+uv run --project bench oshd download --benchmark v1 --domain all   # or narrow: -m ..., --split, --task
+uv run --project bench oshd splits --benchmark v1
+uv run --project bench oshd-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet
 # per baseline: see baselines/<name>/README.md  (setup.sh, then train / predict)
-uv run --project bench pooh-bench eval        # results/tables/*.csv|json|tex|dat
+uv run --project bench oshd-bench eval        # results/tables/*.csv|json|tex|dat
 ```
 
-`pooh-bench eval` writes one file per table or figure panel:
+`oshd-bench eval` writes one file per table or figure panel:
 
 | file | contents |
 |---|---|
@@ -56,9 +56,9 @@ The `.tex` files are table bodies in the template's row order, with `\tbd` where
 
 ## Definitions
 
-* **Ground truth.** The pose is `T_sensor_model` = inv(T_world_ref · T_ref_sensor) · T_world_cubesat · T_body_model. It comes from mocap, the rig calibration and `models/objects.yaml`, through `pooh_dataset.labels`.
+* **Ground truth.** The pose is `T_sensor_model` = inv(T_world_ref · T_ref_sensor) · T_world_cubesat · T_body_model. It comes from mocap, the rig calibration and `models/objects.yaml`, through `oshd_dataset.labels`.
 * **Samples.** For cameras, every frame where the cube projects into the image. For the lidar, every scan where the cube is inside the Mid-360 field of view and range. For events, reference times at 20 Hz, each using the events in `[t − 50 ms, t)`.
-* **Errors.** Rotation errors are minimised over the cube's 24 rotational symmetries. Translation errors are measured at the cube centre, which every symmetric pose maps to the same point (`bench/src/pooh_bench/symmetry.py`).
+* **Errors.** Rotation errors are minimised over the cube's 24 rotational symmetries. Translation errors are measured at the cube centre, which every symmetric pose maps to the same point (`bench/src/oshd_bench/symmetry.py`).
 * **SPEED score.** `e_t/‖t_gt‖ + e_q[rad]`, with the SPEED+ precision thresholds.
 * **ADD(-S) AUC.** Uses thresholds from 0 to 10 cm. Frames without a prediction count as failures.
 * **Coverage.** The fraction of samples with a prediction. e_t, e_q and S are averaged over the predicted samples, so always read them together with coverage.
@@ -81,9 +81,9 @@ The `.tex` files are table bodies in the template's row order, with `\tbd` where
 Every `baselines/<name>/` provides:
 
 1. A `README.md` covering: the upstream repo and pinned commit, the licence, where the weights come from, and the exact commands.
-2. An environment: either `pyproject.toml` (a uv project that depends on `pooh-bench` through a path source) or a `Dockerfile` with `docker/run.sh`. The Docker option mounts the repo, the dataset and `results/`.
+2. An environment: either `pyproject.toml` (a uv project that depends on `oshd-bench` through a path source) or a `Dockerfile` with `docker/run.sh`. The Docker option mounts the repo, the dataset and `results/`.
 3. A `setup.sh` that clones upstream code into `third_party/` at a pinned commit and downloads weights into `weights/`. Both folders are gitignored.
-4. Entry points to `train` (for ZS and FT, where applicable) and to `predict --setting ZS|FT --split test --domain real|synthetic [--limit N]`. `predict` writes through `pooh_bench.PoseWriter` to `prediction_path(results_dir(), <modality>, <method>, <setting>, <domain>, <split>)`.
+4. Entry points to `train` (for ZS and FT, where applicable) and to `predict --setting ZS|FT --split test --domain real|synthetic [--limit N]`. `predict` writes through `oshd_bench.PoseWriter` to `prediction_path(results_dir(), <modality>, <method>, <setting>, <domain>, <split>)`.
 
 The GT sample lists in `results/gt/` define exactly which samples to run on. Inference code must **never** read the `T` column; only training code on the train split may.
 
@@ -91,8 +91,8 @@ The GT sample lists in `results/gt/` define exactly which samples to run on. Inf
 
 ```bash
 uv run --project bench python scripts/make_dev_dataset.py
-export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
-uv run --project bench pooh-bench gt
+export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+uv run --project bench oshd-bench gt
 ```
 
 This builds a symlinked copy of the real dataset with **placeholder** extrinsics for Firefly, depth, lidar and events, and placeholder event-camera intrinsics. It also marks trajectory_008 as "synthetic". Use it to exercise every code path. The numbers it produces are meaningless.

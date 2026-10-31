@@ -17,7 +17,7 @@
   "input": "sim rgb + depth, pinhole K",
   "runtime": "register() only",
   "prepare": {
-    "dataset_root": "/home/ricard/.cache/pooh_dataset/r3m3c3--off_test",
+    "dataset_root": "/home/ricard/.cache/oshd_dataset/r3m3c3--off_test",
     "domain": "sim_zerog",
     "task": "docking",
     "split": "test",

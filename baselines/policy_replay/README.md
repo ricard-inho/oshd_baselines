@@ -9,7 +9,7 @@ rebuild check, ‖a_replay(mocap) − a_logged‖₂ (the `delta_a` column of `m
 reported once next to the table (`mean_delta_a_vs_logged` in `table2_replay.csv`).
 
 * **Upstream.** None. The code is written here.
-* **Weights.** `exported/policy.onnx` from `pooh_training/2026-09-22_17-01-14_ppo_Pingu_GoThroughPoses_rsl_rl_seed_42`. It is identical to `model_7999.pt`. Licence: that of the training repo (rans_v2_priv, private).
+* **Weights.** `exported/policy.onnx` from `oshd_training/2026-09-22_17-01-14_ppo_Pingu_GoThroughPoses_rsl_rl_seed_42`. It is identical to `model_7999.pt`. Licence: that of the training repo (rans_v2_priv, private).
 * **Environment.** A uv project that runs onnxruntime on the CPU.
 
 ## Commands
@@ -21,7 +21,7 @@ uv run policy-replay all                     # mocap row + best (lowest S_real) 
                                              # read from results/tables/table1_pose.csv
 uv run policy-replay all --source rgb=rgb_firefly/spnv2/FT   # pin a row
 uv run policy-replay run --key lidar --source lidar/geotransformer/FT [--latency]
-cd ../.. && uv run --project bench pooh-bench eval           # fills table2_replay.csv/.tex
+cd ../.. && uv run --project bench oshd-bench eval           # fills table2_replay.csv/.tex
 ```
 
 Outputs:
@@ -43,7 +43,7 @@ The policy runs on the `test` split of the real domain (`--split`, `--domain`).
 Smoke test on the dev dataset, with **fake** estimators (GT + noise + a random cube symmetry):
 
 ```bash
-export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
+export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 uv run policy-replay fake-predictions --modality rgb_realsense --symmetric   # method FAKE_gt_noise
 uv run policy-replay run --key rgb --source rgb_realsense/FAKE_gt_noise/ZS
 ```

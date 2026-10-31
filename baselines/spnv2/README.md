@@ -1,4 +1,4 @@
-# SPNv2 on POOH-D (`spnv2`, Table I rows RGB Firefly / RGB RealSense)
+# SPNv2 on OSHD (`spnv2`, Table I rows RGB Firefly / RGB RealSense)
 
 * **Upstream:** https://github.com/tpark94/spnv2, pinned at commit
   `debee80c43f226a22dce857b0a136de62e9e939d` (2024-09-22). Paper: Park & D'Amico, *Robust
@@ -20,7 +20,7 @@
 
 This is a uv project. It uses Python 3.10–3.11 and torch 2.5.1+cu124. Upstream targets Python 3.7 and torch 1.10, but its code runs unmodified here, with `albumentations==1.1.0` pinned as upstream does. The only side effect is deprecation warnings.
 
-**No upstream file is patched.** The pieces that had to differ live in `src/spnv2_pooh/`:
+**No upstream file is patched.** The pieces that had to differ live in `src/spnv2_oshd/`:
 
 * A `SPEEDPLUSDataset` subclass derives the image and mask folder names from the input size. Upstream hard-codes `images_768x512_RGB`; see the `TODO` there.
 * The train loop is a short single-GPU driver around upstream's `build_spnv2`, `do_train`, `get_optimizer`, `adjust_learning_rate` and `get_scaler`. Upstream's `tools/train.py` is DDP plus validation on the SPEED+ splits.
@@ -31,7 +31,7 @@ This is a uv project. It uses Python 3.10–3.11 and torch 2.5.1+cu124. Upstream
 
 ## Data conversion (`spnv2-convert`, run automatically by `spnv2-train`)
 
-The converter turns pooh-dataset data into a SPEED+-style folder under `work/spnv2/<dataset>/data/speedplus_<sensor>/`. The CSV format is upstream's `tools/preprocess.py` output.
+The converter turns oshd-dataset data into a SPEED+-style folder under `work/spnv2/<dataset>/data/speedplus_<sensor>/`. The CSV format is upstream's `tools/preprocess.py` output.
 
 * **Virtual camera.** Every frame is undistorted and resampled into a fixed pinhole camera per sensor. The result is written as grayscale × 3, following upstream's preprocessing.
   * `firefly`: 3072×2048 → ×0.25 → **768×512**, upstream's input size. The image is area-downscaled first, then undistorted.
@@ -42,13 +42,13 @@ The converter turns pooh-dataset data into a SPEED+-style folder under `work/spn
   * 8 keypoints: the cube-body corners from `objects.yaml`.
   * q and t of `T_cam_net`, where the "net" frame is the CAD frame shifted to the cube centre, c = (0, 0.05, 0). In this frame the symmetries are pure rotations, so t does not depend on which of the 24 equivalent poses is chosen.
   * The bounding box, from the projected mesh.
-  * A mask from `pooh_dataset.labels.render_mask`, at 1/4 resolution.
+  * A mask from `oshd_dataset.labels.render_mask`, at 1/4 resolution.
 * **Symmetry (24-fold cube).** Labels are **canonicalised**:
   * For each ground-truth pose, the converter picks the equivalent `T·S_k` whose rotation, expressed in the viewing-ray (allocentric) frame, is closest to a fixed reference `R_ref`.
   * `R_ref` is the chordal mean of the ZS training orientations on SO(3)/cube (`canon.json`). It is placed at the centre of the data so few samples lie near a cell boundary.
   * Corner identities therefore follow the image appearance. Both the heatmap targets and the regression target use the same canonical pose.
   * Near cell boundaries (±45° in the dominant yaw) identities flip. That is inherent to the approach, and RANSAC absorbs some of it.
-  * Evaluation is symmetry-aware (pooh-bench), so whichever equivalent is predicted is fine.
+  * Evaluation is symmetry-aware (oshd-bench), so whichever equivalent is predicted is fine.
 * Delete `work/spnv2/<dataset>/data` to regenerate the data, for example after a `--limit` smoke run fixed `canon.json` from only a few samples.
 
 ## Model / training
@@ -79,9 +79,9 @@ This is the full SPNv2 configuration from upstream's `experiments/offline_train_
 ## Commands
 
 ```bash
-cd /home/ricard/pooh_baselines
+cd /home/ricard/oshd_baselines
 baselines/spnv2/setup.sh
-# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
+# (dev) export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 P="uv run --project baselines/spnv2"
 L="flock work/gpu.lock"
 for S in firefly realsense_color; do
@@ -90,7 +90,7 @@ for S in firefly realsense_color; do
   for SET in ZS FT; do $L $P spnv2-predict --sensor $S --setting $SET --domain real --split test; done
   $L $P spnv2-predict --sensor $S --setting ZS --domain synthetic --split test   # S_sim
 done
-uv run --project bench pooh-bench eval
+uv run --project bench oshd-bench eval
 ```
 
 Useful flags:
@@ -107,7 +107,7 @@ Run on the dev dataset (2026-09-28). The numbers are meaningless: placeholder Fi
 * **FT.** 100 iterations on real trajectory_007, starting from the ZS checkpoint.
 * **Predict.** `--limit 100` on real test trajectory_009 for ZS and FT, for both sensors.
 * **ODR.** `--odr --odr-samples 32` on RealSense FT, which writes `FT_ODR`.
-* **Eval.** `pooh-bench eval` fills the four `spnv2` rows (coverage 100/1296 and 100/526, about 45 Hz).
+* **Eval.** `oshd-bench eval` fills the four `spnv2` rows (coverage 100/1296 and 100/526, about 45 Hz).
   * S_sim is empty because the dev dataset has no synthetic *test* split. `predict` then prints "nothing to predict" and writes no file.
 * **Heatmap PnP check.** After this little training the heatmaps are still flat (peaks around 0.05), so every pose came from the regression fallback.
   * PnP on ideal heatmaps generated from the training labels gives 0.1–1.7° and 0.1–0.3 cm. This confirms the keypoint, quaternion and canonical-frame conventions end to end.

@@ -23,8 +23,8 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 
 from .common import (
-    SENSORS,
     _DS,
+    SENSORS,
     build_model,
     checkpoint_path,
     gt_mask,

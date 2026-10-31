@@ -19,7 +19,7 @@ EDGES = [(0, 1), (0, 2), (1, 3), (2, 3), (4, 5), (4, 6), (5, 7), (6, 7), (0, 4),
 
 
 def _edges(draw, intr, T, kp, color, width):
-    from pooh_dataset.geometry import transform_points
+    from oshd_dataset.geometry import transform_points
 
     # sample each edge densely so the (distorted) projection is drawn as a curve
     for i, j in EDGES:
@@ -41,18 +41,18 @@ def main(argv=None) -> int:
     ap.add_argument("--out", default=None, help="default <repo>/work/debug/megapose")
     a = ap.parse_args(argv)
 
-    import pooh_bench
-    from pooh_bench import gt_path, prediction_path
-    from pooh_dataset.labels import render_mask
+    import oshd_bench
+    from oshd_bench import gt_path, prediction_path
+    from oshd_dataset.labels import render_mask
 
     m = MODALITIES[a.modality]
-    ds = pooh_bench.open_dataset()
-    res = pooh_bench.results_dir()
+    ds = oshd_bench.open_dataset()
+    res = oshd_bench.results_dir()
     pred = pd.read_parquet(prediction_path(res, a.modality, m["method"], a.setting, a.domain, a.split))
     gt = pd.read_parquet(gt_path(res, m["sensor"], a.domain, a.split))
     df = pred.merge(gt[["trajectory", "t_ns", "object", "index", "T"]].rename(columns={"T": "T_gt"}),
                     on=["trajectory", "t_ns", "object"])
-    out = Path(a.out) if a.out else pooh_bench.repo_root() / "work" / "debug" / "megapose"
+    out = Path(a.out) if a.out else oshd_bench.repo_root() / "work" / "debug" / "megapose"
     out.mkdir(parents=True, exist_ok=True)
     frames = None
     if m["sensor"] == "events":

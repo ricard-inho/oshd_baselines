@@ -9,7 +9,7 @@ are, with no retraining. For the E2VID + MegaPose row, ZS/FT is the detector's t
 | | |
 |---|---|
 | Upstream | https://github.com/uzh-rpg/rpg_e2vid, commit `d0a7c005f460f2422f2a4bf605f70820ea7a1e5f` (2019-12-29), cloned into `third_party/` by `setup.sh` (not vendored) |
-| Licence | GPL-3.0 (upstream code). Our wrapper `src/e2vid_pooh/` only imports it at runtime |
+| Licence | GPL-3.0 (upstream code). Our wrapper `src/e2vid_oshd/` only imports it at runtime |
 | Weights | `E2VID_lightweight.pth.tar` from the upstream README: https://rpg.ifi.uzh.ch/data/E2VID/models/E2VID_lightweight.pth.tar (sha256 `4cfeb2c850bf48fc9fa907e969cb8a04e3c51314da2d65bdb81145ac96574128`), saved to `weights/` |
 | Paper | Rebecq et al., "High Speed and High Dynamic Range Video with an Event Camera", TPAMI 2019 |
 | Env | uv project (Python 3.12, torch 2.6.0+cu124) |
@@ -50,12 +50,12 @@ The sample lists' `T` column is never read.
 ## Commands
 
 ```bash
-cd /home/ricard/pooh_baselines
+cd /home/ricard/oshd_baselines
 ./baselines/e2vid/setup.sh
-# dev: export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
+# dev: export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 cd baselines/e2vid
-flock ../../work/gpu.lock uv run python -m e2vid_pooh.reconstruct --all          # every gt/events/*.parquet (train + test)
-flock ../../work/gpu.lock uv run python -m e2vid_pooh.reconstruct --domain real --split test [--limit N]
+flock ../../work/gpu.lock uv run python -m e2vid_oshd.reconstruct --all          # every gt/events/*.parquet (train + test)
+flock ../../work/gpu.lock uv run python -m e2vid_oshd.reconstruct --domain real --split test [--limit N]
 ```
 
 Options: `--mode count|duration`, `--num-events-per-pixel 0.35`, `--window-events N`,

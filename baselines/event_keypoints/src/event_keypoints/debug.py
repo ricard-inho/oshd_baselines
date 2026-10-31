@@ -28,15 +28,15 @@ def main(argv=None):
     ap.add_argument("--n", type=int, default=4)
     ap.add_argument("--out", default=None)
     a = ap.parse_args(argv)
-    import pooh_bench
-    from pooh_dataset.events import voxel_grid
+    import oshd_bench
+    from oshd_dataset.events import voxel_grid
 
-    res = pooh_bench.results_dir()
-    df = C.read_samples(pooh_bench.gt_path(res, "events", a.domain, a.split), with_pose=True)
+    res = oshd_bench.results_dir()
+    df = C.read_samples(oshd_bench.gt_path(res, "events", a.domain, a.split), with_pose=True)
     df = df.iloc[np.linspace(0, len(df) - 1, a.n).astype(int)]
     est = Estimator(CKPT_DIR / f"{a.setting}.pt")
     ds = C.get_dataset()
-    out = Path(a.out or pooh_bench.repo_root() / "work" / "debug" / "events" / "event_keypoints")
+    out = Path(a.out or oshd_bench.repo_root() / "work" / "debug" / "events" / "event_keypoints")
     out.mkdir(parents=True, exist_ok=True)
     for r in df.itertuples():
         traj = ds[r.trajectory]
@@ -46,7 +46,7 @@ def main(argv=None):
         T = C.canonical_pose(np.asarray(r.T, float).reshape(4, 4), C.symmetry(obj))
         gt_uv, _ = intr.project((T[:3, :3] @ kp3.T).T + T[:3, 3])
         ev = C.load_window(traj, r.t_ns)
-        from pooh_dataset.events import Events
+        from oshd_dataset.events import Events
 
         vg = voxel_grid(Events(ev[2], ev[0].astype(np.uint16), ev[1].astype(np.uint16), ev[3]), C.NUM_BINS,
                         t_start_ns=int(r.t_ns) - int(C.WINDOW_MS * 1e6), t_end_ns=int(r.t_ns)).sum(0)

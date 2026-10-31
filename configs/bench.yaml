@@ -1,11 +1,11 @@
-# POOH-D benchmark configuration: which predictions fill which table cell, metric settings
+# OSHD benchmark configuration: which predictions fill which table cell, metric settings
 # and the condition-analysis bins. Paths are relative to the repo root.
 
 dataset:
-  root: null            # null = pooh-dataset's default cache (~/.cache/pooh_dataset/<repo>)
+  root: null            # null = oshd-dataset's default cache (~/.cache/oshd_dataset/<repo>)
   repo_id: r3m3c3/off_test
-  # Frozen split for the paper: pooh-dataset's benchmark_v1 (Hub revision 8205a11, its train /
-  # test lists). Download its data with `pooh download --benchmark v1 ...`. $POOH_BENCHMARK
+  # Frozen split for the paper: oshd-dataset's benchmark_v1 (Hub revision 8205a11, its train /
+  # test lists). Download its data with `oshd download --benchmark v1 ...`. $OSHD_BENCHMARK
   # overrides it ("none": the dataset's own splits.json, e.g. the dev dataset).
   benchmark: v1
 results_dir: results
@@ -20,7 +20,7 @@ metrics:
   add_auc_max_m: 0.10                   # PoseCNN / YCB-Video convention (10 cm)
   add_model_points: 1000
 
-sampling:                               # used by `pooh-bench gt`
+sampling:                               # used by `oshd-bench gt`
   stride: {firefly: 1, realsense_color: 1, lidar: 1, events: 1}
   events_rate_hz: 20
   events_window_ms: 50

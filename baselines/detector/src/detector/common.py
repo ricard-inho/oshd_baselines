@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from oshd_bench import load_config, open_dataset, repo_root, results_dir
 from PIL import Image
-from pooh_bench import load_config, open_dataset, repo_root, results_dir
 
 HERE = Path(__file__).resolve().parents[2]          # baselines/detector
 WEIGHTS = HERE / "weights"
@@ -54,7 +54,10 @@ def coco_init_weights() -> str:
 
 def build_model(sensor: str, num_classes: int, coco_init: bool = True):
     """torchvision Mask R-CNN R50-FPN v2 with fresh box / mask heads for ``num_classes`` (+bg)."""
-    from torchvision.models.detection import MaskRCNN_ResNet50_FPN_V2_Weights, maskrcnn_resnet50_fpn_v2
+    from torchvision.models.detection import (
+        MaskRCNN_ResNet50_FPN_V2_Weights,
+        maskrcnn_resnet50_fpn_v2,
+    )
     from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
     from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
@@ -84,7 +87,7 @@ def sample_list(sensor: str, domain: str, split: str, with_pose: bool, limit: in
     """The GT sample list. ``with_pose=False`` (inference) never reads the ``T`` column."""
     p = results_dir() / "gt" / sensor / f"{domain}_{split}.parquet"
     if not p.exists():
-        raise SystemExit(f"{p} missing: run `uv run --project bench pooh-bench gt`")
+        raise SystemExit(f"{p} missing: run `uv run --project bench oshd-bench gt`")
     cols = ["trajectory", "index", "t_ns", "object"] + (["T"] if with_pose else [])
     df = pd.read_parquet(p, columns=cols).sort_values(["trajectory", "t_ns"], kind="stable")
     if limit:
@@ -100,7 +103,7 @@ def e2vid_frame_path(domain: str, split: str, trajectory: str, t_ns: int) -> Pat
 
 def sensor_size(ds, sensor: str, trajectory: str) -> tuple[int, int]:
     if sensor == "events":
-        from pooh_dataset.events import EVENT_SENSOR_SIZE
+        from oshd_dataset.events import EVENT_SENSOR_SIZE
 
         return EVENT_SENSOR_SIZE[1], EVENT_SENSOR_SIZE[0]
     return ds[trajectory].calibration.intrinsics(sensor).size
@@ -127,7 +130,7 @@ def to_input(img: np.ndarray, sensor: str) -> np.ndarray:
 def gt_mask(ds, sensor: str, trajectory: str, t_ns: int, obj_name: str, T: np.ndarray,
             size: tuple[int, int]) -> np.ndarray:
     """Rendered (CAD + GT pose, distorted projection) silhouette at image size ``size`` (W, H), cached."""
-    from pooh_dataset.labels import render_mask
+    from oshd_dataset.labels import render_mask
 
     p = CACHE / "masks" / sensor / f"{size[0]}x{size[1]}" / trajectory / f"{int(t_ns)}_{obj_name}.png"
     if p.exists():

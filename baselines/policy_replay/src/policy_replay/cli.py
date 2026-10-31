@@ -20,10 +20,10 @@ GROUP_KEYS = ["rgb", "rgbd", "lidar", "events"]
 
 
 def _bench():
-    import pooh_bench
-    from pooh_bench.evaluate import load_config as load_bench_config
+    import oshd_bench
+    from oshd_bench.evaluate import load_config as load_bench_config
 
-    return pooh_bench, load_bench_config(pooh_bench.repo_root() / "configs" / "bench.yaml")
+    return oshd_bench, load_bench_config(oshd_bench.repo_root() / "configs" / "bench.yaml")
 
 
 def _block(bcfg: dict, modality: str) -> dict:
@@ -43,7 +43,7 @@ def _label(bcfg: dict, modality: str, method: str, setting: str) -> str:
 
 
 def best_sources(results, bcfg: dict) -> dict[str, str]:
-    """Lowest S_real per Table I group from ``tables/table1_pose.csv`` (``pooh-bench eval``)."""
+    """Lowest S_real per Table I group from ``tables/table1_pose.csv`` (``oshd-bench eval``)."""
     p = results / "tables" / "table1_pose.csv"
     if not p.exists():
         return {}
@@ -122,9 +122,9 @@ def cmd_verify(a) -> None:
 
 def cmd_fake(a) -> None:
     """GT poses + noise written as a clearly fake method (smoke tests; reads the GT ``T`` column)."""
-    from pooh_bench.gt import gt_poses
-    from pooh_bench.symmetry import cube_rotations
-    from pooh_dataset.geometry import rotvec_to_rotmat
+    from oshd_bench.gt import gt_poses
+    from oshd_bench.symmetry import cube_rotations
+    from oshd_dataset.geometry import rotvec_to_rotmat
 
     pb, bcfg = _bench()
     results = pb.results_dir()
@@ -195,7 +195,7 @@ def main(argv: list[str] | None = None) -> int:
             if k in src:
                 cmd_run(a, k, src[k])
             else:
-                print(f"{k}: no source (run `pooh-bench eval` first or pass --source {k}=...)", file=sys.stderr)
+                print(f"{k}: no source (run `oshd-bench eval` first or pass --source {k}=...)", file=sys.stderr)
     elif a.cmd == "verify":
         cmd_verify(a)
     elif a.cmd == "fake-predictions":

@@ -1,4 +1,4 @@
-"""MegaPose is not re-trained for POOH-D (training-free, CAD-based).
+"""MegaPose is not re-trained for OSHD (training-free, CAD-based).
 
 ZS / FT differ only in the 2D detector that initialises MegaPose (baselines/detector):
 ZS = Mask R-CNN trained on the synthetic train split, FT = additionally fine-tuned on real train.

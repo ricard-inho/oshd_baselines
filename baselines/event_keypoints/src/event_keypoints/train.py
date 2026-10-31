@@ -127,14 +127,14 @@ def main(argv=None):
     ap.add_argument("--log-every", type=int, default=50)
     a = ap.parse_args(argv)
 
-    import pooh_bench
+    import oshd_bench
 
-    res = pooh_bench.results_dir()
+    res = oshd_bench.results_dir()
     domain = "synthetic" if a.setting == "ZS" else "real"
-    paths = [pooh_bench.gt_path(res, "events", domain, "train")]
+    paths = [oshd_bench.gt_path(res, "events", domain, "train")]
     ds = EventPoseDataset(paths)
     if not len(ds):
-        raise SystemExit(f"no training samples in {paths} (run `pooh-bench gt` first)")
+        raise SystemExit(f"no training samples in {paths} (run `oshd-bench gt` first)")
     iters = a.iters or (20000 if a.setting == "ZS" else 6000)
     lr = a.lr or (5e-4 if a.setting == "ZS" else 1e-4)
     print(f"{a.setting}: {len(ds)} samples from {paths}, {iters} iters, batch {a.batch}, lr {lr}")

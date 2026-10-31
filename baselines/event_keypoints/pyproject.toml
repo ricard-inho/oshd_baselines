@@ -3,12 +3,12 @@ requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pooh-event-keypoints"
+name = "oshd-event-keypoints"
 version = "0.1.0"
-description = "Voxel-grid keypoint network (ours) for event-based pose of the POOH-D CubeSat."
+description = "Voxel-grid keypoint network (ours) for event-based pose of the OSHD CubeSat."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "torch>=2.5.1,<2.6",
     "torchvision>=0.20.1,<0.21",
     "numpy<2",
@@ -30,6 +30,6 @@ name = "pytorch-cu124"
 url = "https://download.pytorch.org/whl/cu124"
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }
 torch = { index = "pytorch-cu124" }
 torchvision = { index = "pytorch-cu124" }

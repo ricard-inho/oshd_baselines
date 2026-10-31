@@ -3,7 +3,7 @@
 #   * single GPU (no DDP / SyncBN): 4 images per batch (upstream: 4 per GPU x 4 GPUs)
 #   * NUM_KEYPOINTS 8 (cube-body corners), no style (texture) randomisation (needs a
 #     pre-stylised copy of every image; upstream makes it with a separate repo)
-#   * dataset paths / sizes are filled in by spnv2_pooh.common.build_cfg per sensor
+#   * dataset paths / sizes are filled in by spnv2_oshd.common.build_cfg per sensor
 SEED: 2021
 CUDA: True
 FP16: True

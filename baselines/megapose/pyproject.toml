@@ -3,12 +3,12 @@ requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pooh-megapose"
+name = "oshd-megapose"
 version = "0.1.0"
-description = "MegaPose (happypose) baseline for POOH-D: RGB Firefly / RealSense and E2VID frames."
+description = "MegaPose (happypose) baseline for OSHD: RGB Firefly / RealSense and E2VID frames."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "happypose[cu124,pypi]",
     "cosypose",
     "torch>=2.5.1,<2.6",
@@ -39,7 +39,7 @@ name = "pytorch-cu124"
 url = "https://download.pytorch.org/whl/cu124"
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }
 happypose = { path = "third_party/happypose", editable = true }
 cosypose = { path = "third_party/happypose/happypose/pose_estimators/cosypose", editable = true }
 bop-toolkit-lib = { git = "https://github.com/agimus-project/bop_toolkit" }

@@ -1,4 +1,4 @@
-"""MegaPose predictions for the POOH-D Table I rows (per-frame, no temporal tracking).
+"""MegaPose predictions for the OSHD Table I rows (per-frame, no temporal tracking).
 
     megapose-predict --modality rgb_realsense --setting ZS --split test --domain real [--limit N]
 
@@ -15,7 +15,14 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from .common import MODALITIES, CameraPrep, E2VIDFrames, group_detections, load_detections, load_samples
+from .common import (
+    MODALITIES,
+    CameraPrep,
+    E2VIDFrames,
+    group_detections,
+    load_detections,
+    load_samples,
+)
 
 
 def parse(argv=None):
@@ -43,8 +50,8 @@ def parse(argv=None):
 
 def main(argv=None) -> int:
     a = parse(argv)
-    import pooh_bench
-    from pooh_bench import PoseWriter, prediction_path
+    import oshd_bench
+    from oshd_bench import PoseWriter, prediction_path
 
     from .megapose import MegaPose
 
@@ -53,8 +60,8 @@ def main(argv=None) -> int:
     out_setting = a.out_setting or ("ORACLE" if a.detector == "oracle" else a.setting)
     size = tuple(int(v) for v in a.size.lower().split("x")) if a.size else m["size"]
 
-    ds = pooh_bench.open_dataset()
-    results = pooh_bench.results_dir()
+    ds = oshd_bench.open_dataset()
+    results = oshd_bench.results_dir()
     samples = load_samples(results, sensor, a.domain, a.split).iloc[::a.stride]
     if a.limit:
         samples = samples.iloc[:a.limit]

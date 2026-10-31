@@ -1,10 +1,10 @@
 [project]
-name = "spnv2-pooh"
+name = "spnv2-oshd"
 version = "0.1.0"
-description = "SPNv2 (Park & D'Amico) trained on POOH-D cube renders / real frames, as a POOH-D baseline."
+description = "SPNv2 (Park & D'Amico) trained on OSHD cube renders / real frames, as an OSHD baseline."
 requires-python = ">=3.10,<3.12"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "torch==2.5.1",
     "torchvision==0.20.1",
     "numpy>=1.23,<2",
@@ -21,19 +21,19 @@ dependencies = [
 ]
 
 [project.scripts]
-spnv2-convert = "spnv2_pooh.convert:main"
-spnv2-train = "spnv2_pooh.train:main"
-spnv2-predict = "spnv2_pooh.predict:main"
+spnv2-convert = "spnv2_oshd.convert:main"
+spnv2-train = "spnv2_oshd.train:main"
+spnv2-predict = "spnv2_oshd.predict:main"
 
 [build-system]
 requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/spnv2_pooh"]
+packages = ["src/spnv2_oshd"]
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }
 torch = { index = "pytorch-cu124" }
 torchvision = { index = "pytorch-cu124" }
 

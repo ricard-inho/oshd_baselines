@@ -6,8 +6,8 @@ import math
 from dataclasses import dataclass
 
 import numpy as np
-from pooh_dataset import Trajectory
-from pooh_dataset.geometry import quat_to_rotmat
+from oshd_dataset import Trajectory
+from oshd_dataset.geometry import quat_to_rotmat
 
 __all__ = ["PolicyLog", "load_log", "wrap", "yaw_of"]
 

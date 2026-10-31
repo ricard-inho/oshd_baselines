@@ -29,12 +29,12 @@ def set_happypose_env() -> None:
 
 
 def load_samples(results: Path, sensor: str, domain: str, split: str) -> pd.DataFrame:
-    """The sample list of ``pooh-bench gt`` without the ground-truth columns."""
-    from pooh_bench import gt_path
+    """The sample list of ``oshd-bench gt`` without the ground-truth columns."""
+    from oshd_bench import gt_path
 
     p = gt_path(results, sensor, domain, split)
     if not p.exists():
-        raise FileNotFoundError(f"{p} missing: run `uv run --project bench pooh-bench gt` first")
+        raise FileNotFoundError(f"{p} missing: run `uv run --project bench oshd-bench gt` first")
     import pyarrow.parquet as pq
 
     cols = [c for c in SAMPLE_COLUMNS if c in pq.read_schema(p).names]
@@ -43,12 +43,12 @@ def load_samples(results: Path, sensor: str, domain: str, split: str) -> pd.Data
 
 def load_detections(results: Path, sensor: str, detector: str, setting: str, domain: str,
                     split: str) -> tuple[pd.DataFrame, Path]:
-    from pooh_bench import detection_path
+    from oshd_bench import detection_path
 
     det_setting = "GT" if detector == "oracle" else setting
     p = detection_path(results, sensor, detector, det_setting, domain, split)
     if not p.exists():
-        hint = (f"uv run --project bench pooh-bench oracle-detections --sensor {sensor} --split {split} "
+        hint = (f"uv run --project bench oshd-bench oracle-detections --sensor {sensor} --split {split} "
                 f"--domain {domain}") if detector == "oracle" else "run baselines/detector predict first"
         raise FileNotFoundError(f"{p} missing ({hint})")
     return pd.read_parquet(p), p
@@ -68,14 +68,14 @@ def group_detections(det: pd.DataFrame, max_dets: int) -> dict[tuple, list]:
 @dataclass
 class Prepared:
     rgb: np.ndarray  # (H, W, 3) uint8, undistorted + resized
-    intr: object  # pooh_dataset CameraIntrinsics of ``rgb`` (pinhole, D = 0)
+    intr: object  # oshd_dataset CameraIntrinsics of ``rgb`` (pinhole, D = 0)
 
 
 class CameraPrep:
     """Raw sensor image -> undistorted, resized pinhole image (the pose stays in the sensor frame)."""
 
     def __init__(self, intr, size: tuple[int, int] | None):
-        from pooh_dataset.imaging import CameraView
+        from oshd_dataset.imaging import CameraView
 
         self.src = intr
         self.view = CameraView(intr, undistort=True, size=size)
@@ -99,7 +99,7 @@ class CameraPrep:
         """
         mask = None
         if getattr(det, "mask_rle", None):
-            from pooh_bench.predictions import rle_to_mask
+            from oshd_bench.predictions import rle_to_mask
 
             mask = rle_to_mask(det.mask_rle)
         if mask is None or not mask.any():

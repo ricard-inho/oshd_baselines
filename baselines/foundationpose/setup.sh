@@ -2,12 +2,12 @@
 # FoundationPose baseline setup: upstream code (pinned), weights, Docker image.
 #   bash baselines/foundationpose/setup.sh            # all three steps
 #   SKIP_BUILD=1 bash baselines/foundationpose/setup.sh
-#   FP_CUDA_ARCH=8.6 FP_IMAGE=pooh-foundationpose:a1b694b-sm86 bash baselines/foundationpose/setup.sh   # RTX 3090
+#   FP_CUDA_ARCH=8.6 FP_IMAGE=oshd-foundationpose:a1b694b-sm86 bash baselines/foundationpose/setup.sh   # RTX 3090
 #   (FP_CUDA_ARCH: compute capability of the GPU, `nvidia-smi --query-gpu=compute_cap --format=csv`)
 set -euo pipefail
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 COMMIT=a1b694b83e633c2cb6115b9063d940a687759392   # NVlabs/FoundationPose main, 2026-04-29
-IMAGE=${FP_IMAGE:-pooh-foundationpose:a1b694b}
+IMAGE=${FP_IMAGE:-oshd-foundationpose:a1b694b}
 
 # 1. upstream code
 mkdir -p "$HERE/third_party" "$HERE/weights"

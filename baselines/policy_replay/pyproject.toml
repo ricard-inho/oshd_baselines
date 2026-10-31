@@ -1,10 +1,10 @@
 [project]
-name = "pooh-policy-replay"
+name = "oshd-policy-replay"
 version = "0.1.0"
-description = "Table II: frozen PPO policy replayed on estimator-substituted observations (POOH-D)."
+description = "Table II: frozen PPO policy replayed on estimator-substituted observations (OSHD)."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "onnxruntime>=1.17",
     "numpy>=1.23",
     "pandas>=2.0",
@@ -22,4 +22,4 @@ build-backend = "hatchling.build"
 packages = ["src/policy_replay"]
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }

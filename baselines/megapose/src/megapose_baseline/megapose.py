@@ -16,7 +16,10 @@ class MegaPose:
                  so3_stride: int = 1, device: str = "cuda"):
         set_happypose_env()
         import torch
-        from happypose.toolbox.datasets.object_dataset import RigidObject, RigidObjectDataset
+        from happypose.toolbox.datasets.object_dataset import (
+            RigidObject,
+            RigidObjectDataset,
+        )
         from happypose.toolbox.utils.load_model import NAMED_MODELS, load_named_model
 
         self.torch = torch

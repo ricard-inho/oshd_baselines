@@ -29,7 +29,7 @@ Boxes and masks are always reported in **full-resolution raw (distorted) sensor 
 
 Training uses the GT sample lists `results/gt/<sensor>/<domain>_train.parquet`. Only the
 training code reads the `T` column, and only on train splits. For each sample, the CAD
-silhouette (`pooh_dataset.labels.render_mask`, which uses the sensor's distortion) is
+silhouette (`oshd_dataset.labels.render_mask`, which uses the sensor's distortion) is
 rendered from the GT pose at the network input resolution. Its tight box becomes the box
 label. Samples with fewer than 20 mask pixels are used as negatives. Rendered masks are
 cached in `cache/masks/` (set `DETECTOR_CACHE` to move them).
@@ -41,10 +41,10 @@ and a cosine schedule. The defaults are 12 epochs at lr 0.02 (ZS) and 6 epochs a
 
 ## Output
 
-`predict` writes through `pooh_bench.DetectionWriter` to
+`predict` writes through `oshd_bench.DetectionWriter` to
 `results/detections/<sensor>/maskrcnn/<ZS|FT>/<domain>_<split>.parquet`. The columns are
 trajectory, sensor, t_ns, object, box (xyxy), score, mask_rle (COCO uncompressed RLE; decode
-with `pooh_bench.predictions.rle_to_mask`) and runtime_ms.
+with `oshd_bench.predictions.rle_to_mask`) and runtime_ms.
 
 * Each sample of the GT list gets its top-1 detection with score ≥ 0.05 (`--topk`, `--min-score`). Samples without a detection get no row.
 * `runtime_ms` covers the detector only: resize, network and mask upsampling. It excludes JPEG/PNG decoding and E2VID. The pose methods add their own time, and for events the E2VID `runtime_ms` from `results/e2vid/<domain>_<split>/index.parquet` as well.
@@ -53,9 +53,9 @@ with `pooh_bench.predictions.rle_to_mask`) and runtime_ms.
 ## Commands
 
 ```bash
-cd /home/ricard/pooh_baselines
+cd /home/ricard/oshd_baselines
 ./baselines/detector/setup.sh
-# dev: export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
+# dev: export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 # events only: first run baselines/e2vid (reconstruct --all) so the train + test frames exist
 cd baselines/detector
 L="flock ../../work/gpu.lock"

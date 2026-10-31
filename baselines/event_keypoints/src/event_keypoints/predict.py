@@ -97,10 +97,10 @@ def main(argv=None):
     ap.add_argument("--ckpt", default=None, help="default weights/trained/<setting>.pt")
     a = ap.parse_args(argv)
 
-    import pooh_bench
+    import oshd_bench
 
-    res = pooh_bench.results_dir()
-    gp = pooh_bench.gt_path(res, "events", a.domain, a.split)
+    res = oshd_bench.results_dir()
+    gp = oshd_bench.gt_path(res, "events", a.domain, a.split)
     if not gp.exists():
         print(f"no sample list {gp}: nothing to do")
         return 0
@@ -111,8 +111,8 @@ def main(argv=None):
     ckpt = Path(a.ckpt) if a.ckpt else CKPT_DIR / f"{a.setting}.pt"
     est = Estimator(ckpt)
     ds = C.get_dataset()
-    out = pooh_bench.prediction_path(res, "events", "event_keypoints", a.setting, a.domain, a.split)
-    w = pooh_bench.PoseWriter(out, {"method": "event_keypoints", "setting": a.setting, "checkpoint": str(ckpt),
+    out = oshd_bench.prediction_path(res, "events", "event_keypoints", a.setting, a.domain, a.split)
+    w = oshd_bench.PoseWriter(out, {"method": "event_keypoints", "setting": a.setting, "checkpoint": str(ckpt),
                                     "voxel_bins": C.NUM_BINS, "window_ms": C.WINDOW_MS,
                                     "runtime": "GPU voxelisation + stage A + crop + stage B + EPnP/RANSAC + LM "
                                                "(events already in memory; parquet read excluded)"})

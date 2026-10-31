@@ -2,7 +2,7 @@
 
 This baseline fills Table I, LiDAR row, method `fpfh_teaser_icp`, setting **ZS** only, because it is training-free. The modality and sensor are both `lidar` (Livox Mid-360). The output pose is `T_lidar_model` in the CubeSat_U1 CAD frame.
 
-The package `pooh_lidar` also holds the **shared target crop** that `baselines/geotransformer` uses (as the path dependency `pooh-lidar`).
+The package `oshd_lidar` also holds the **shared target crop** that `baselines/geotransformer` uses (as the path dependency `oshd-lidar`).
 
 | | |
 |---|---|
@@ -15,10 +15,10 @@ The package `pooh_lidar` also holds the **shared target crop** that `baselines/g
 
 ```bash
 cd baselines/lidar_registration && ./setup.sh && cd ../..
-# (dev) export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
+# (dev) export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 uv run --project baselines/lidar_registration lidar-reg-predict --setting ZS --domain real --split test
 uv run --project baselines/lidar_registration lidar-reg-predict --setting ZS --domain synthetic --split test
-uv run --project bench pooh-bench eval
+uv run --project bench oshd-bench eval
 # diagnostics (these read GT, so they are never part of a result)
 uv run --project baselines/lidar_registration lidar-reg-predict --crop oracle     # -> setting ZS-oracle
 uv run --project baselines/lidar_registration lidar-stats --domain real --split test  # points on the cube per scan
@@ -27,7 +27,7 @@ uv run --project baselines/lidar_registration lidar-viz --setting ZS --n 8      
 
 `uv run` keeps the source-built TEASER++. A plain `uv sync` would remove it, because it is not in the lock file. Use `uv sync --inexact`, or rerun `setup.sh`.
 
-## Pipeline (`src/pooh_lidar/`)
+## Pipeline (`src/oshd_lidar/`)
 
 1. **Crop** (`crop.py`, `TargetCropper`). It is training-free and never reads GT. `runtime_ms` includes it.
    * **Gate** on range (0.15–2.0 m) and on height along gravity (−0.25 to +0.12 m relative to the lidar). Gravity is the mean accelerometer direction of the Mid-360's IMU over the trajectory, so it comes from sensor data only. The height band is the known lab geometry: chaser and cube both float on the same flat table.
@@ -38,7 +38,7 @@ uv run --project baselines/lidar_registration lidar-viz --setting ZS --n 8      
    * **Grow** the chosen cluster by 2 cm back into the gated cloud.
 
    Why no background model? The cube is static in the world, so a per-trajectory world-frame background model would absorb the cube itself.
-2. **Model cloud.** 20k area-uniform CAD samples (`pooh_bench.flow_gt.surface_points`), downsampled on a 1 cm voxel grid, with normals.
+2. **Model cloud.** 20k area-uniform CAD samples (`oshd_bench.flow_gt.surface_points`), downsampled on a 1 cm voxel grid, with normals.
 3. **Correspondences.** FPFH (5 cm radius). Each scan point takes its 5 feature-space nearest neighbours on the model, capped at the 400 best matches.
 4. **TEASER++.** Noise bound 2 cm, GNC-TLS rotation, heuristic max clique (`PMC_HEU`). On a 10 cm object almost every pair of correspondences is consistent at 2 cm. The inlier graph is then dense, and the exact max clique took up to 20 s per scan.
 5. **ICP** (point-to-plane, 3 cm) from the TEASER++ result and 6 centroid-based starts. The winner is the solution whose cube centre lies *behind* the observed surface (a visibility check), then the one with the best fitness. The cube symmetry needs no special handling, because the metrics are symmetry-aware.
@@ -51,7 +51,7 @@ The lidar extrinsic in `work/dev_dataset` is a placeholder, and it is about 180�
 
 `lidar-extrinsic` fits a dev-only `T_body_lidar` from the cube itself. It uses a Kabsch fit of the cube-cluster centroids to the mocap cube track, then a robust point-to-box refinement. The median point-to-box distance is 0.64 cm. It also makes the world-frame scan-to-scan consistency 2.7 cm instead of 14 cm.
 
-The fit is written into a copy of the dev dataset, `work/lidar_dev/dataset`, with GT in `work/lidar_dev/results`. The real dataset is never touched. The real dataset has no lidar extrinsic yet, so `pooh-bench gt` skips the lidar there.
+The fit is written into a copy of the dev dataset, `work/lidar_dev/dataset`, with GT in `work/lidar_dev/results`. The real dataset is never touched. The real dataset has no lidar extrinsic yet, so `oshd-bench gt` skips the lidar there.
 
 Points within 2 cm of the GT cube surface per scan (`lidar-stats`; scans are about 17k points):
 

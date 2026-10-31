@@ -28,12 +28,12 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, default=None)
     a = ap.parse_args(argv)
 
-    import pooh_bench
-    from pooh_bench.sensors import events_window
-    from pooh_dataset.events import event_histogram
+    import oshd_bench
+    from oshd_bench.sensors import events_window
+    from oshd_dataset.events import event_histogram
 
-    ds = pooh_bench.open_dataset()
-    s = load_samples(pooh_bench.results_dir(), "events", a.domain, a.split)
+    ds = oshd_bench.open_dataset()
+    s = load_samples(oshd_bench.results_dir(), "events", a.domain, a.split)
     s = s.drop_duplicates(["trajectory", "t_ns"])
     if a.limit:
         s = s.iloc[:a.limit]

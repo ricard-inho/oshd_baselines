@@ -2,7 +2,7 @@
 
 Conventions
 -----------
-* Image coordinates follow OpenCV / pooh-dataset (pixel centres at integers). Crops are
+* Image coordinates follow OpenCV / oshd-dataset (pixel centres at integers). Crops are
   axis-aligned squares ``(cx, cy, side)`` in full-resolution event-camera pixels.
 * Keypoints (model frame, metres): the 8 cube-body corners of ``models/objects.yaml``
   followed by the symmetry centre (0, 0.05, 0).
@@ -38,16 +38,16 @@ R_REF = np.eye(3)
 
 # --------------------------------------------------------------------------- dataset
 def dataset_and_results():
-    import pooh_bench
+    import oshd_bench
 
-    return pooh_bench.open_dataset(), pooh_bench.results_dir()
+    return oshd_bench.open_dataset(), oshd_bench.results_dir()
 
 
 @lru_cache(maxsize=1)
-def _dataset_cached(pid: int):  # one PoohDataset per process (DataLoader workers)
-    import pooh_bench
+def _dataset_cached(pid: int):  # one OshdDataset per process (DataLoader workers)
+    import oshd_bench
 
-    return pooh_bench.open_dataset()
+    return oshd_bench.open_dataset()
 
 
 def get_dataset():
@@ -55,9 +55,9 @@ def get_dataset():
 
 
 def bench_cfg() -> dict:
-    import pooh_bench
+    import oshd_bench
 
-    return pooh_bench.load_config(pooh_bench.repo_root() / "configs" / "bench.yaml")
+    return oshd_bench.load_config(oshd_bench.repo_root() / "configs" / "bench.yaml")
 
 
 def object_keypoints(obj) -> np.ndarray:
@@ -68,7 +68,7 @@ def object_keypoints(obj) -> np.ndarray:
 
 
 def symmetry(obj):
-    from pooh_bench import symmetry_for
+    from oshd_bench import symmetry_for
 
     return symmetry_for(obj, bench_cfg().get("symmetries", {}).get(obj.name))
 
@@ -96,7 +96,7 @@ def read_samples(path, with_pose: bool = False) -> pd.DataFrame:
 # --------------------------------------------------------------------------- voxels
 def voxelize(x, y, t, p, bidx, B: int, H: int, W: int, t0, span, bins: int = NUM_BINS,
              down: int = 1) -> torch.Tensor:
-    """(B, bins, H, W) voxel grid, bilinear in time, polarity +-1 (== pooh_dataset.events.voxel_grid).
+    """(B, bins, H, W) voxel grid, bilinear in time, polarity +-1 (== oshd_dataset.events.voxel_grid).
 
     ``x, y`` int tensors in full-res pixels, ``t`` int64 ns, ``p`` 0/1, ``bidx`` sample index,
     ``t0`` (B,) window start (ns, int64), ``span`` window length (ns). ``down`` bins pixels.
@@ -202,7 +202,7 @@ def subpixel_peaks(heat: torch.Tensor, r: int = 2):
 
 # --------------------------------------------------------------------------- events io
 def load_window(traj, t_ns: int, window_ms: float = WINDOW_MS):
-    from pooh_bench.sensors import events_window
+    from oshd_bench.sensors import events_window
 
     ev = events_window(traj, int(t_ns), window_ms)
     return ev.x.astype(np.int16), ev.y.astype(np.int16), ev.t.astype(np.int64), ev.p.astype(np.uint8)

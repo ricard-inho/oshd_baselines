@@ -3,12 +3,12 @@ requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pooh-lidar"
+name = "oshd-lidar"
 version = "0.1.0"
-description = "LiDAR target crop + FPFH/TEASER++/ICP registration baseline for POOH-D (Table I, LiDAR row)."
+description = "LiDAR target crop + FPFH/TEASER++/ICP registration baseline for OSHD (Table I, LiDAR row)."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "open3d>=0.18",
     "numpy",
     "scipy",
@@ -17,13 +17,13 @@ dependencies = [
 ]
 
 [project.scripts]
-lidar-stats = "pooh_lidar.stats:main"
-lidar-extrinsic = "pooh_lidar.extrinsic:main"
-lidar-reg-predict = "pooh_lidar.predict:main"
-lidar-viz = "pooh_lidar.viz:main"
+lidar-stats = "oshd_lidar.stats:main"
+lidar-extrinsic = "oshd_lidar.extrinsic:main"
+lidar-reg-predict = "oshd_lidar.predict:main"
+lidar-viz = "oshd_lidar.viz:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pooh_lidar"]
+packages = ["src/oshd_lidar"]
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }

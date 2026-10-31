@@ -19,12 +19,20 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
+from oshd_bench import DetectionWriter, detection_path, results_dir
 from PIL import Image, ImageDraw
-from pooh_bench import DetectionWriter, detection_path, results_dir
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
-from .common import DETECTOR, SENSOR_CFG, SENSORS, _DS, load_checkpoint, load_image, sample_list
+from .common import (
+    _DS,
+    DETECTOR,
+    SENSOR_CFG,
+    SENSORS,
+    load_checkpoint,
+    load_image,
+    sample_list,
+)
 
 
 class InferSet(Dataset):

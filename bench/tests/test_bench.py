@@ -1,12 +1,11 @@
 import numpy as np
 import pytest
-from pooh_dataset import ObjectModel
-from pooh_dataset.geometry import rotvec_to_rotmat
-
-from pooh_bench.flow_gt import target_flow
-from pooh_bench.metrics import auc, flow_stats, pose_errors, speed_score
-from pooh_bench.predictions import rle_to_mask
-from pooh_bench.symmetry import cube_rotations, symmetry_for
+from oshd_bench.flow_gt import target_flow
+from oshd_bench.metrics import auc, flow_stats, pose_errors, speed_score
+from oshd_bench.predictions import rle_to_mask
+from oshd_bench.symmetry import cube_rotations, symmetry_for
+from oshd_dataset import ObjectModel
+from oshd_dataset.geometry import rotvec_to_rotmat
 
 
 @pytest.fixture
@@ -72,14 +71,14 @@ def test_flow_stats():
 def test_rle_roundtrip():
     import json
 
-    from pooh_dataset.export.coco import mask_to_rle
+    from oshd_dataset.export.coco import mask_to_rle
 
     m = np.random.default_rng(0).random((7, 9)) > 0.5
     assert np.array_equal(rle_to_mask(json.dumps(mask_to_rle(m))), m)
 
 
 def test_target_flow_translation(cube):
-    from pooh_dataset import CameraIntrinsics
+    from oshd_dataset import CameraIntrinsics
 
     intr = CameraIntrinsics("c", 200, 200, np.array([[200, 0, 100], [0, 200, 100], [0, 0, 1.0]]), np.zeros(5))
     T0 = _pose(t=(0, -0.05, 1.0))

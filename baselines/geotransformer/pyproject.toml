@@ -3,13 +3,13 @@ requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pooh-geotr"
+name = "oshd-geotr"
 version = "0.1.0"
-description = "GeoTransformer (ModelNet weights, fine-tuned on cube crops) for POOH-D Table I, LiDAR row."
+description = "GeoTransformer (ModelNet weights, fine-tuned on cube crops) for OSHD Table I, LiDAR row."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
-    "pooh-lidar",            # the shared training-free target crop (baselines/lidar_registration)
+    "oshd-bench",
+    "oshd-lidar",            # the shared training-free target crop (baselines/lidar_registration)
     "torch==2.4.1",
     "numpy<2",
     "scipy",
@@ -28,12 +28,12 @@ dependencies = [
 ]
 
 [project.scripts]
-geotr-train = "pooh_geotr.trainval:main"
-geotr-predict = "pooh_geotr.predict:main"
+geotr-train = "oshd_geotr.trainval:main"
+geotr-predict = "oshd_geotr.predict:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pooh_geotr"]
+packages = ["src/oshd_geotr"]
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
-pooh-lidar = { path = "../lidar_registration", editable = true }
+oshd-bench = { path = "../../bench", editable = true }
+oshd-lidar = { path = "../lidar_registration", editable = true }

@@ -1,10 +1,10 @@
 [project]
-name = "pooh-detector"
+name = "oshd-detector"
 version = "0.1.0"
-description = "Mask R-CNN (torchvision R50-FPN v2) target detector for the POOH-D model-based pose baselines."
+description = "Mask R-CNN (torchvision R50-FPN v2) target detector for the OSHD model-based pose baselines."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "torch==2.6.0",
     "torchvision==0.21.0",
     "numpy>=1.23,<2.3",
@@ -21,7 +21,7 @@ build-backend = "hatchling.build"
 packages = ["src/detector"]
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }
 torch = { index = "pytorch-cu124" }
 torchvision = { index = "pytorch-cu124" }
 

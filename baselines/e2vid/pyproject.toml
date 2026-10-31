@@ -1,10 +1,10 @@
 [project]
-name = "pooh-e2vid"
+name = "oshd-e2vid"
 version = "0.1.0"
-description = "E2VID event-to-frame reconstruction for the POOH-D baselines (runs upstream rpg_e2vid)."
+description = "E2VID event-to-frame reconstruction for the OSHD baselines (runs upstream rpg_e2vid)."
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "pooh-bench",
+    "oshd-bench",
     "torch==2.6.0",
     "numpy>=1.23,<2.3",
     "pandas>=2.0",
@@ -15,17 +15,17 @@ dependencies = [
 ]
 
 [project.scripts]
-e2vid-reconstruct = "e2vid_pooh.reconstruct:main"
+e2vid-reconstruct = "e2vid_oshd.reconstruct:main"
 
 [build-system]
 requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/e2vid_pooh"]
+packages = ["src/e2vid_oshd"]
 
 [tool.uv.sources]
-pooh-bench = { path = "../../bench", editable = true }
+oshd-bench = { path = "../../bench", editable = true }
 torch = { index = "pytorch-cu124" }
 
 [[tool.uv.index]]

@@ -8,7 +8,7 @@
 # `_previous_actions`), concatenated in environments/auto_env_gen.py::_get_observations.
 
 policy:
-  onnx: /home/ricard/pooh_training/2026-09-22_17-01-14_ppo_Pingu_GoThroughPoses_rsl_rl_seed_42/exported/policy.onnx
+  onnx: /home/ricard/oshd_training/2026-09-22_17-01-14_ppo_Pingu_GoThroughPoses_rsl_rl_seed_42/exported/policy.onnx
   # rsl_rl actor MLP 26-64-64-13 (ELU), no observation normaliser (obs_normalization: false),
   # deterministic mean output. The exported ONNX is bit-identical to model_7999.pt.
   clip: [-1.0, 1.0]            # pingu.py::process_actions clamps to [-1, 1] before use

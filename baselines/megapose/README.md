@@ -34,14 +34,14 @@ MegaPose itself is **not re-trained** (it is training-free). ZS/FT only changes 
 
 The detections come from `detection_path(results, <sensor>, "maskrcnn", <setting>, <domain>, <split>)`. For the events row, the detections are on the E2VID frames under sensor `events`. `megapose-train` is a no-op that only checks the weights.
 
-With `--detector oracle`, MegaPose uses the GT boxes and masks from `pooh-bench oracle-detections` (detector `oracle`, setting `GT`). Those results are written under setting **`ORACLE`** so they never fill the ZS/FT cells.
+With `--detector oracle`, MegaPose uses the GT boxes and masks from `oshd-bench oracle-detections` (detector `oracle`, setting `GT`). Those results are written under setting **`ORACLE`** so they never fill the ZS/FT cells.
 
 **Per-frame only.** Every sample is estimated independently, with no tracking or temporal prior.
 
 ## Details
 
 * **Camera handling:**
-  * Images are undistorted, and optionally resized, with `pooh_dataset.imaging.CameraView`. MegaPose gets the resulting pinhole K.
+  * Images are undistorted, and optionally resized, with `oshd_dataset.imaging.CameraView`. MegaPose gets the resulting pinhole K.
   * The detector's mask, or its filled box when there is no mask, is warped with the same map and gives the box in the MegaPose image.
   * The returned pose is in the sensor optical frame (undistorting and resizing only change the intrinsics), so it is written unchanged.
 * **Multiple detections:** only the best-scoring detection per sample is used by default. With `--max-dets k`, MegaPose runs on the top k and keeps the pose with the highest MegaPose score.
@@ -65,7 +65,7 @@ for s in ZS FT; do for d in real synthetic; do   # synthetic test feeds S_sim (Z
   flock ../../work/gpu.lock uv run megapose-predict --modality rgb_realsense --setting $s --split test --domain $d
   flock ../../work/gpu.lock uv run megapose-predict --modality events        --setting $s --split test --domain $d
 done; done
-uv run --project ../../bench pooh-bench eval
+uv run --project ../../bench oshd-bench eval
 ```
 
 Outputs go to `results/predictions/{rgb_firefly,rgb_realsense}/megapose/<setting>/<domain>_test.parquet` and `results/predictions/events/e2vid_megapose/<setting>/...`. When the synthetic test split or its detections don't exist yet, `predict` fails with a message naming the missing file.
@@ -73,9 +73,9 @@ Outputs go to `results/predictions/{rgb_firefly,rgb_realsense}/megapose/<setting
 ### Smoke test on the dev dataset
 
 ```bash
-cd /home/ricard/pooh_baselines
-export POOH_DATASET_ROOT=$PWD/work/dev_dataset POOH_BENCH_RESULTS=$PWD/work/dev_results POOH_BENCHMARK=none
-for s in realsense_color firefly events; do uv run --project bench pooh-bench oracle-detections --sensor $s; done
+cd /home/ricard/oshd_baselines
+export OSHD_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
+for s in realsense_color firefly events; do uv run --project bench oshd-bench oracle-detections --sensor $s; done
 cd baselines/megapose
 uv run megapose-events-standin --out ../../work/megapose_e2vid_standin --limit 20   # event-count images, E2VID layout
 flock ../../work/gpu.lock uv run megapose-predict --modality rgb_realsense --detector oracle --limit 20
@@ -83,10 +83,10 @@ flock ../../work/gpu.lock uv run megapose-predict --modality rgb_firefly   --det
 flock ../../work/gpu.lock uv run megapose-predict --modality events --detector oracle --limit 20 \
       --frames-dir ../../work/megapose_e2vid_standin
 uv run megapose-overlay --modality rgb_realsense --setting ORACLE --n 6      # -> work/debug/megapose/*.jpg
-uv run --project ../../bench pooh-bench eval   # needs a ZS/FT file to show up in table1 (see --out-setting)
+uv run --project ../../bench oshd-bench eval   # needs a ZS/FT file to show up in table1 (see --out-setting)
 ```
 
-To check that `pooh-bench eval` fills the Table I cells without a trained detector, add `--out-setting ZS` to an oracle run in the **dev** results dir. Never do this in `results/`.
+To check that `oshd-bench eval` fills the Table I cells without a trained detector, add `--out-setting ZS` to an oracle run in the **dev** results dir. Never do this in `results/`.
 
 ## Notes
 
