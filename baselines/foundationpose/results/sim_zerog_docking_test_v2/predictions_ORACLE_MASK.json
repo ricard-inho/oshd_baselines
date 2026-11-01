@@ -1,0 +1,62 @@
+{
+  "hardware": {
+    "host": "hera",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "method": "FoundationPose",
+  "upstream": "https://github.com/NVlabs/FoundationPose",
+  "commit": "a1b694b83e633c2cb6115b9063d940a687759392",
+  "weights": {
+    "refiner": "2023-10-28-18-33-37",
+    "scorer": "2024-01-11-20-02-45"
+  },
+  "mode": "per-frame register() (no tracking)",
+  "refine_iters": 5,
+  "mask": "simulator semantic mask of class 'target' (oracle)",
+  "input": "sim rgb + depth, pinhole K",
+  "runtime": "register() only",
+  "prepare": {
+    "dataset_root": "/home/ricard/.cache/oshd/r3m3c3--oshd",
+    "benchmark": "v2",
+    "revision": "df3530bfbd77572522fcea4699e793e4d7282bec",
+    "domain": "sim_zerog",
+    "task": "docking",
+    "split": "test",
+    "stride": 10,
+    "min_mask_px": 100,
+    "n_trajectories": 162,
+    "n_samples": 12237,
+    "objects": {
+      "cubesat1179302906": 234,
+      "cubesat422600803": 230,
+      "satellite_mockup": 7467,
+      "cubesat1380506607": 218,
+      "cubesat503983153": 213,
+      "cubesat1164623904": 234,
+      "cubesat477637087": 231,
+      "cubesat352375731": 226,
+      "cubesat118930051": 225,
+      "cubesat1837885690": 215,
+      "cubesat434672891": 230,
+      "nasa_asteroid_golevka": 236,
+      "nasa_asteroid_toutatis": 231,
+      "nasa_international_x_ray_observatory": 222,
+      "cubesat1034538678": 229,
+      "cubesat1600360009": 232,
+      "cubesat1053301660": 226,
+      "cubesat1859922245": 229,
+      "cubesat691492398": 217,
+      "cubesat1232003790": 230,
+      "cubesat715072435": 228,
+      "cubesat509795703": 234
+    }
+  },
+  "setting": "ORACLE_MASK",
+  "stride": 1,
+  "limit": null,
+  "n_samples": 12237,
+  "n_no_depth_in_mask": 0,
+  "n_predicted": 12237,
+  "wall_s": 17633
+}

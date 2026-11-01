@@ -6,7 +6,7 @@ Host side, in the baseline's uv environment:
 
 Per sample (``oshd_bench.metrics`` conventions): ``e_t`` (distance between the predicted and
 true CAD bounding-box centres, m), ``e_q`` (geodesic rotation error, deg), ADD and ADD-S (mean /
-closest model-point distance, m), the SPEED score. ``e_q`` and ADD are given twice: strict (no
+closest model-point distance, m), the SPEED score. ``e_q``, ADD and SPEED are given twice: strict (no
 symmetry) and ``_sym``, minimised over the CAD's measured symmetries: the 180° rotations about
 its bounding-box axes that map the surface onto itself to within ``--sym-tol`` of the diameter
 (ADD-S after the flip; the satellite mockup has all three, the CubeSats the one about z). Samples without a
@@ -75,7 +75,7 @@ def errors(gt: pd.DataFrame, pred: pd.DataFrame, objects: dict, n_points: int, s
         g["diameter_m"] = diameter
         g["kind"] = objects[obj]["kind"]
         has = g["T_pred"].notna().to_numpy()
-        for c in ("e_t", "e_q", "add", "adds", "speed", "e_q_sym", "add_sym"):
+        for c in ("e_t", "e_q", "add", "adds", "speed", "e_q_sym", "add_sym", "speed_sym"):
             g[c] = np.nan
         if has.any():
             T_gt = np.stack(g.loc[has, "T"].map(np.asarray)).reshape(-1, 4, 4)
@@ -85,6 +85,7 @@ def errors(gt: pd.DataFrame, pred: pd.DataFrame, objects: dict, n_points: int, s
             g.loc[has, "speed"] = speed_score(err)
             err_s = pose_errors(T_pr, T_gt, sym_g, pts)
             g.loc[has, "e_q_sym"], g.loc[has, "add_sym"] = err_s.e_q, err_s.add
+            g.loc[has, "speed_sym"] = speed_score(err_s)
             adds = []
             for Tp, Tg in zip(T_pr, T_gt):
                 tree = cKDTree(pts @ Tg[:3, :3].T + Tg[:3, 3])
@@ -110,7 +111,8 @@ def summary(g: pd.DataFrame) -> dict:
         "e_t_cm_mean": 100 * p["e_t"].mean(), "e_t_cm_median": 100 * p["e_t"].median(),
         "e_q_deg_mean": p["e_q"].mean(), "e_q_deg_median": p["e_q"].median(),
         "e_q_sym_deg_mean": p["e_q_sym"].mean(), "e_q_sym_deg_median": p["e_q_sym"].median(),
-        "speed_mean": p["speed"].mean(),
+        "speed_mean": p["speed"].mean(), "speed_sym_mean": p["speed_sym"].mean(),
+        "speed_sym_median": p["speed_sym"].median(),
         "add_0.1d": float((rel("add") < 0.1).sum() / n) if n else np.nan,
         "adds_0.1d": float((rel("adds") < 0.1).sum() / n) if n else np.nan,
         "add_sym_0.1d": float((rel("add_sym") < 0.1).sum() / n) if n else np.nan,
@@ -150,11 +152,12 @@ def main(argv=None) -> int:
             "e_t_cm_mean": "e_t mean (cm)", "e_q_deg_median": "e_q med (°)", "e_q_sym_deg_median": "e_q sym med (°)",
             "e_q_sym_deg_mean": "e_q sym mean (°)", "within_5cm_5deg": "5cm/5°", "within_5cm_5deg_sym": "5cm/5° sym",
             "add_0.1d": "ADD<0.1d", "add_sym_0.1d": "ADD sym<0.1d", "adds_0.1d": "ADD-S<0.1d",
-            "auc_adds_0.1d": "AUC ADD-S", "speed_mean": "SPEED", "rate_hz": "Hz"}
+            "auc_adds_0.1d": "AUC ADD-S", "speed_mean": "SPEED", "speed_sym_mean": "SPEED sym",
+            "rate_hz": "Hz"}
     t = table[list(cols)].rename(columns=cols)
     fmt = {c: "{:.0f}" for c in ("samples",)} | {c: "{:.3f}" for c in ("coverage", "5cm/5°", "5cm/5° sym", "ADD<0.1d",
                                                                      "ADD sym<0.1d", "ADD-S<0.1d", "AUC ADD-S",
-                                                                     "SPEED")}
+                                                                     "SPEED", "SPEED sym")}
     lines = ["| group | " + " | ".join(t.columns) + " |", "|---|" + "---:|" * len(t.columns)]
     for name, r in t.iterrows():
         lines.append(f"| {name} | " + " | ".join(fmt.get(c, "{:.2f}").format(v) for c, v in r.items()) + " |")

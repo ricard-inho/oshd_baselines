@@ -4,8 +4,8 @@ Runs on the host, in the baseline's uv environment (needs ``usd-core`` and oshd)
 
     .venv/bin/python -m fp_oshd.sim_prepare --domain sim_zerog --task docking --split test --stride 10
 
-The split comes from the frozen benchmark ``--benchmark`` (default ``v1``: oshd's
-``benchmark_v1``, Hub revision 8205a11; ``none`` = the dataset's growing ``splits.json``).
+The split comes from the frozen benchmark ``--benchmark`` (default ``v2``: oshd's
+``benchmark_v2``, Hub revision df3530b; ``none`` = the dataset's growing ``splits.json``).
 For every trajectory of the split it
 
 1. takes the target's CAD from the dataset (``models/sim/<model>/model.obj``, published with the
@@ -43,7 +43,7 @@ def parse_args(argv=None):
     ap.add_argument("--domain", default="sim_zerog")
     ap.add_argument("--task", default="docking")
     ap.add_argument("--split", default="test")
-    ap.add_argument("--benchmark", default="v1", help="frozen benchmark of the split, or 'none'")
+    ap.add_argument("--benchmark", default="v2", help="frozen benchmark of the split, or 'none'")
     ap.add_argument("--stride", type=int, default=10, help="every N-th RGB frame (20 Hz -> 10 = 2 Hz)")
     ap.add_argument("--min-mask-px", type=int, default=100, help="minimum target mask area of a sample")
     ap.add_argument("--out", default=None)

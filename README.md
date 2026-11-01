@@ -25,18 +25,21 @@ results/               gt/, predictions/, detections/, replay/, flow/, tables/
 
 ## Pipeline
 
-All paper numbers use the frozen benchmark **`benchmark_v1`** of oshd (≥ 1.0.0, from
-TestPyPI): the data of Hub revision `8205a11` (2195 sim + 3 real trajectories) and its fixed train
-/ test split. `configs/bench.yaml` (`dataset.benchmark: v1`) makes every `ds.split()` of the
-bench and the baselines use it. Download its data with `--benchmark v1`, which pins the
-revision. Daily uploads after the freeze don't change it. oshd 1.0.0 also has
-**`benchmark_v2`**, the final collection (Hub `df3530b`: 6413 sim + 92 real trajectories with the
-real mockups); it contains v1 with the same splits. Switch with `dataset.benchmark: v2`.
+All paper numbers use the frozen benchmark **`benchmark_v2`** of oshd 1.0.0 (from TestPyPI):
+the data of Hub revision `df3530b` (6413 sim + 92 real trajectories) and its fixed train / test
+split. `configs/bench.yaml` (`dataset.benchmark: v2`) makes every `ds.split()` of the bench and
+the baselines use it. Download its data with `--benchmark v2`, which pins the revision.
+`benchmark_v1` (Hub `8205a11`, 2195 sim + 3 real trajectories) is the earlier freeze; v2
+contains it with the same splits.
+
+**Experiments and their status: [`ROADMAP.md`](ROADMAP.md).** Finished so far: Table I,
+FoundationPose single-frame on the sim docking test split
+([`baselines/foundationpose`](baselines/foundationpose/README.md#simulated-docking-sim_zerog--docking--test-table-i-row-1)).
 
 ```bash
 cd bench && uv sync && cd ..                  # oshd 1.0.0 from TestPyPI
-uv run --project bench oshd download --benchmark v1 --domain all   # or narrow: -m ..., --split, --task
-uv run --project bench oshd splits --benchmark v1
+uv run --project bench oshd download --benchmark v2 --domain all   # or narrow: -m ..., --split, --task
+uv run --project bench oshd splits --benchmark v2
 uv run --project bench oshd-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet
 # per baseline: see baselines/<name>/README.md  (setup.sh, then train / predict)
 uv run --project bench oshd-bench eval        # results/tables/*.csv|json|tex|dat

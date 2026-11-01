@@ -1,0 +1,58 @@
+# Experiment roadmap (paper Tables I–III)
+
+This file tracks the experiments of the OSHD paper only, not the writing. Every experiment
+uses the frozen **`benchmark_v2`** (oshd 1.0.0, Hub revision `df3530b`). Each row says what
+must run, which code runs it, what blocks it, and roughly how long it takes on one RTX 3090.
+
+Test splits of `benchmark_v2` (trajectories):
+
+| split | train | test |
+|---|---:|---:|
+| `sim_zerog/docking` | 921 | 162 |
+| `sim_zerog/inspection` | 861 | 144 |
+| `sim_3d/approach` | 1089 | 186 |
+| `sim_3d/orbit` | 2528 | 522 |
+| `real` (mockups `antena`, `antena_1_solar`, `cubesat`) | 75 | 17 |
+
+Status legend: **done** · **running** · **ready** (code exists, only needs to run) ·
+**adapt** (code exists for the real CubeSat and needs a sim variant) · **new** (no code yet) ·
+**blocked**.
+
+## Table I: pose estimation (`tables/tab_pose.tex`)
+
+| # | Row | Status | Code | Data | GPU time | Notes |
+|---|---|---|---|---|---|---|
+| 1 | FoundationPose, RGB-D, docking, single-frame | **running** | `baselines/foundationpose` `fp_oshd.predict_sim` / `eval_sim` | `sim_zerog/docking/test`: 162 traj., 12 237 samples at 2 Hz | ~6 h | oracle (simulator) masks; e_q and S are reported both strict and up to the measured symmetries |
+| 2 | FoundationPose, RGB-D, inspection, tracking | **adapt** | add `--mode track` to `predict_sim`: `register()` on the first frame, then `track_one()` at 20 Hz, re-register on loss; add drift-vs-time to `eval_sim` | `sim_zerog/inspection/test`: 144 traj. (download rgb, depth, semantic, mocap) | ~4 h (tracking is much faster than `register()`) | metric: e_t / e_q / S over time since initialisation, plus mean over the run |
+| 3 | SPNv2, RGB, docking | **adapt** | `baselines/spnv2` is written for the real CubeSat_U1 | train on `sim_zerog/docking/train`, test on `.../test` | ~1 day train + 1 h test | SPNv2 regresses keypoints of **one** object, but the docking split has 22 targets. Proposal: train and test on the `satellite_mockup` runs only (7 467 of the 12 237 test samples), and report FoundationPose on the same subset for the comparison |
+| 4 | SPNv2, events (time surfaces), docking | **adapt** | same as #3, with a time-surface input (`events` of the sim runs, 50 ms windows) | as #3 + `-m events` | ~1 day | skip if it does not train without tuning (Notion) |
+| 5 | LiDAR ICP to CAD, docking, single-scan | **adapt** | `baselines/lidar_registration` (FPFH + TEASER++ + ICP, training-free) on sim scans; CAD from `models/sim` | `sim_zerog/docking/test` `-m lidar -m mocap` | CPU, ~2 h | the sim LiDAR is 10 Hz (300 scans per 30 s run) |
+
+## Table II: domain transfer real ↔ lab twin (`tables/tab_transfer.tex`)
+
+| # | Row | Status | Notes |
+|---|---|---|---|
+| 6 | SPNv2 trained on real, tested on twin | **blocked** | needs a twin of the real mockups: the sim docking targets are `satellite_mockup` + CubeSats + NASA models, the real ones `antena` / `antena_1_solar`. Either record twin runs with the real mockups' CAD (`models/real/*`) in SRB, or confirm that `satellite_mockup` is the twin of one of them. |
+| 7 | SPNv2 trained on twin, tested on real | **blocked** | as #6 |
+| 8 | FoundationPose zero-shot on both domains | **blocked (real side)** | real RGB-D needs the `realsense_depth` → colour registration (DATA_REQUIREMENTS items 1 and 8: missing / verify), and a 2D mask on real frames (the Mask R-CNN in `baselines/detector`, or GT-rendered masks as an oracle). Twin side: as #1 on the twin runs. |
+
+## Table III: visuomotor policies (`tables/tab_policy.tex`)
+
+| # | Row | Status | Notes |
+|---|---|---|---|
+| 9 | PPO teacher (privileged), closed-loop docking in sim | **adapt** | the policy that drove the docking recordings ships in `osh_dataset_pipeline/sim/policies/zerog_lab_inspection` (`env.mode=docking`). Needs an SRB eval script that logs success, final position/attitude error, contact velocity and thruster usage over N seeded episodes. Define success (paper TODO). |
+| 10 | BC students, one per modality (RGB, depth, events, LiDAR, fused) | **new** | train from `steps` (observations, actions) + the sensor streams of `sim_zerog/docking/train`; evaluate closed loop in SRB with the #9 harness. 5 trainings. |
+| 11 | Modular: FoundationPose → PPO teacher, closed loop | **new** | needs FoundationPose in the SRB loop: run it as a service (the Docker image of #1) that SRB queries per policy step, or use tracking mode (#2) for speed |
+
+## Order
+
+1. #1 (running), then publish oshd 1.0.0 to PyPI.
+2. #2 and #5: no training, they reuse #1's infrastructure.
+3. #3 / #4: decide on the single-target subset first.
+4. #9, then #10 and #11 (they share the closed-loop harness).
+5. #6–#8, after the twin question and the depth registration are resolved.
+
+## Reproducing a finished row
+
+Each baseline's `README.md` has the exact commands. Its results (sample list, ground truth,
+predictions, metrics, a few overlays) are committed under `baselines/<name>/results/`.

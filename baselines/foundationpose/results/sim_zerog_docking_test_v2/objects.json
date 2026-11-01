@@ -1,0 +1,288 @@
+{
+  "cubesat1179302906": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1179302906/model.obj",
+    "source": "cubesat1179302906.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4968,
+      0.2834,
+      0.2604
+    ],
+    "diameter_m": 0.6283788075937953,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat422600803": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat422600803/model.obj",
+    "source": "cubesat422600803.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      1.3767,
+      1.3767,
+      0.4129
+    ],
+    "diameter_m": 1.9903022670227755,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "satellite_mockup": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/satellite_mockup/model.obj",
+    "source": "satellite_mockup.usdz",
+    "kind": "satellite_mockup",
+    "extent_m": [
+      0.3076,
+      1.2998,
+      0.3
+    ],
+    "diameter_m": 1.3689756180597228,
+    "n_vertices": 118565,
+    "n_faces": 42009
+  },
+  "cubesat1380506607": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1380506607/model.obj",
+    "source": "cubesat1380506607.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.7061,
+      0.3493,
+      0.2382
+    ],
+    "diameter_m": 0.8229975228419585,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat503983153": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat503983153/model.obj",
+    "source": "cubesat503983153.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4774,
+      0.2361,
+      0.1422
+    ],
+    "diameter_m": 0.551274577019474,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1164623904": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1164623904/model.obj",
+    "source": "cubesat1164623904.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4855,
+      1.125,
+      0.4529
+    ],
+    "diameter_m": 1.3063505806960856,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat477637087": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat477637087/model.obj",
+    "source": "cubesat477637087.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.363,
+      0.2115,
+      0.129
+    ],
+    "diameter_m": 0.43943670079432373,
+    "n_vertices": 424,
+    "n_faces": 212
+  },
+  "cubesat352375731": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat352375731/model.obj",
+    "source": "cubesat352375731.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      1.0412,
+      0.9412,
+      0.3267
+    ],
+    "diameter_m": 1.4411175469752633,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "cubesat118930051": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat118930051/model.obj",
+    "source": "cubesat118930051.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      1.4802,
+      0.5511,
+      0.4963
+    ],
+    "diameter_m": 1.655543897444281,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1837885690": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1837885690/model.obj",
+    "source": "cubesat1837885690.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.7967,
+      0.4732,
+      0.3882
+    ],
+    "diameter_m": 1.004681692313043,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat434672891": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat434672891/model.obj",
+    "source": "cubesat434672891.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      1.3311,
+      1.3311,
+      0.4752
+    ],
+    "diameter_m": 1.9415168062782768,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "nasa_asteroid_golevka": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/nasa_asteroid_golevka/model.obj",
+    "source": "nasa_asteroid_golevka.usdz",
+    "kind": "usd",
+    "extent_m": [
+      7.1336,
+      8.3486,
+      10.0
+    ],
+    "diameter_m": 14.852190073289663,
+    "n_vertices": 2048,
+    "n_faces": 4092
+  },
+  "nasa_asteroid_toutatis": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/nasa_asteroid_toutatis/model.obj",
+    "source": "nasa_asteroid_toutatis.usdz",
+    "kind": "usd",
+    "extent_m": [
+      4.9647,
+      10.0,
+      4.1688
+    ],
+    "diameter_m": 11.917525160674131,
+    "n_vertices": 6400,
+    "n_faces": 12796
+  },
+  "nasa_international_x_ray_observatory": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/nasa_international_x_ray_observatory/model.obj",
+    "source": "nasa_international_x_ray_observatory.usdz",
+    "kind": "usd",
+    "extent_m": [
+      10.7423,
+      4.1546,
+      20.0
+    ],
+    "diameter_m": 23.079386634845218,
+    "n_vertices": 378570,
+    "n_faces": 126190
+  },
+  "cubesat1034538678": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1034538678/model.obj",
+    "source": "cubesat1034538678.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2164,
+      0.3802,
+      0.11
+    ],
+    "diameter_m": 0.4510968518134437,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1600360009": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1600360009/model.obj",
+    "source": "cubesat1600360009.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2012,
+      0.3393,
+      0.1224
+    ],
+    "diameter_m": 0.41302294028298236,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1053301660": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1053301660/model.obj",
+    "source": "cubesat1053301660.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.3407,
+      0.3407,
+      0.1215
+    ],
+    "diameter_m": 0.4969174458368311,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "cubesat1859922245": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1859922245/model.obj",
+    "source": "cubesat1859922245.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.3251,
+      0.1935,
+      0.1208
+    ],
+    "diameter_m": 0.3971352994131849,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat691492398": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat691492398/model.obj",
+    "source": "cubesat691492398.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4996,
+      0.4996,
+      0.167
+    ],
+    "diameter_m": 0.7259981408405947,
+    "n_vertices": 504,
+    "n_faces": 252
+  },
+  "cubesat1232003790": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat1232003790/model.obj",
+    "source": "cubesat1232003790.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.49,
+      0.2422,
+      0.1594
+    ],
+    "diameter_m": 0.5693312865107626,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat715072435": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat715072435/model.obj",
+    "source": "cubesat715072435.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4385,
+      0.2253,
+      0.1368
+    ],
+    "diameter_m": 0.511621158273385,
+    "n_vertices": 424,
+    "n_faces": 212
+  },
+  "cubesat509795703": {
+    "cad": "/home/ricard/.cache/oshd/r3m3c3--oshd/models/sim/cubesat509795703/model.obj",
+    "source": "cubesat509795703.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4107,
+      0.4107,
+      0.11
+    ],
+    "diameter_m": 0.5911643302094605,
+    "n_vertices": 632,
+    "n_faces": 316
+  }
+}

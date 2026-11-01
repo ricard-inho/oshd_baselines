@@ -53,6 +53,19 @@ def bbox_corners(vertices: np.ndarray) -> np.ndarray:
     return np.array([[(lo, hi)[k & 1][0], (lo, hi)[k >> 1 & 1][1], (lo, hi)[k >> 2 & 1][2]] for k in range(8)])
 
 
+def untextured_to_vertex_colors(mesh):
+    """A UV-mapped mesh without a texture image (the NASA asteroids: one flat material) crashes
+    FoundationPose's renderer; give it vertex colours of the material colour, as the simulator renders it."""
+    import trimesh
+
+    mat = getattr(mesh.visual, "material", None)
+    if mesh.visual.kind == "texture" and getattr(mat, "image", None) is None:
+        color = getattr(mat, "main_color", None)
+        color = np.array([128, 128, 128, 255] if color is None else color, dtype=np.uint8)
+        mesh.visual = trimesh.visual.ColorVisuals(mesh, vertex_colors=np.tile(color, (len(mesh.vertices), 1)))
+    return mesh
+
+
 def main(argv=None) -> int:
     a = parse_args(argv)
     sys.path.insert(0, str(FP_DIR))
@@ -95,7 +108,7 @@ def main(argv=None) -> int:
     set_seed(a.seed)
     scorer, refiner = ScorePredictor(), PoseRefinePredictor()
     glctx = dr.RasterizeCudaContext()
-    base = {k: trimesh.load(v["cad"], force="mesh") for k, v in objects.items()}
+    base = {k: untextured_to_vertex_colors(trimesh.load(v["cad"], force="mesh")) for k, v in objects.items()}
     est, est_key, cad_pts, corners = None, None, None, None
     n_skip = n_done = 0
     t_start = time.time()
