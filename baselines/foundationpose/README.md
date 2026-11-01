@@ -97,8 +97,9 @@ lab docking task in simulation. The Floating Platform docks to a target held by 
 held by the ceiling arm, or floating. The target is a satellite mockup, a procedural CubeSat, or
 one of three NASA models: the asteroids Golevka and Toutatis, and the International X-ray
 Observatory. This fills the paper's Table I row "RGB-D, FoundationPose, Docking, Single-frame".
-It runs on its own sample list and writes everything to `results/sim_zerog_docking_test_v2/` in
-this folder.
+It reads the shared sample list `results/sim/sim_zerog_docking_test_v2/` of the repo (written by
+`oshd-bench sim-prepare`, the same one every sim baseline uses) and writes its predictions and
+metrics to `results/sim_zerog_docking_test_v2/` in this folder.
 
 | | |
 |---|---|
@@ -166,13 +167,13 @@ cd ~/osh_dataset/oshd_baselines
 FP_CUDA_ARCH=8.6 FP_IMAGE=oshd-foundationpose:a1b694b-sm86 bash baselines/foundationpose/setup.sh
 ```
 
-**6. Target CAD, sample list and ground truth** (host, about 1 min):
+**6. Sample list and ground truth.** They are committed in `results/sim/sim_zerog_docking_test_v2/`
+(shared by all sim baselines). To rebuild them (about 1 min; the result is identical):
 
 ```bash
-cd baselines/foundationpose
-.venv/bin/python -m fp_oshd.sim_prepare --benchmark v2 --domain sim_zerog --task docking --split test \
-    --stride 10 --out results/sim_zerog_docking_test_v2
-#  -> results/sim_zerog_docking_test_v2/{samples,gt}.parquet, objects.json, prepare.json
+cd ~/osh_dataset/oshd_baselines
+uv run --project bench oshd-bench sim-prepare --domain sim_zerog --task docking --split test
+#  -> results/sim/sim_zerog_docking_test_v2/{samples,gt}.parquet, objects.json, prepare.json
 ```
 
 The CAD is the one the dataset publishes for each trajectory. `models/sim/targets.json` maps the
@@ -190,10 +191,10 @@ instead, set `OSH_DATASET_SRC=~/osh_dataset/osh-dataset`; it is mounted ahead of
 cd ~/osh_dataset/oshd_baselines
 export FP_IMAGE=oshd-foundationpose:a1b694b-sm86
 # smoke test (20 samples, overlays):
-baselines/foundationpose/docker/run.sh python -m fp_oshd.predict_sim --run-dir results/sim_zerog_docking_test_v2 \
+baselines/foundationpose/docker/run.sh python -m fp_oshd.predict_sim \
     --setting SMOKE --limit 20 --stride 600 --debug-every 4
 # full run (--resume continues an interrupted run; it saves every 200 samples):
-baselines/foundationpose/docker/run.sh python -m fp_oshd.predict_sim --run-dir results/sim_zerog_docking_test_v2 \
+baselines/foundationpose/docker/run.sh python -m fp_oshd.predict_sim \
     --setting ORACLE_MASK --debug-every 100 --resume \
     > baselines/foundationpose/results/sim_zerog_docking_test_v2/predict_ORACLE_MASK.log 2>&1
 ```
@@ -201,16 +202,17 @@ baselines/foundationpose/docker/run.sh python -m fp_oshd.predict_sim --run-dir r
 **8. Evaluate** (host):
 
 ```bash
-cd baselines/foundationpose
-.venv/bin/python -m fp_oshd.eval_sim --run-dir results/sim_zerog_docking_test_v2 --setting ORACLE_MASK
+uv run --project bench oshd-bench sim-eval --run-dir results/sim/sim_zerog_docking_test_v2 \
+    --pred baselines/foundationpose/results/sim_zerog_docking_test_v2/predictions_ORACLE_MASK.parquet
 ```
 
-### Outputs (`results/sim_zerog_docking_test_v2/`)
+### Outputs (`results/sim_zerog_docking_test_v2/` in this folder)
+
+The sample list, ground truth and CAD list are in the shared `results/sim/sim_zerog_docking_test_v2/`
+of the repo (`samples.parquet`, `gt.parquet`, `objects.json`, `prepare.json`).
 
 | file | contents |
 |---|---|
-| `samples.parquet` / `gt.parquet` | sample list (what inference reads) / plus `T` and `range_m` (only eval reads it) |
-| `objects.json`, `prepare.json` | CAD per target (source USD, extent, diameter), sample-list settings |
 | `predictions_ORACLE_MASK.parquet` / `.json` | `oshd_bench.PoseWriter` format: `T` (T_cam_target), FoundationPose score, `runtime_ms`; settings + hardware |
 | `per_sample_ORACLE_MASK.parquet` | per-sample e_t, e_q, e_q_sym, ADD, ADD_sym, ADD-S, SPEED, SPEED_sym, range, target, mount |
 | `metrics_ORACLE_MASK.json` / `.csv`, `RESULTS_ORACLE_MASK.md` | overall and per target kind, mount and range bin |
@@ -221,7 +223,7 @@ cd baselines/foundationpose
 under 180° rotations about all three bounding-box axes. Each flip moves the surface by 0.6% of
 the diameter (ADD-S), which is sampling noise. The CubeSats are symmetric under the flip about
 z. The NASA models have no measured symmetry. FoundationPose often returns one of the
-flipped poses, which the depth and mask can't tell apart. So `eval_sim` reports e_q, ADD and the
+flipped poses, which the depth and mask can't tell apart. So `oshd-bench sim-eval` reports e_q, ADD and the
 SPEED score twice: strict, and `sym`, minimised over the flips measured on each mesh
 (`--sym-tol`, 1% of the diameter). ADD-S needs no symmetry list. The texture does break some of
 the mockup's symmetries; the strict columns are the upper bound on the error.
@@ -269,12 +271,13 @@ e_t = 8.37 cm, e_q = 43.0°, S = 0.963. The medians are 1.38 cm, 4.13° and S = 
 `results/sim_zerog_docking_test/` holds the same experiment on `benchmark_v1` (Hub revision
 `8205a11`, 72 trajectories, 5465 samples, mockup and CubeSats only; 2026-10-20). Its medians were
 1.19 cm and 3.03° (sym), 0.590 within 5 cm / 5° (sym). The v1 test split is part of the v2 one.
-Reproduce it with `--benchmark v1` and `--out results/sim_zerog_docking_test` in steps 3–8.
+It was produced with the scripts of commit `e9f345e` (`fp_oshd/sim_prepare.py`, `fp_oshd/eval_sim.py`,
+since moved into `oshd-bench`); `oshd-bench sim-prepare --benchmark v1` rebuilds its sample list.
 
 ## Files
 
 * `docker/Dockerfile` and `docker/run.sh` are the image and the runner. The runner mounts the repo, the dataset root and its resolved symlinks, `~/.cache/oshd` and the results dir at their host paths, and mounts `weights/` at `/opt/FoundationPose/weights`. It runs as your uid.
 * `fp_oshd/predict.py` is the inference entry point. `fp_oshd/train.py` is the no-op described above.
 * `fp_oshd/geometry.py` holds the CAD loading, undistortion, ICP and overlays.
-* `fp_oshd/sim_prepare.py`, `fp_oshd/predict_sim.py` and `fp_oshd/eval_sim.py` are the simulated-data pipeline (see above): CAD export and sample list, inference, and metrics.
+* `fp_oshd/predict_sim.py` is the simulated-data inference (see above). The sample list and the metrics are `oshd-bench sim-prepare` / `sim-eval` (`bench/src/oshd_bench/sim.py`).
 * `third_party/` and `weights/` are gitignored and filled by `setup.sh`. `cache/` (the exported CAD) and `.venv/` are gitignored too.

@@ -1,6 +1,8 @@
 # FoundationPose, sim_zerog / docking / test (ORACLE_MASK)
 
-12237 samples (10-frame stride) from 162 trajectories; mask: simulator semantic mask of class 'target' (oracle); per-frame register() (no tracking), 5 refiner iterations.
+12237 samples (10-frame stride) from 162 trajectories; benchmark v2.
+
+Paper row (means, rotation up to the measured symmetries): e_t = 8.37 cm, e_q = 43.0°, S = 0.963
 
 Measured symmetries (for the `sym` columns): cubesat1179302906: Rz180; cubesat422600803: Rz180; satellite_mockup: Rx180, Ry180, Rz180; cubesat1380506607: Rz180; cubesat503983153: Rz180; cubesat1164623904: Rz180; cubesat477637087: Rz180; cubesat352375731: Rz180; cubesat118930051: Rz180; cubesat1837885690: Rz180; cubesat434672891: Rz180; nasa_asteroid_golevka: none; nasa_asteroid_toutatis: none; nasa_international_x_ray_observatory: none; cubesat1034538678: Rz180; cubesat1600360009: Rz180; cubesat1053301660: Rz180; cubesat1859922245: Rz180; cubesat691492398: Rz180; cubesat1232003790: Rz180; cubesat715072435: Rz180; cubesat509795703: Rz180.
 

@@ -13,6 +13,7 @@ dependencies = [
     "pandas>=2.0",
     "pyarrow>=14",
     "pyyaml>=6.0",
+    "scipy>=1.10",
     "tqdm>=4.60",
 ]
 

@@ -32,7 +32,9 @@ the baselines use it. Download its data with `--benchmark v2`, which pins the re
 `benchmark_v1` (Hub `8205a11`, 2195 sim + 3 real trajectories) is the earlier freeze; v2
 contains it with the same splits.
 
-**Experiments and their status: [`ROADMAP.md`](ROADMAP.md).** Finished so far: Table I,
+**Experiments, owners and status: [`ROADMAP.md`](ROADMAP.md). Running one on your own branch:
+[`CONTRIBUTING.md`](CONTRIBUTING.md)** (shared sim sample lists in `results/sim/`,
+`oshd-bench sim-prepare` / `sim-eval`). Finished so far: Table I,
 FoundationPose single-frame on the sim docking test split
 ([`baselines/foundationpose`](baselines/foundationpose/README.md#simulated-docking-sim_zerog--docking--test-table-i-row-1)).
 

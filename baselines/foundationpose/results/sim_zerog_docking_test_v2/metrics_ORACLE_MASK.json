@@ -1,5 +1,43 @@
 {
-  "setting": "ORACLE_MASK",
+  "predictions": "predictions_ORACLE_MASK.parquet",
+  "run_dir": "results/sim/sim_zerog_docking_test_v2",
+  "prepare": {
+    "benchmark": "v2",
+    "revision": "df3530bfbd77572522fcea4699e793e4d7282bec",
+    "domain": "sim_zerog",
+    "task": "docking",
+    "split": "test",
+    "sensor": "rgb",
+    "stride": 10,
+    "min_mask_px": 100,
+    "n_trajectories": 162,
+    "n_samples": 12237,
+    "objects": {
+      "satellite_mockup": 7467,
+      "nasa_asteroid_golevka": 236,
+      "cubesat1179302906": 234,
+      "cubesat1164623904": 234,
+      "cubesat509795703": 234,
+      "cubesat1600360009": 232,
+      "cubesat477637087": 231,
+      "nasa_asteroid_toutatis": 231,
+      "cubesat422600803": 230,
+      "cubesat434672891": 230,
+      "cubesat1232003790": 230,
+      "cubesat1034538678": 229,
+      "cubesat1859922245": 229,
+      "cubesat715072435": 228,
+      "cubesat352375731": 226,
+      "cubesat1053301660": 226,
+      "cubesat118930051": 225,
+      "nasa_international_x_ray_observatory": 222,
+      "cubesat1380506607": 218,
+      "cubesat691492398": 217,
+      "cubesat1837885690": 215,
+      "cubesat503983153": 213
+    }
+  },
+  "subset": null,
   "symmetries": {
     "cubesat1179302906": [
       "Rz180"

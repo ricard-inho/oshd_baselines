@@ -1,7 +1,8 @@
 """FoundationPose (model-based, RGB-D, single frame) on simulated trajectories.
 
-Runs inside the Docker image (docker/run.sh) on the sample list written by
-``fp_oshd.sim_prepare`` (``samples.parquet``; ``gt.parquet`` is never opened). For every sample:
+Runs inside the Docker image (docker/run.sh) on the shared sample list of ``oshd-bench
+sim-prepare`` (``results/sim/<run>/samples.parquet``; ``gt.parquet`` is never opened). For every
+sample:
 
 1. RGB, depth (metres) and the target's semantic mask (class ``target``) of that frame; the
    simulated camera is an ideal pinhole, so nothing is undistorted. The mask is the
@@ -10,7 +11,8 @@ Runs inside the Docker image (docker/run.sh) on the sample list written by
    **every frame** (global rotation hypotheses, refiner, scorer; ``track_one`` is never used).
    The CAD is the target's mesh (``objects.json``) scaled by the run's ``target_scale``.
 3. The pose ``T_cam_target`` (rgb optical frame, target root frame) is written with
-   ``oshd_bench.PoseWriter`` to ``<run dir>/predictions_<setting>.parquet``.
+   ``oshd_bench.PoseWriter`` to ``--out-dir`` (default ``results/<run>/`` in this folder) as
+   ``predictions_<setting>.parquet``; score it with ``oshd-bench sim-eval``.
 
 ``runtime_ms`` is ``register()`` alone (no decoding).
 """
@@ -20,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from pathlib import Path
@@ -28,14 +31,17 @@ import numpy as np
 import pandas as pd
 
 FP_DIR = Path("/opt/FoundationPose")
+HERE = Path(__file__).resolve().parents[1]
+REPO = HERE.parents[1]
 SENSOR = "rgb"
 
 
 def parse_args(argv=None):
     ap = argparse.ArgumentParser(prog="fp_oshd.predict_sim", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--run-dir", default="results/sim_zerog_docking_test",
-                    help="folder of fp_oshd.sim_prepare (samples.parquet, objects.json)")
+    ap.add_argument("--run-dir", default=str(REPO / "results" / "sim" / "sim_zerog_docking_test_v2"),
+                    help="shared sample list of `oshd-bench sim-prepare` (samples.parquet, objects.json)")
+    ap.add_argument("--out-dir", default=None, help="default: results/<run dir name>/ in this folder")
     ap.add_argument("--setting", default="ORACLE_MASK", help="name of the output (mask source)")
     ap.add_argument("--refine-iters", type=int, default=5, help="refiner iterations in register() (upstream: 5)")
     ap.add_argument("--limit", type=int, default=None, help="only the first N samples (smoke tests)")
@@ -70,10 +76,16 @@ def main(argv=None) -> int:
     a = parse_args(argv)
     sys.path.insert(0, str(FP_DIR))
     import torch
-    import trimesh
-    from estimater import FoundationPose, PoseRefinePredictor, ScorePredictor, dr, set_seed  # upstream
-    from oshd_bench import PoseWriter
+    from estimater import (  # upstream
+        FoundationPose,
+        PoseRefinePredictor,
+        ScorePredictor,
+        dr,
+        set_seed,
+    )
     from oshd import OshDataset
+    from oshd_bench import PoseWriter
+    from oshd_bench.sim import load_cad
 
     from .geometry import draw_overlay
 
@@ -84,9 +96,10 @@ def main(argv=None) -> int:
     samples = pd.read_parquet(run / "samples.parquet").iloc[::a.stride]
     if a.limit:
         samples = samples.iloc[:a.limit]
-    ds = OshDataset(prep["dataset_root"])
-
-    out = run / f"predictions_{a.setting}.parquet"
+    ds = OshDataset(os.environ.get("OSH_DATASET_ROOT") or None)
+    out_dir = Path(a.out_dir) if a.out_dir else HERE / "results" / run.name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"predictions_{a.setting}.parquet"
     meta = {"method": "FoundationPose", "upstream": "https://github.com/NVlabs/FoundationPose",
             "commit": "a1b694b83e633c2cb6115b9063d940a687759392",
             "weights": {"refiner": "2023-10-28-18-33-37", "scorer": "2024-01-11-20-02-45"},
@@ -101,14 +114,14 @@ def main(argv=None) -> int:
         writer.rows = old.to_dict("records")
         done = set(zip(old.trajectory, old.t_ns.astype(int)))
         print(f"resuming: {len(done)} samples already done", flush=True)
-    dbg = run / f"overlays_{a.setting}"
+    dbg = out_dir / f"overlays_{a.setting}"
     if a.debug_every:
         dbg.mkdir(exist_ok=True)
 
     set_seed(a.seed)
     scorer, refiner = ScorePredictor(), PoseRefinePredictor()
     glctx = dr.RasterizeCudaContext()
-    base = {k: untextured_to_vertex_colors(trimesh.load(v["cad"], force="mesh")) for k, v in objects.items()}
+    base = {k: untextured_to_vertex_colors(load_cad(objects, k, ds.root)) for k in objects}
     est, est_key, cad_pts, corners = None, None, None, None
     n_skip = n_done = 0
     t_start = time.time()

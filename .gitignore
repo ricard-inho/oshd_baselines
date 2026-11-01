@@ -15,3 +15,6 @@ baselines/*/cache/
 *.log
 results/gt/
 results/e2vid/
+
+# sim training sample lists are rebuilt with `oshd-bench sim-prepare --split train`
+results/sim/*_train_*/
