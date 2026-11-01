@@ -1,0 +1,59 @@
+{
+  "hardware": {
+    "host": "hera",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "method": "FoundationPose (tracking)",
+  "upstream": "https://github.com/NVlabs/FoundationPose",
+  "commit": "a1b694b83e633c2cb6115b9063d940a687759392",
+  "weights": {
+    "refiner": "2023-10-28-18-33-37",
+    "scorer": "2024-01-11-20-02-45"
+  },
+  "mode": "register() on the first frame of each visible segment, then track_one()",
+  "refine_iters": 5,
+  "track_iters": 2,
+  "mask": "simulator semantic mask of class 'target' (oracle), on the registered frames only",
+  "init": "first frame of a segment with mask >= 2000 px, not touching the image border",
+  "input": "sim rgb + depth, pinhole K",
+  "runtime": "register() / track_one() only",
+  "prepare": {
+    "benchmark": "v2",
+    "revision": "df3530bfbd77572522fcea4699e793e4d7282bec",
+    "domain": "sim_zerog",
+    "task": "inspection",
+    "split": "test",
+    "sensor": "rgb",
+    "stride": 1,
+    "min_mask_px": 100,
+    "n_trajectories": 144,
+    "n_samples": 108528,
+    "objects": {
+      "satellite_mockup": 72345,
+      "cubesat506906202": 2358,
+      "cubesat1838650269": 2354,
+      "cubesat2146204093": 2331,
+      "cubesat635749242": 2317,
+      "cubesat436450454": 2317,
+      "esa_bepi_mcs": 2289,
+      "cubesat1310721260": 2288,
+      "cubesat447547671": 2274,
+      "cubesat1246800582": 2265,
+      "cubesat1418165174": 2248,
+      "cubesat1789001421": 2239,
+      "cubesat2096562327": 2231,
+      "cubesat1980435199": 2229,
+      "cubesat2062690999": 2182,
+      "cubesat924440075": 2164,
+      "cubesat1892402960": 2097
+    }
+  },
+  "setting": "TRACK_ORACLE_INIT",
+  "trajectories": null,
+  "n_samples": 108528,
+  "n_predicted": 91007,
+  "n_registered": 71,
+  "n_tracked": 44162,
+  "wall_s": 4998
+}

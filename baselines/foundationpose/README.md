@@ -274,10 +274,68 @@ e_t = 8.37 cm, e_q = 43.0°, S = 0.963. The medians are 1.38 cm, 4.13° and S = 
 It was produced with the scripts of commit `e9f345e` (`fp_oshd/sim_prepare.py`, `fp_oshd/eval_sim.py`,
 since moved into `oshd-bench`); `oshd-bench sim-prepare --benchmark v1` rebuilds its sample list.
 
+## Simulated inspection, tracking mode: `sim_zerog` / `inspection` / `test` (Table I, row 2)
+
+FoundationPose **tracking** on the inspection fly-bys of the Zero-G lab: it measures drift over
+long trajectories (40 s, 20 Hz) through changing viewpoints and lighting.
+
+| | |
+|---|---|
+| Split | `benchmark_v2`, `sim_zerog/inspection/test`: 144 trajectories |
+| Samples | **every** rgb frame (20 Hz) where the target's mask has ≥ 100 px: 108 528 samples (`oshd-bench sim-prepare --task inspection --stride 1` → `results/sim/sim_zerog_inspection_test_v2/`) |
+| Method | per segment of consecutive visible frames: `register()` (252 hypotheses, 5 refiner iterations) on the first frame where the target is **fully in view** (mask ≥ 2000 px, not touching the image border), then `track_one()` (2 refiner iterations, upstream's default) on every later frame. No re-initialisation, no mask after the first frame |
+| Mask | the simulator's semantic mask, on the registered frame only (oracle) |
+| Code | `fp_oshd/predict_track.py` (Docker), `fp_oshd/drift.py` (host) |
+
+Registering on a target cut by the image border puts it metres off, and tracking never recovers
+from that: hence the full-view rule. The frames before it get no prediction and count as
+failures (coverage 0.84; median wait 0.5 s after the target appears).
+
+```bash
+cd ~/osh_dataset/oshd_baselines
+baselines/foundationpose/.venv/bin/oshd download --benchmark v2 --domain sim_zerog --task inspection --split test -m rgb -m depth -m semantic -m mocap
+uv run --project bench oshd-bench sim-prepare --task inspection --stride 1     # committed; ~10 min
+FP_IMAGE=oshd-foundationpose:a1b694b-sm86 baselines/foundationpose/docker/run.sh \
+    python -m fp_oshd.predict_track --setting TRACK_ORACLE_INIT --debug-every 1500 --resume
+uv run --project bench oshd-bench sim-eval --run-dir results/sim/sim_zerog_inspection_test_v2 \
+    --pred baselines/foundationpose/results/sim_zerog_inspection_test_v2/predictions_TRACK_ORACLE_INIT.parquet
+cd baselines/foundationpose && .venv/bin/python -m fp_oshd.drift --run-dir ../../results/sim/sim_zerog_inspection_test_v2 \
+    --pred results/sim_zerog_inspection_test_v2/predictions_TRACK_ORACLE_INIT.parquet
+```
+
+`track_one()` runs at ~45 frames/s on the RTX 3090 (16 s per 740-frame run alone; 83 min for the
+split, sharing the GPU with a sim campaign). `--resume` skips finished trajectories (the file is
+saved after each one), so an interrupted run (e.g. CUDA out of memory) just continues.
+
+### Result (2026-11-01, RTX 3090, oracle mask on the registered frames)
+
+**Paper Table I row** (means over all 108 528 samples' predictions, rotation up to the measured
+symmetries): e_t = 14.76 cm, e_q = 13.1°, S = 0.348; coverage 0.84. Medians 1.04 cm, 2.06°.
+`RESULTS_TRACK_ORACLE_INIT.md` has the table per target, mount and range.
+
+Drift (`DRIFT_TRACK_ORACLE_INIT.md`): error against the time since registration.
+
+| t since registration (s) | samples | e_t mean (cm) | e_t med (cm) | e_q sym mean (°) | e_q sym med (°) | S sym mean | 5cm/5° sym |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 0-1 | 2887 | 7.40 | 1.09 | 12.3 | 2.18 | 0.261 | 0.806 |
+| 1-2 | 2643 | 11.31 | 1.11 | 14.1 | 2.24 | 0.320 | 0.760 |
+| 2-5 | 7647 | 12.20 | 1.09 | 14.0 | 2.03 | 0.337 | 0.818 |
+| 5-10 | 12601 | 12.45 | 1.04 | 14.6 | 2.08 | 0.356 | 0.812 |
+| 10-20 | 25200 | 14.11 | 1.01 | 13.4 | 1.94 | 0.348 | 0.831 |
+| 20-30 | 24664 | 14.91 | 1.01 | 12.1 | 2.06 | 0.332 | 0.822 |
+| 30-60 | 15365 | 20.74 | 1.10 | 12.7 | 2.23 | 0.391 | 0.806 |
+
+* **A typical track does not drift**: the median error stays at ~1 cm and ~2° for the whole run,
+  and ~80% of the frames are within 5 cm / 5° at every age.
+* **Lost tracks stay lost**, so the mean grows with time (7 → 21 cm). They are mostly
+  **floating** targets (S 1.08, vs 0.04-0.06 for the arm-held ones) and the NASA models.
+* Compared with single-frame registration on docking (row 1, S 0.963), tracking is much better
+  because the inspection arc stays at 0.5-2 m and the refiner starts from the previous pose.
+
 ## Files
 
 * `docker/Dockerfile` and `docker/run.sh` are the image and the runner. The runner mounts the repo, the dataset root and its resolved symlinks, `~/.cache/oshd` and the results dir at their host paths, and mounts `weights/` at `/opt/FoundationPose/weights`. It runs as your uid.
 * `fp_oshd/predict.py` is the inference entry point. `fp_oshd/train.py` is the no-op described above.
 * `fp_oshd/geometry.py` holds the CAD loading, undistortion, ICP and overlays.
-* `fp_oshd/predict_sim.py` is the simulated-data inference (see above). The sample list and the metrics are `oshd-bench sim-prepare` / `sim-eval` (`bench/src/oshd_bench/sim.py`).
+* `fp_oshd/predict_sim.py` is the simulated-data inference (see above), `fp_oshd/predict_track.py` the tracking mode and `fp_oshd/drift.py` its error-vs-time analysis. The sample list and the metrics are `oshd-bench sim-prepare` / `sim-eval` (`bench/src/oshd_bench/sim.py`).
 * `third_party/` and `weights/` are gitignored and filled by `setup.sh`. `cache/` (the exported CAD) and `.venv/` are gitignored too.

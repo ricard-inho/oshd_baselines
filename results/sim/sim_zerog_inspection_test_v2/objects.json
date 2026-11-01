@@ -1,0 +1,223 @@
+{
+  "satellite_mockup": {
+    "cad": "models/sim/satellite_mockup/model.obj",
+    "source": "satellite_mockup.usdz",
+    "kind": "satellite_mockup",
+    "extent_m": [
+      0.3076,
+      1.2998,
+      0.3
+    ],
+    "diameter_m": 1.3689756180597228,
+    "n_vertices": 118565,
+    "n_faces": 42009
+  },
+  "cubesat1980435199": {
+    "cad": "models/sim/cubesat1980435199/model.obj",
+    "source": "cubesat1980435199.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2059,
+      0.3643,
+      0.1224
+    ],
+    "diameter_m": 0.43604046894869747,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat2096562327": {
+    "cad": "models/sim/cubesat2096562327/model.obj",
+    "source": "cubesat2096562327.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4264,
+      0.4264,
+      0.1524
+    ],
+    "diameter_m": 0.6220527854394674,
+    "n_vertices": 504,
+    "n_faces": 252
+  },
+  "cubesat2062690999": {
+    "cad": "models/sim/cubesat2062690999/model.obj",
+    "source": "cubesat2062690999.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.3908,
+      0.2184,
+      0.131
+    ],
+    "diameter_m": 0.4664846634059902,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1838650269": {
+    "cad": "models/sim/cubesat1838650269/model.obj",
+    "source": "cubesat1838650269.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.7894,
+      0.7894,
+      0.2837
+    ],
+    "diameter_m": 1.1518509176143412,
+    "n_vertices": 504,
+    "n_faces": 252
+  },
+  "cubesat1789001421": {
+    "cad": "models/sim/cubesat1789001421/model.obj",
+    "source": "cubesat1789001421.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4994,
+      0.2461,
+      0.1547
+    ],
+    "diameter_m": 0.5778505364573092,
+    "n_vertices": 424,
+    "n_faces": 212
+  },
+  "cubesat924440075": {
+    "cad": "models/sim/cubesat924440075/model.obj",
+    "source": "cubesat924440075.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.3796,
+      0.2116,
+      0.1332
+    ],
+    "diameter_m": 0.4545781759389687,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat506906202": {
+    "cad": "models/sim/cubesat506906202/model.obj",
+    "source": "cubesat506906202.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2195,
+      0.3977,
+      0.1127
+    ],
+    "diameter_m": 0.46804957487962745,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat635749242": {
+    "cad": "models/sim/cubesat635749242/model.obj",
+    "source": "cubesat635749242.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.4403,
+      1.0656,
+      0.2354
+    ],
+    "diameter_m": 1.1767231710236694,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "esa_bepi_mcs": {
+    "cad": "models/sim/esa_bepi_mcs/model.obj",
+    "source": "esa_bepi_mcs.usdz",
+    "kind": "usd",
+    "extent_m": [
+      30.0,
+      6.1678,
+      8.3822
+    ],
+    "diameter_m": 31.75378250614399,
+    "n_vertices": 334608,
+    "n_faces": 111536
+  },
+  "cubesat2146204093": {
+    "cad": "models/sim/cubesat2146204093/model.obj",
+    "source": "cubesat2146204093.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.6741,
+      0.6741,
+      0.2573
+    ],
+    "diameter_m": 0.9874237409076206,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "cubesat1418165174": {
+    "cad": "models/sim/cubesat1418165174/model.obj",
+    "source": "cubesat1418165174.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.45,
+      0.2262,
+      0.1555
+    ],
+    "diameter_m": 0.5270884604741409,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat447547671": {
+    "cad": "models/sim/cubesat447547671/model.obj",
+    "source": "cubesat447547671.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      1.0651,
+      0.4407,
+      0.2807
+    ],
+    "diameter_m": 1.1863761549647736,
+    "n_vertices": 424,
+    "n_faces": 212
+  },
+  "cubesat436450454": {
+    "cad": "models/sim/cubesat436450454/model.obj",
+    "source": "cubesat436450454.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.5345,
+      0.5345,
+      0.1643
+    ],
+    "diameter_m": 0.77353936414445,
+    "n_vertices": 632,
+    "n_faces": 316
+  },
+  "cubesat1246800582": {
+    "cad": "models/sim/cubesat1246800582/model.obj",
+    "source": "cubesat1246800582.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.2079,
+      0.3858,
+      0.1291
+    ],
+    "diameter_m": 0.4569189921649132,
+    "n_vertices": 424,
+    "n_faces": 212
+  },
+  "cubesat1310721260": {
+    "cad": "models/sim/cubesat1310721260/model.obj",
+    "source": "cubesat1310721260.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.5503,
+      0.254,
+      0.142
+    ],
+    "diameter_m": 0.6225068683315872,
+    "n_vertices": 552,
+    "n_faces": 276
+  },
+  "cubesat1892402960": {
+    "cad": "models/sim/cubesat1892402960/model.obj",
+    "source": "cubesat1892402960.usdz",
+    "kind": "cubesat",
+    "extent_m": [
+      0.5449,
+      0.3055,
+      0.2142
+    ],
+    "diameter_m": 0.6604159068980698,
+    "n_vertices": 424,
+    "n_faces": 212
+  }
+}
