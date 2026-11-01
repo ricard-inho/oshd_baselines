@@ -21,6 +21,7 @@ lidar-stats = "oshd_lidar.stats:main"
 lidar-extrinsic = "oshd_lidar.extrinsic:main"
 lidar-reg-predict = "oshd_lidar.predict:main"
 lidar-viz = "oshd_lidar.viz:main"
+lidar-sim-icp = "oshd_lidar.sim_icp:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/oshd_lidar"]

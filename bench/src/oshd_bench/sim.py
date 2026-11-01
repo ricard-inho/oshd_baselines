@@ -21,7 +21,12 @@ table are comparable.
 * ``prepare.json``: the settings and the Hub revision.
 
 Samples: every ``--stride``-th frame of ``--sensor`` (rgb, 20 Hz; the default stride 10 gives
-2 Hz) where the target's semantic mask has at least ``--min-mask-px`` pixels. The sim event
+2 Hz) where the target's semantic mask has at least ``--min-mask-px`` pixels. ``--sensor lidar``
+(10 Hz scans; use ``--stride 5`` for 2 Hz): scans with at least ``--min-points`` returns on the
+target, labelled by the simulator (a return is the target's if it lies on the target's surface);
+``samples.parquet`` then has ``target_points`` (the indices of those returns in the scan: the
+oracle segmentation, like the semantic mask for cameras) and ``mask_px`` is their number. ``T``
+is then ``T_lidar_target`` (lidar sensor frame). The sim event
 camera is pixel-aligned with ``rgb``, so event methods use the same samples and poses, with the
 events of a window ending at ``t_ns``.
 
@@ -98,7 +103,7 @@ def _cad_entry(traj) -> dict:
 
 def prepare(out: Path, *, domain: str = "sim_zerog", task: str = "docking", split: str = "test",
             benchmark: str | None = "v2", root: str | None = None, sensor: str = "rgb", stride: int = 10,
-            min_mask_px: int = 100, limit_trajectories: int | None = None) -> Path:
+            min_mask_px: int = 100, min_points: int = 30, limit_trajectories: int | None = None) -> Path:
     from oshd import OshDataset
     from oshd.labels import camera_pose
     from tqdm import tqdm
@@ -122,21 +127,38 @@ def prepare(out: Path, *, domain: str = "sim_zerog", task: str = "docking", spli
         name, scale = traj.target["model"], float(traj.target["scale"])
         if name not in objects:
             objects[name] = _cad_entry(traj)
-        target_id = traj.semantic_classes["target"]
         ts = traj.timestamps(sensor)
+        if sensor == "lidar":
+            from scipy.spatial import cKDTree
+
+            surface = np.asarray(traj.target_mesh().sample(20000))
+        else:
+            target_id = traj.semantic_classes["target"]
         for i in range(0, len(ts), stride):
             t_ns = int(ts[i])
-            n_px = int((traj.frame("semantic", i) == target_id).sum())
-            if n_px < min_mask_px:
-                continue
             T_wc, ok_c = camera_pose(traj, sensor, t_ns)
             T_wt, ok_t = traj.body_pose("target", t_ns)
             if not (ok_c and ok_t):
                 continue
             T = np.linalg.inv(T_wc) @ T_wt
+            extra = {}
+            if sensor == "lidar":
+                # Simulator labels of the returns: a point is the target's if it lies on its surface.
+                scan = traj.lidar_scan(i)
+                P = np.stack([scan["x"], scan["y"], scan["z"]], 1)
+                tol = max(0.01, 0.01 * float(np.ptp(surface, 0).max()))
+                on = cKDTree(surface @ T[:3, :3].T + T[:3, 3]).query(P)[0] < tol if len(P) else np.zeros(0, bool)
+                n_px = int(on.sum())
+                extra = {"target_points": np.flatnonzero(on).astype(np.int32).tolist()}
+                if n_px < min_points:
+                    continue
+            else:
+                n_px = int((traj.frame("semantic", i) == target_id).sum())
+                if n_px < min_mask_px:
+                    continue
             rows.append({"trajectory": t, "index": i, "t_ns": t_ns, "object": name, "scale": scale,
                          "mask_px": n_px, "T": T.reshape(-1).tolist(), "range_m": float(np.linalg.norm(T[:3, 3])),
-                         "mount": traj.metadata["task_info"].get("target_mount")})
+                         "mount": traj.metadata["task_info"].get("target_mount"), **extra})
     gt = pd.DataFrame(rows)
     gt.to_parquet(out / "gt.parquet", index=False)
     gt.drop(columns=["T", "range_m"]).to_parquet(out / "samples.parquet", index=False)
@@ -147,7 +169,8 @@ def prepare(out: Path, *, domain: str = "sim_zerog", task: str = "docking", spli
     (out / "prepare.json").write_text(json.dumps({
         "benchmark": benchmark, "revision": revision,
         "domain": domain, "task": task, "split": split, "sensor": sensor, "stride": stride,
-        "min_mask_px": min_mask_px, "n_trajectories": len(names), "n_samples": len(gt),
+        "min_mask_px": min_mask_px, **({"min_points": min_points} if sensor == "lidar" else {}),
+        "n_trajectories": len(names), "n_samples": len(gt),
         "objects": gt["object"].value_counts().to_dict()}, indent=2))
     print(f"{len(gt)} samples from {len(names)} trajectories, {len(objects)} target models -> {out}")
     return out

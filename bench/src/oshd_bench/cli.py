@@ -32,6 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     sp.add_argument("--sensor", default="rgb")
     sp.add_argument("--stride", type=int, default=10, help="every N-th frame (rgb is 20 Hz: 10 -> 2 Hz)")
     sp.add_argument("--min-mask-px", type=int, default=100)
+    sp.add_argument("--min-points", type=int, default=30, help="--sensor lidar: returns on the target")
     sp.add_argument("--limit-trajectories", type=int, default=None)
     sp.add_argument("--out", default=None, help="default: results/sim/<domain>_<task>_<split>_<benchmark>")
 
@@ -59,9 +60,10 @@ def main(argv: list[str] | None = None) -> int:
         if a.cmd == "sim-prepare":
             bench = a.benchmark or os.environ.get("OSHD_BENCHMARK") or cfg.get("dataset", {}).get("benchmark")
             bench = None if bench in ("", "none") else bench
-            out = Path(a.out) if a.out else root / "results" / "sim" / sim.run_name(a.domain, a.task, a.split, bench)
+            name = sim.run_name(a.domain, a.task, a.split, bench) + ("" if a.sensor == "rgb" else f"_{a.sensor}")
+            out = Path(a.out) if a.out else root / "results" / "sim" / name
             sim.prepare(out, domain=a.domain, task=a.task, split=a.split, benchmark=bench, root=data_root,
-                        sensor=a.sensor, stride=a.stride, min_mask_px=a.min_mask_px,
+                        sensor=a.sensor, stride=a.stride, min_mask_px=a.min_mask_px, min_points=a.min_points,
                         limit_trajectories=a.limit_trajectories)
         else:
             sim.evaluate(Path(a.run_dir), Path(a.pred), root=data_root, n_points=a.n_points, sym_tol=a.sym_tol,

@@ -73,3 +73,46 @@ Registration is **feasible but coarse**. The Mid-360's range noise (about 2 cm) 
 | ZS-oracle | – | – | 3.4 cm | – | – | – |
 
 These are dev numbers on a dev extrinsic. They show the pipeline works; they are not paper results. The oracle crop is worse in the median because the 12 cm sphere also catches clutter just above the cube.
+
+## Simulated docking: LiDAR-to-CAD ICP, single scan (paper Table I, LiDAR row)
+
+`oshd_lidar.sim_icp` (`lidar-sim-icp`), training-free, CPU only.
+
+| | |
+|---|---|
+| Split | `benchmark_v2`, `sim_zerog/docking/test`: 162 trajectories |
+| Samples | every 5th scan (2 Hz of 10 Hz) with ≥ 30 returns on the target: 12 932 samples (`oshd-bench sim-prepare --task docking --sensor lidar --stride 5` → `results/sim/sim_zerog_docking_test_v2_lidar/`) |
+| Segmentation | the simulator's labels of the returns (a return is the target's if it lies on its surface): **oracle**, like FoundationPose's semantic mask. `target_points` in `samples.parquet` |
+| Method | 96 rotation hypotheses (uniform on SO(3)), scan centroid at the CAD's box centre; point-to-plane ICP with a Tukey kernel at 15%, 5%, 2% of the CAD diameter; the best fitness (returns within 2% of the diameter) wins |
+| Lidar | the sim scan re-expressed about the sensor origin: oshd ≥ 1.1 (or the local `osh-dataset` checkout) reads benchmark_v2's scans corrected; see `osh_dataset_pipeline/sim/fix_lidar_origin.py` |
+
+```bash
+cd ~/osh_dataset/oshd_baselines
+baselines/foundationpose/.venv/bin/oshd download --benchmark v2 --domain sim_zerog --task docking --split test -m lidar -m mocap
+uv run --project bench oshd-bench sim-prepare --task docking --sensor lidar --stride 5      # committed; ~15 min
+cd baselines/lidar_registration
+uv run lidar-sim-icp --setting ORACLE_SEG --workers 6 --resume                              # ~2.5 h on 6 cores
+cd ../.. && uv run --project bench oshd-bench sim-eval --run-dir results/sim/sim_zerog_docking_test_v2_lidar \
+    --pred baselines/lidar_registration/results/sim_zerog_docking_test_v2_lidar/predictions_ORACLE_SEG.parquet
+```
+
+Until oshd 1.1.0 is on PyPI, add `--with-editable ../osh-dataset` (`../../../osh-dataset` from the
+baseline folder) to the `uv run` commands, so the lidar scans are read about the sensor.
+
+### Result (2026-11-01)
+
+**Paper Table I row** (means, rotation up to the measured symmetries): e_t = 8.12 cm,
+e_q = 19.7°, S = 0.568; every sample gets a pose. Medians 0.38 cm, 0.38°.
+
+| range | samples | e_t med (cm) | e_t mean (cm) | e_q sym med (°) | e_q sym mean (°) | S sym mean |
+|---|---:|---:|---:|---:|---:|---:|
+| < 0.3 m | 1562 | 1.97 | 15.07 | 0.96 | 34.9 | 1.136 |
+| 0.3-0.5 m | 4893 | 0.61 | 12.77 | 0.74 | 29.5 | 0.887 |
+| 0.5-1 m | 3742 | 0.30 | 3.94 | 0.27 | 10.2 | 0.236 |
+| 1-2 m | 1981 | 0.28 | 1.57 | 0.27 | 6.9 | 0.132 |
+| > 2 m | 754 | 0.32 | 1.54 | 0.35 | 5.9 | 0.108 |
+
+* The simulated lidar has no noise, so a correct registration is sub-centimetre and sub-degree.
+* **Close range fails for the same reason as FoundationPose's single frame:** below 0.5 m the
+  scan sees one face of the target, and the hypothesis search often settles on a wrong one.
+* Registration takes a median of 4.2 s per scan on one CPU core (96 hypotheses x 3 ICP levels).
