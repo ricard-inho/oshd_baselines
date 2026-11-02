@@ -137,8 +137,15 @@ recordings, flying the same inspection and docking tasks. oshd selects them with
   mockup's CAD frame (`models/real/<mockup>/model.obj`). Twin: the sim `rgb` camera (320x240,
   pinhole), `T` = `T_camera_target` in the same CAD frame (the twin's `models/sim/real_<mockup>/`
   is the real CAD). So one keypoint set per mockup serves both domains.
-* **Events.** Real: the EVK4 (`events`, calibrated from trajectory_010 on; window ending at the
-  frame time). Twin: the sim event camera, pixel-aligned with `rgb`.
+* **Events.** Real: the EVK4 (`events`, calibrated from trajectory_010 on). The shared lists are
+  `results/real/real_events_{train,test}_v3/` (66 / 16 trajectories, 34 317 / 9 834 samples):
+  reference times at 20 Hz, each using the events in `[t_ns − 50 ms, t_ns)` (`prepare.json`).
+  Twin: the sim event camera, pixel-aligned with `rgb`.
+* **Known issue (real events):** the ground truth projected into the EVK4 is visibly off in some
+  frames: tens of pixels at 1280x720, i.e. a few cm at 1.5-2 m, mostly vertical. The RealSense
+  ground truth of the same frames is aligned. It is not a clock offset (shifting the pose in time
+  does not fix it), so it is most likely the event camera's rig extrinsics. Build and validate the
+  pipeline on it, but check with Ricard before reporting real-event numbers.
 * Score both directions with `oshd-bench sim-eval --run-dir <test list> --pred <predictions>`. The
   real ground truth was checked by projecting the CAD into the RealSense images; the CubeSat
   recordings (007-009) are left out because their ground truth is off.

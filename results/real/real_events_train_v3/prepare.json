@@ -1,0 +1,18 @@
+{
+  "benchmark": "v3",
+  "revision": "c8e5ca0d6f38cea943dfc60009dbfff9f7bf026f",
+  "domain": "real",
+  "task": null,
+  "split": "train",
+  "sensor": "events",
+  "stride": 1,
+  "events_rate_hz": 20.0,
+  "events_window_ms": 50.0,
+  "events_note": "index = reference time at events_rate_hz; a sample uses the events in [t_ns - events_window_ms, t_ns)",
+  "n_trajectories": 66,
+  "n_samples": 34317,
+  "objects": {
+    "antena_1_solar": 21111,
+    "antena": 13206
+  }
+}

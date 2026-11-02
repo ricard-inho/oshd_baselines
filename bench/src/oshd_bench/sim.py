@@ -348,8 +348,10 @@ def prepare_real(out: Path, ev, *, sensor: str = "realsense_color", split: str =
     from .gt import build_gt
 
     cfg = ev.cfg
+    samp = cfg.get("sampling", {})
+    rate_hz, window_ms = float(samp.get("events_rate_hz", 20)), float(samp.get("events_window_ms", 50))
     df = build_gt(ev.ds, sensor, split, "real", list(objects), stride=stride,
-                  symmetries=cfg.get("symmetries"))
+                  symmetries=cfg.get("symmetries"), events_rate_hz=rate_hz, events_window_ms=window_ms)
     if df.empty:
         raise SystemExit(f"no real {split} sample for {sensor}: download the data (oshd download --benchmark ... "
                          f"--domain real --split {split} -m {sensor} -m mocap)")
@@ -378,6 +380,9 @@ def prepare_real(out: Path, ev, *, sensor: str = "realsense_color", split: str =
     (out / "prepare.json").write_text(json.dumps({
         "benchmark": bench, "revision": load_benchmark(bench)["revision"] if bench else None,
         "domain": "real", "task": None, "split": split, "sensor": sensor, "stride": stride,
+        **({"events_rate_hz": rate_hz, "events_window_ms": window_ms,
+            "events_note": "index = reference time at events_rate_hz; a sample uses the events in "
+                           "[t_ns - events_window_ms, t_ns)"} if sensor == "events" else {}),
         "n_trajectories": int(gt["trajectory"].nunique()), "n_samples": len(gt),
         "objects": gt["object"].value_counts().to_dict()}, indent=2))
     print(f"{len(gt)} samples from {gt['trajectory'].nunique()} real trajectories -> {out}")
