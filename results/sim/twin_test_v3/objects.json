@@ -1,0 +1,28 @@
+{
+  "real_antena_1_solar": {
+    "cad": "models/sim/real_antena_1_solar/model.obj",
+    "source": "real_antena_1_solar.usdz",
+    "kind": "usd",
+    "extent_m": [
+      0.7999,
+      0.5556,
+      0.3862
+    ],
+    "diameter_m": 1.0477021031495546,
+    "n_vertices": 283686,
+    "n_faces": 94562
+  },
+  "real_antena": {
+    "cad": "models/sim/real_antena/model.obj",
+    "source": "real_antena.usdz",
+    "kind": "usd",
+    "extent_m": [
+      1.2998,
+      0.5556,
+      0.3862
+    ],
+    "diameter_m": 1.4653735793114329,
+    "n_vertices": 354420,
+    "n_faces": 118140
+  }
+}

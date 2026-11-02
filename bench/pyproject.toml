@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Shared ground truth, prediction formats and metrics for the OSHD baselines."
 requires-python = ">=3.10"
 dependencies = [
-    "oshd[mesh]>=1.0.0",   # benchmark_v1, benchmark_v2
+    "oshd[mesh]>=1.1.0",   # benchmark_v1 .. v3, domain "twin", sim lidar about the sensor
     "numpy>=1.23",
     "pandas>=2.0",
     "pyarrow>=14",
@@ -21,13 +21,8 @@ dependencies = [
 oshd-bench = "oshd_bench.cli:main"
 
 [tool.uv.sources]
-# from TestPyPI (its dependencies still come from PyPI: the index is explicit)
-oshd = { index = "testpypi" }
-
-[[tool.uv.index]]
-name = "testpypi"
-url = "https://test.pypi.org/simple/"
-explicit = true
+# the v1.1.0 release tag (switch to PyPI, i.e. drop this line, once oshd 1.1.0 is published there)
+oshd = { git = "https://github.com/ricard-inho/osh-dataset", tag = "v1.1.0" }
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.5"]

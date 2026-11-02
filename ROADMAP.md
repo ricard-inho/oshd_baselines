@@ -5,7 +5,7 @@ Notion plan. How to run one on your own branch: [`CONTRIBUTING.md`](CONTRIBUTING
 uses the frozen **`benchmark_v2`** (oshd 1.0.0, Hub revision `df3530b`). Each row says what
 must run, which code runs it, what blocks it, and roughly how long it takes on one RTX 3090.
 
-Test splits of `benchmark_v2` (trajectories):
+Splits of `benchmark_v3` (trajectories; the first five rows are `benchmark_v2`'s):
 
 | split | train | test |
 |---|---:|---:|
@@ -14,6 +14,7 @@ Test splits of `benchmark_v2` (trajectories):
 | `sim_3d/approach` | 1089 | 186 |
 | `sim_3d/orbit` | 2528 | 522 |
 | `real` (mockups `antena`, `antena_1_solar`, `cubesat`) | 75 | 17 |
+| `twin` (lab twins of `antena`, `antena_1_solar`; in sim_zerog) | 160 | 40 |
 
 Status legend: **done** · **running** · **ready** (code exists, only needs to run) ·
 **adapt** (code exists for the real CubeSat and needs a sim variant) · **new** (no code yet) ·
@@ -33,9 +34,9 @@ Status legend: **done** · **running** · **ready** (code exists, only needs to 
 
 | # | Row | Owner | Status | Notes |
 |---|---|---|---|---|
-| 6 | SPNv2 trained on real, tested on twin | Aman (RGB), Lara (events) | **blocked** | needs a twin of the real mockups: the sim docking targets are `satellite_mockup` + CubeSats + NASA models, the real ones `antena` / `antena_1_solar`. Either record twin runs with the real mockups' CAD (`models/real/*`) in SRB, or confirm that `satellite_mockup` is the twin of one of them. |
-| 7 | SPNv2 trained on twin, tested on real | Aman (RGB), Lara (events) | **blocked** | as #6 |
-| 8 | FoundationPose zero-shot on both domains | Ricard | **blocked (real side)** | real RGB-D needs the `realsense_depth` → colour registration (DATA_REQUIREMENTS items 1 and 8: missing / verify), and a 2D mask on real frames (the Mask R-CNN in `baselines/detector`, or GT-rendered masks as an oracle). Twin side: as #1 on the twin runs. |
+| 6 | SPNv2 trained on real, tested on twin | Aman (RGB), Lara (events) | **ready** (twins in benchmark_v3; sample lists in `results/real/`, `results/sim/twin_test_v3/`) | train on the real train split (64 traj., mockups), test on the 40 twin test trajectories; see CONTRIBUTING.md, "Real data and the real ↔ twin transfer" |
+| 7 | SPNv2 trained on twin, tested on real | Aman (RGB), Lara (events) | **ready** | as #6 |
+| 8 | FoundationPose zero-shot on both domains | Ricard | **twin: ready; real: blocked on the depth registration** | real RGB-D needs the `realsense_depth` → colour registration (DATA_REQUIREMENTS items 1 and 8: missing / verify), and a 2D mask on real frames (the Mask R-CNN in `baselines/detector`, or GT-rendered masks as an oracle). Twin side: as #1 on the twin runs. |
 
 ## Table III: visuomotor policies (`tables/tab_policy.tex`)
 

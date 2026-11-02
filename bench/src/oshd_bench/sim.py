@@ -56,8 +56,8 @@ RANGE_BINS = [0.0, 0.3, 0.5, 1.0, 2.0, np.inf]
 FLIPS = {"Rx180": np.diag([1.0, -1, -1]), "Ry180": np.diag([-1.0, 1, -1]), "Rz180": np.diag([-1.0, -1, 1])}
 
 
-def run_name(domain: str, task: str, split: str, benchmark: str | None) -> str:
-    return f"{domain}_{task}_{split}" + (f"_{benchmark}" if benchmark else "")
+def run_name(domain: str, task: str | None, split: str, benchmark: str | None) -> str:
+    return "_".join(x for x in (domain, task, split, benchmark) if x)
 
 
 # ----------------------------------------------------------------------------- CAD
@@ -101,7 +101,7 @@ def _cad_entry(traj) -> dict:
 # ----------------------------------------------------------------------------- prepare
 
 
-def prepare(out: Path, *, domain: str = "sim_zerog", task: str = "docking", split: str = "test",
+def prepare(out: Path, *, domain: str = "sim_zerog", task: str | None = "docking", split: str = "test",
             benchmark: str | None = "v2", root: str | None = None, sensor: str = "rgb", stride: int = 10,
             min_mask_px: int = 100, min_points: int = 30, limit_trajectories: int | None = None) -> Path:
     from oshd import OshDataset
@@ -325,3 +325,60 @@ def evaluate(run_dir: Path, pred_path: Path, *, root=None, n_points: int = 2000,
     (out / f"RESULTS_{stem}.md").write_text("\n".join(md))
     print("\n".join(md))
     return metrics
+
+
+# ----------------------------------------------------------------------------- real splits
+
+
+#: Real targets of the transfer experiments. The CubeSat recordings (007-009) predate the rig
+#: calibration: their ground truth projects centimetres off the cube in the RealSense image.
+REAL_TARGETS = ("antena", "antena_1_solar")
+
+
+def prepare_real(out: Path, ev, *, sensor: str = "realsense_color", split: str = "test", stride: int = 1,
+                 objects: tuple[str, ...] = REAL_TARGETS) -> Path:
+    """A real split in the sim-run format (``samples.parquet``, ``gt.parquet``, ``objects.json``,
+    ``prepare.json``), so ``sim-eval`` scores real and twin predictions with the same metrics.
+
+    Samples are those of ``oshd-bench gt`` (every frame of ``sensor`` where one of ``objects``,
+    by default the two mockups, projects into the image); ``T`` is ``T_sensor_model`` in
+    the target's CAD frame (``models/objects.yaml``), ``scale`` 1, ``mount`` "real", ``mask_px``
+    unset (-1). The real targets get no symmetry in ``sim-eval`` beyond the measured 180° flips of
+    their CAD."""
+    from .gt import build_gt
+
+    cfg = ev.cfg
+    df = build_gt(ev.ds, sensor, split, "real", list(objects), stride=stride,
+                  symmetries=cfg.get("symmetries"))
+    if df.empty:
+        raise SystemExit(f"no real {split} sample for {sensor}: download the data (oshd download --benchmark ... "
+                         f"--domain real --split {split} -m {sensor} -m mocap)")
+    root = Path(ev.ds.root)
+    objects = {}
+    for name in sorted(df["object"].unique()):
+        obj = ev.ds.objects[name]
+        path = Path(obj.mesh_path)
+        rel = path.relative_to(root) if path.is_relative_to(root) else path
+        import trimesh
+
+        m = trimesh.load(path, force="mesh")
+        ext = np.ptp(m.vertices, axis=0)
+        objects[name] = {"cad": str(rel), "kind": name, "extent_m": ext.round(4).tolist(),
+                         "diameter_m": float(np.linalg.norm(ext)), "n_vertices": len(m.vertices)}
+    gt = df.assign(scale=1.0, mask_px=-1, mount="real")[
+        ["trajectory", "index", "t_ns", "object", "scale", "mask_px", "T", "range_m", "mount", "illumination",
+         "ang_rate_dps"]]
+    out.mkdir(parents=True, exist_ok=True)
+    gt.to_parquet(out / "gt.parquet", index=False)
+    gt.drop(columns=["T", "range_m"]).to_parquet(out / "samples.parquet", index=False)
+    (out / "objects.json").write_text(json.dumps(objects, indent=2))
+    bench = ev.ds.benchmark if hasattr(ev.ds, "benchmark") else None
+    from oshd.splits import load_benchmark
+
+    (out / "prepare.json").write_text(json.dumps({
+        "benchmark": bench, "revision": load_benchmark(bench)["revision"] if bench else None,
+        "domain": "real", "task": None, "split": split, "sensor": sensor, "stride": stride,
+        "n_trajectories": int(gt["trajectory"].nunique()), "n_samples": len(gt),
+        "objects": gt["object"].value_counts().to_dict()}, indent=2))
+    print(f"{len(gt)} samples from {gt['trajectory'].nunique()} real trajectories -> {out}")
+    return out

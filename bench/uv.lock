@@ -419,8 +419,8 @@ wheels = [
 
 [[package]]
 name = "oshd"
-version = "1.0.0"
-source = { registry = "https://test.pypi.org/simple/" }
+version = "1.1.0"
+source = { git = "https://github.com/ricard-inho/osh-dataset?tag=v1.1.0#c141120998f254de43cdeec96cefed988e23a172" }
 dependencies = [
     { name = "huggingface-hub" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -430,10 +430,6 @@ dependencies = [
     { name = "pyarrow" },
     { name = "pyyaml" },
     { name = "tqdm" },
-]
-sdist = { url = "https://test-files.pythonhosted.org/packages/2b/98/37568eaf22c1ec83bd3b63c747be1376c5951f662324a6b11eb43c69378f/oshd-1.0.0.tar.gz", hash = "sha256:eb76f74420c86148854c59e9a45e185add0576c0110ea5bd8f1c19f37792dfd1", size = 128579, upload-time = "2026-10-31T19:41:44.623Z" }
-wheels = [
-    { url = "https://test-files.pythonhosted.org/packages/8e/cc/c6c7606ccef4986e93254a3de88af3fc9e34102d14bfe160c947cd84d3c4/oshd-1.0.0-py3-none-any.whl", hash = "sha256:44996ca348d4d7b6a4fb215a5f22c9727d6a989dc5f96d83272d18765b46e2f8", size = 116385, upload-time = "2026-10-31T19:41:43.548Z" },
 ]
 
 [package.optional-dependencies]
@@ -469,7 +465,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "numpy", specifier = ">=1.23" },
-    { name = "oshd", extras = ["mesh"], specifier = ">=1.0.0", index = "https://test.pypi.org/simple/" },
+    { name = "oshd", extras = ["mesh"], git = "https://github.com/ricard-inho/osh-dataset?tag=v1.1.0" },
     { name = "pandas", specifier = ">=2.0" },
     { name = "pyarrow", specifier = ">=14" },
     { name = "pyyaml", specifier = ">=6.0" },

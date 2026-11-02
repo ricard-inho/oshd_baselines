@@ -1,0 +1,16 @@
+{
+  "benchmark": "v3",
+  "revision": "c8e5ca0d6f38cea943dfc60009dbfff9f7bf026f",
+  "domain": "twin",
+  "task": null,
+  "split": "test",
+  "sensor": "rgb",
+  "stride": 10,
+  "min_mask_px": 100,
+  "n_trajectories": 40,
+  "n_samples": 3038,
+  "objects": {
+    "real_antena_1_solar": 1527,
+    "real_antena": 1511
+  }
+}

@@ -26,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
 
     sp = sub.add_parser("sim-prepare", help="shared sample list + GT of a sim split -> results/sim/<run>/")
     sp.add_argument("--domain", default="sim_zerog")
-    sp.add_argument("--task", default="docking")
+    sp.add_argument("--task", default="docking", help="docking / inspection / approach / orbit, or all")
     sp.add_argument("--split", default="test")
     sp.add_argument("--benchmark", default=None, help="default: dataset.benchmark of configs/bench.yaml")
     sp.add_argument("--sensor", default="rgb")
@@ -35,6 +35,13 @@ def main(argv: list[str] | None = None) -> int:
     sp.add_argument("--min-points", type=int, default=30, help="--sensor lidar: returns on the target")
     sp.add_argument("--limit-trajectories", type=int, default=None)
     sp.add_argument("--out", default=None, help="default: results/sim/<domain>_<task>_<split>_<benchmark>")
+
+    rp = sub.add_parser("real-prepare", help="a real split in the sim-run format -> results/real/<run>/ (for sim-eval)")
+    rp.add_argument("--sensor", default="realsense_color", choices=SENSORS)
+    rp.add_argument("--split", default="test")
+    rp.add_argument("--stride", type=int, default=1)
+    rp.add_argument("--objects", nargs="+", default=None, help="default: the mockups antena, antena_1_solar")
+    rp.add_argument("--out", default=None, help="default: results/real/real_<sensor>_<split>_<benchmark>")
 
     se = sub.add_parser("sim-eval", help="score a sim predictions file against results/sim/<run>/gt.parquet")
     se.add_argument("--run-dir", required=True, help="e.g. results/sim/sim_zerog_docking_test_v2")
@@ -50,6 +57,17 @@ def main(argv: list[str] | None = None) -> int:
 
     root = repo_root()
     cfg = load_config(a.config or root / "configs" / "bench.yaml")
+    if a.cmd == "real-prepare":
+        from pathlib import Path
+
+        from . import sim
+
+        ev = Evaluator(cfg, root)
+        bench = ev.ds.benchmark
+        name = "_".join(x for x in ("real", a.sensor, a.split, bench) if x)
+        sim.prepare_real(Path(a.out) if a.out else root / "results" / "real" / name, ev, sensor=a.sensor,
+                         split=a.split, stride=a.stride, **({"objects": tuple(a.objects)} if a.objects else {}))
+        return 0
     if a.cmd in ("sim-prepare", "sim-eval"):
         import os
         from pathlib import Path
@@ -60,9 +78,10 @@ def main(argv: list[str] | None = None) -> int:
         if a.cmd == "sim-prepare":
             bench = a.benchmark or os.environ.get("OSHD_BENCHMARK") or cfg.get("dataset", {}).get("benchmark")
             bench = None if bench in ("", "none") else bench
-            name = sim.run_name(a.domain, a.task, a.split, bench) + ("" if a.sensor == "rgb" else f"_{a.sensor}")
+            task = None if a.task == "all" else a.task
+            name = sim.run_name(a.domain, task, a.split, bench) + ("" if a.sensor == "rgb" else f"_{a.sensor}")
             out = Path(a.out) if a.out else root / "results" / "sim" / name
-            sim.prepare(out, domain=a.domain, task=a.task, split=a.split, benchmark=bench, root=data_root,
+            sim.prepare(out, domain=a.domain, task=task, split=a.split, benchmark=bench, root=data_root,
                         sensor=a.sensor, stride=a.stride, min_mask_px=a.min_mask_px, min_points=a.min_points,
                         limit_trajectories=a.limit_trajectories)
         else:

@@ -96,8 +96,7 @@ cd ../.. && uv run --project bench oshd-bench sim-eval --run-dir results/sim/sim
     --pred baselines/lidar_registration/results/sim_zerog_docking_test_v2_lidar/predictions_ORACLE_SEG.parquet
 ```
 
-Until oshd 1.1.0 is on PyPI, add `--with-editable ../osh-dataset` (`../../../osh-dataset` from the
-baseline folder) to the `uv run` commands, so the lidar scans are read about the sensor.
+The lock pins oshd 1.1.0, which reads benchmark_v2's lidar scans about the sensor.
 
 ### Result (2026-11-01)
 

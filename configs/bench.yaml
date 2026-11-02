@@ -4,15 +4,16 @@
 dataset:
   root: null            # null = oshd's default cache (~/.cache/oshd/<repo>)
   repo_id: r3m3c3/oshd
-  # Frozen split for the paper: oshd's benchmark_v2 (Hub revision df3530b, its train /
-  # test lists). Download its data with `oshd download --benchmark v2 ...`. $OSHD_BENCHMARK
+  # Frozen split for the paper: oshd's benchmark_v3 (Hub revision c8e5ca0, its train /
+  # test lists). Download its data with `oshd download --benchmark v3 ...`. $OSHD_BENCHMARK
   # overrides it ("none": the dataset's own splits.json, e.g. the dev dataset).
-  benchmark: v2
+  benchmark: v3
 results_dir: results
 
-objects: [cubesat]
+objects: [cubesat, antena, antena_1_solar]   # real targets with a CAD (models/objects.yaml)
 symmetries:
   cubesat: {type: cube, center: auto}   # 24 rotations about the cube-body centre
+  # the mockups: no symmetry (antenna dish, single-sided panel on antena_1_solar)
 
 metrics:
   speed_t_threshold: 2.173e-3           # SPEED+ precision thresholds; set both to 0 to disable

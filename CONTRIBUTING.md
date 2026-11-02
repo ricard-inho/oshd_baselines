@@ -11,9 +11,10 @@ ROADMAP.md row #N, then set up and run it".
 2. **Stay in your folder.** Change only `baselines/<your-baseline>/`. If you need a change in
    `bench/` (the shared sample lists, formats and metrics) or in another baseline, make it a
    separate small pull request first, so the experiment branches don't conflict.
-3. **Same data, same scoring.** Use the frozen **`benchmark_v2`** (oshd 1.0.0, Hub revision
-   `df3530b`), the committed sample lists in `results/sim/`, and `oshd-bench sim-eval` for the
-   numbers. Never write your own metric code for a table cell.
+3. **Same data, same scoring.** Use the frozen **`benchmark_v3`** (oshd 1.1.0, Hub revision
+   `c8e5ca0`; it contains `benchmark_v2` with the same splits), the committed sample lists in
+   `results/sim/` and `results/real/`, and `oshd-bench sim-eval` for the numbers. Never write
+   your own metric code for a table cell.
 4. **No test labels at inference.** Inference reads `samples.parquet` only. `gt.parquet` of a
    **test** split is read by `oshd-bench sim-eval` and nothing else. Training code may read the
    train split's `gt.parquet`.
@@ -32,8 +33,8 @@ ROADMAP.md row #N, then set up and run it".
 curl -LsSf https://astral.sh/uv/install.sh | sh          # uv
 git clone https://github.com/ricard-inho/oshd_baselines.git && cd oshd_baselines
 git switch -c exp/<your-name>-<short-name>
-cd bench && uv sync && cd ..                              # oshd 1.0.0 (TestPyPI) + oshd-bench
-uv run --project bench oshd splits --benchmark v2         # train / test trajectory counts
+cd bench && uv sync && cd ..                              # oshd 1.1.0 (release tag v1.1.0) + oshd-bench
+uv run --project bench oshd splits --benchmark v3         # train / test trajectory counts
 hf auth login                                             # the dataset is public; login avoids rate limits
 ```
 
@@ -41,8 +42,10 @@ The dataset goes to `~/.cache/oshd/r3m3c3--oshd` (`$OSHD_DATA_DIR` moves it). Do
 modalities you need, for one split at a time:
 
 ```bash
-uv run --project bench oshd download --benchmark v2 --domain sim_zerog --task docking --split test \
+uv run --project bench oshd download --benchmark v3 --domain sim_zerog --task docking --split test \
     -m rgb -m semantic -m mocap            # + -m depth, -m events, -m lidar as needed
+uv run --project bench oshd download --benchmark v3 --domain twin -m rgb -m semantic -m mocap    # lab twins
+uv run --project bench oshd download --benchmark v3 --domain real -m realsense_color -m mocap    # real
 ```
 
 The docking test split with rgb, depth, semantic and mocap is about 12 GB; the train split is about
@@ -103,7 +106,9 @@ The first lines of `RESULTS_*.md` contain the **Paper row**: means over the samp
 e_q [°] and the SPEED score S, with the rotation error taken up to the target's measured
 symmetries. The per-range and per-target tables below it are what the discussion uses.
 
-**Single-object methods (SPNv2).** The docking test split has 22 target models: satellite mockup
+**Single-object methods (SPNv2), Table I.** Table I uses the `benchmark_v2` docking test split
+(`results/sim/sim_zerog_docking_test_v2`: the same runs as v3's docking test without the twins).
+It has 22 target models: satellite mockup
 7467 samples, 18 procedural CubeSats 4081, three NASA models 689. A keypoint network is trained
 for one object, so train and test SPNv2 on the satellite mockup only: build the training list
 with `sim-prepare` and filter `object == 'satellite_mockup'`, and score with
@@ -112,11 +117,33 @@ scores e_t 3.65 cm, e_q 34.8°, S 0.690 (`baselines/foundationpose/results/sim_z
 
 ## Real data and the real ↔ twin transfer (Table II)
 
-The real recordings (`real`, train 75 / test 17 trajectories; mockups `antena`,
-`antena_1_solar`, plus 3 with the CubeSat) don't have a lab twin in the sim data yet: the sim
-docking targets are other models. Shared real sample lists for the mockups, and the twin
-recordings, are being prepared on `main` (ROADMAP rows #6–#8). Until they land, set up and
-validate your method on the sim split; the transfer runs reuse the same code.
+`benchmark_v3` has the **lab twins** of the real mockup recordings: 200 sim_zerog trajectories
+(100 per mockup) with the real mockups' CAD standing at the poses measured in the real
+recordings, flying the same inspection and docking tasks. oshd selects them with
+`domain="twin"`; the real ones with `domain="real"`.
+
+| | train | test | shared sample list (test) |
+|---|---:|---:|---|
+| real (mockups `antena`, `antena_1_solar`) | 64 traj. / 49 382 frames | 16 traj. / 14 594 frames | `results/real/real_realsense_color_test_v3/` |
+| twin (`real_antena`, `real_antena_1_solar`) | 160 traj. | 40 traj. / 3 038 samples | `results/sim/twin_test_v3/` |
+
+* **Real → Twin:** train on the real train split, predict on `results/sim/twin_test_v3`.
+* **Twin → Real:** train on the twin train split, predict on `results/real/real_realsense_color_test_v3`.
+* Training lists (with labels): `oshd-bench real-prepare --split train`
+  (`results/real/real_realsense_color_train_v3/`, committed) and
+  `oshd-bench sim-prepare --benchmark v3 --domain twin --task all --split train` (build it).
+* **Frames.** Real: the RealSense colour camera (`realsense_color`, 640x480 with distortion:
+  undistort with `traj.calibration.cameras["realsense_color"]`), `T` = `T_camera_model` in the
+  mockup's CAD frame (`models/real/<mockup>/model.obj`). Twin: the sim `rgb` camera (320x240,
+  pinhole), `T` = `T_camera_target` in the same CAD frame (the twin's `models/sim/real_<mockup>/`
+  is the real CAD). So one keypoint set per mockup serves both domains.
+* **Events.** Real: the EVK4 (`events`, calibrated from trajectory_010 on; window ending at the
+  frame time). Twin: the sim event camera, pixel-aligned with `rgb`.
+* Score both directions with `oshd-bench sim-eval --run-dir <test list> --pred <predictions>`. The
+  real ground truth was checked by projecting the CAD into the RealSense images; the CubeSat
+  recordings (007-009) are left out because their ground truth is off.
+* A single-object network (SPNv2) trains one model per mockup, or one with both mockups' keypoints:
+  your call; say which in your README.
 
 ## When you are done
 

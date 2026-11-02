@@ -1,0 +1,15 @@
+{
+  "benchmark": "v3",
+  "revision": "c8e5ca0d6f38cea943dfc60009dbfff9f7bf026f",
+  "domain": "real",
+  "task": null,
+  "split": "train",
+  "sensor": "realsense_color",
+  "stride": 1,
+  "n_trajectories": 64,
+  "n_samples": 49382,
+  "objects": {
+    "antena_1_solar": 31919,
+    "antena": 17463
+  }
+}

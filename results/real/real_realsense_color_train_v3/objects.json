@@ -1,0 +1,24 @@
+{
+  "antena": {
+    "cad": "models/real/antena/model.obj",
+    "kind": "antena",
+    "extent_m": [
+      1.2998,
+      0.5556,
+      0.3862
+    ],
+    "diameter_m": 1.4653735793114329,
+    "n_vertices": 85860
+  },
+  "antena_1_solar": {
+    "cad": "models/real/antena_1_solar/model.obj",
+    "kind": "antena_1_solar",
+    "extent_m": [
+      0.7999,
+      0.5556,
+      0.3862
+    ],
+    "diameter_m": 1.0477021031495546,
+    "n_vertices": 67538
+  }
+}

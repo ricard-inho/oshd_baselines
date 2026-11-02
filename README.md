@@ -25,12 +25,13 @@ results/               gt/, predictions/, detections/, replay/, flow/, tables/
 
 ## Pipeline
 
-All paper numbers use the frozen benchmark **`benchmark_v2`** of oshd 1.0.0 (from TestPyPI):
-the data of Hub revision `df3530b` (6413 sim + 92 real trajectories) and its fixed train / test
-split. `configs/bench.yaml` (`dataset.benchmark: v2`) makes every `ds.split()` of the bench and
-the baselines use it. Download its data with `--benchmark v2`, which pins the revision.
-`benchmark_v1` (Hub `8205a11`, 2195 sim + 3 real trajectories) is the earlier freeze; v2
-contains it with the same splits.
+All paper numbers use the frozen benchmark **`benchmark_v3`** of oshd 1.1.0: the data of Hub
+revision `c8e5ca0` (6613 sim + 92 real trajectories) and its fixed train / test split.
+`configs/bench.yaml` (`dataset.benchmark: v3`) makes every `ds.split()` of the bench and the
+baselines use it. Download its data with `--benchmark v3`, which pins the revision. v3 is
+`benchmark_v2` (Hub `df3530b`) plus 200 lab twins of the real mockups (oshd `domain="twin"`),
+with the same splits, and its simulated lidar is about the sensor origin; Table I uses v2's
+test runs.
 
 **Experiments, owners and status: [`ROADMAP.md`](ROADMAP.md). Running one on your own branch:
 [`CONTRIBUTING.md`](CONTRIBUTING.md)** (shared sim sample lists in `results/sim/`,
@@ -39,9 +40,9 @@ FoundationPose single-frame on the sim docking test split
 ([`baselines/foundationpose`](baselines/foundationpose/README.md#simulated-docking-sim_zerog--docking--test-table-i-row-1)).
 
 ```bash
-cd bench && uv sync && cd ..                  # oshd 1.0.0 from TestPyPI
-uv run --project bench oshd download --benchmark v2 --domain all   # or narrow: -m ..., --split, --task
-uv run --project bench oshd splits --benchmark v2
+cd bench && uv sync && cd ..                  # oshd 1.1.0 (tag v1.1.0)
+uv run --project bench oshd download --benchmark v3 --domain all   # or narrow: -m ..., --split, --task
+uv run --project bench oshd splits --benchmark v3
 uv run --project bench oshd-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet
 # per baseline: see baselines/<name>/README.md  (setup.sh, then train / predict)
 uv run --project bench oshd-bench eval        # results/tables/*.csv|json|tex|dat

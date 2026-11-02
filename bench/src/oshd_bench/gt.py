@@ -100,7 +100,8 @@ def build_gt(ds: OshDataset, sensor: str, split: str = "test", domain: str | Non
         idx, ts = idx[::stride], ts[::stride]
         bodies = set(traj.mocap_bodies)
         for obj in objs:
-            if not obj.present_in(tname) or obj.mocap_body not in bodies:
+            # a mockup may have a static pose instead of tracking (oshd.labels.object_pose)
+            if not obj.present_in(tname) or (obj.mocap_body not in bodies and tname not in obj.static_poses):
                 continue
             T, ok = pose_in_sensor(traj, sensor, obj, ts)
             vis = _visible(traj, sensor, obj, T, ok, lidar_max_range)
