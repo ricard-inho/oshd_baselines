@@ -13,7 +13,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TORCH_CUDA_ARCH_LIST="8.9"
 ARG PYTORCH3D_REF=v0.7.9
 ARG NVDIFFRAST_REF=v0.4.0
-ARG OSH_DATASET_VERSION=1.0.0
+ARG OSH_DATASET_VERSION=1.1.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates build-essential cmake ninja-build pkg-config \
@@ -34,11 +34,11 @@ RUN uv pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download
 RUN uv pip install --no-build-isolation "git+https://github.com/facebookresearch/pytorch3d.git@${PYTORCH3D_REF}"
 RUN uv pip install --no-build-isolation "git+https://github.com/NVlabs/nvdiffrast.git@${NVDIFFRAST_REF}"
 
-# FoundationPose python deps (upstream requirements.txt) + oshd-bench deps. oshd comes from
-# TestPyPI without its dependencies (they come from PyPI: no other package is taken from TestPyPI).
+# FoundationPose python deps (upstream requirements.txt) + oshd-bench deps. oshd is installed
+# without its dependencies (they are listed below), so it never changes FoundationPose's stack.
 COPY third_party/FoundationPose/requirements.txt /tmp/fp_requirements.txt
 RUN uv pip install -r /tmp/fp_requirements.txt \
-    && uv pip install --no-deps --index-url https://test.pypi.org/simple/ "oshd==${OSH_DATASET_VERSION}" \
+    && uv pip install --no-deps "oshd==${OSH_DATASET_VERSION}" \
     && uv pip install "numpy>=1.23" "huggingface_hub>=0.23" "pillow>=9.0" "trimesh>=4.0" \
         "pandas>=2.0" "pyarrow>=14" "pyyaml>=6.0" "tqdm>=4.60"
 

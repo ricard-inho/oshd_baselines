@@ -33,7 +33,7 @@ ROADMAP.md row #N, then set up and run it".
 curl -LsSf https://astral.sh/uv/install.sh | sh          # uv
 git clone https://github.com/ricard-inho/oshd_baselines.git && cd oshd_baselines
 git switch -c exp/<your-name>-<short-name>
-cd bench && uv sync && cd ..                              # oshd 1.1.0 (release tag v1.1.0) + oshd-bench
+cd bench && uv sync && cd ..                              # oshd 1.1.0 (PyPI) + oshd-bench
 uv run --project bench oshd splits --benchmark v3         # train / test trajectory counts
 hf auth login                                             # the dataset is public; login avoids rate limits
 ```

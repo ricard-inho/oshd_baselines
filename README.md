@@ -40,7 +40,7 @@ FoundationPose single-frame on the sim docking test split
 ([`baselines/foundationpose`](baselines/foundationpose/README.md#simulated-docking-sim_zerog--docking--test-table-i-row-1)).
 
 ```bash
-cd bench && uv sync && cd ..                  # oshd 1.1.0 (tag v1.1.0)
+cd bench && uv sync && cd ..                  # oshd 1.1.0 (PyPI)
 uv run --project bench oshd download --benchmark v3 --domain all   # or narrow: -m ..., --split, --task
 uv run --project bench oshd splits --benchmark v3
 uv run --project bench oshd-bench gt          # results/gt/<sensor>/<domain>_<split>.parquet

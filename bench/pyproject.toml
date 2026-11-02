@@ -20,9 +20,6 @@ dependencies = [
 [project.scripts]
 oshd-bench = "oshd_bench.cli:main"
 
-[tool.uv.sources]
-# the v1.1.0 release tag (switch to PyPI, i.e. drop this line, once oshd 1.1.0 is published there)
-oshd = { git = "https://github.com/ricard-inho/osh-dataset", tag = "v1.1.0" }
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.5"]

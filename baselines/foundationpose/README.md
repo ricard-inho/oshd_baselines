@@ -126,18 +126,17 @@ curl -LsSf https://astral.sh/uv/install.sh | sh     # -> ~/.local/bin/uv
 ```
 
 **2. Host environment.** This `uv` venv runs the dataset download, the CAD export (`usd-core`)
-and the evaluation. It needs `oshd` 1.0.0 (sim tasks, `benchmark_v2`).
-Only `oshd` itself comes from TestPyPI (`--no-deps`); its dependencies come from PyPI.
-`oshd-bench` is installed without dependencies too.
+and the evaluation. It needs `oshd` ≥ 1.1.0 (sim tasks, `benchmark_v2` / `v3`), from PyPI.
+`oshd` and `oshd-bench` are installed without dependencies; those are listed explicitly.
 
 ```bash
 cd ~/osh_dataset/oshd_baselines/baselines/foundationpose
 uv venv -p 3.11 .venv
-uv pip install --python .venv/bin/python --no-deps --index-url https://test.pypi.org/simple/ "oshd==1.0.0"
+uv pip install --python .venv/bin/python --no-deps "oshd==1.1.0"
 uv pip install --python .venv/bin/python "numpy>=1.23" "pyarrow>=14" "huggingface_hub>=0.23" "pillow>=9" \
     "pyyaml>=6" "tqdm>=4.60" trimesh usd-core pandas scipy matplotlib
 uv pip install --python .venv/bin/python --no-deps -e ../../bench
-.venv/bin/python -c "import oshd; print(oshd.__version__)"    # 1.0.0
+.venv/bin/python -c "import oshd; print(oshd.__version__)"    # 1.1.0
 ```
 
 To work on unreleased oshd changes, install the local checkout instead:
@@ -184,7 +183,7 @@ CAD with it into 6 frames per target: for every one of the 22 targets the median
 points inside the target's semantic mask is 0.95–1.00.
 
 **7. Run FoundationPose** in the container (about 1.4 s per frame on the 3090, 4.9 h for
-12 237 samples). The image installs oshd 1.0.0 from TestPyPI. To use a local checkout
+12 237 samples). The image installs oshd 1.1.0 from PyPI (the v2 runs above used 1.0.0; the camera data and labels are the same). To use a local checkout
 instead, set `OSH_DATASET_SRC=~/osh_dataset/osh-dataset`; it is mounted ahead of the image's copy.
 
 ```bash
