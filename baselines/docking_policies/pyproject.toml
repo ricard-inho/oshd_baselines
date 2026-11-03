@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "oshd-policies"
+version = "0.1.0"
+description = "Closed-loop docking policies for OSHD (Table III): PPO teacher, BC students per modality, FoundationPose -> PPO."
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "oshd-bench",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "scipy",
+    "trimesh",
+    "opencv-python-headless",
+    "torch",
+]
+
+[project.scripts]
+policy-scenarios = "oshd_policies.scenarios:main"
+policy-metrics = "oshd_policies.metrics:main"
+policy-bc-cache = "oshd_policies.build_cache:main"
+policy-bc-train = "oshd_policies.bc:main"
+policy-server = "oshd_policies.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/oshd_policies"]
+
+[tool.uv.sources]
+oshd-bench = { path = "../../bench", editable = true }

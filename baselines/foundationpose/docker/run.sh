@@ -30,7 +30,7 @@ fi
 ARGS=()
 for m in "${!MOUNTS[@]}"; do ARGS+=(-v "$m:$m"); done
 ARGS+=(-v "$HERE/weights:/opt/FoundationPose/weights:ro")
-PYPATH="/opt/FoundationPose:$REPO/bench/src:$HERE"
+PYPATH="/opt/FoundationPose:$REPO/bench/src:$HERE:$REPO/baselines/docking_policies/src"
 if [ -n "${OSH_DATASET_SRC:-}" ]; then
   SRC=$(realpath "$OSH_DATASET_SRC"); PYPATH="$SRC/src:$PYPATH"
   ARGS+=(-v "$SRC:$SRC:ro")
@@ -41,7 +41,9 @@ ENVS=(-e "OSHD_BENCH_RESULTS=$RESULTS" -e "OSHD_DATA_DIR=$CACHE" -e "PYTHONPATH=
 TTY=(); [ -t 0 ] && [ -t 1 ] && TTY=(-it)
 [ $# -eq 0 ] && set -- bash
 
+# FP_DOCKER_ARGS: extra docker run options, e.g. "--network host" for the closed-loop server.
+read -r -a EXTRA <<< "${FP_DOCKER_ARGS:-}"
 CMD=(docker run --rm "${TTY[@]}" --gpus all --ipc=host --hostname "$(hostname)" --user "$(id -u):$(id -g)"
-     "${ARGS[@]}" "${ENVS[@]}" -w "$HERE" "$IMAGE" "$@")
+     "${EXTRA[@]}" "${ARGS[@]}" "${ENVS[@]}" -w "$HERE" "$IMAGE" "$@")
 if [ "${FP_NO_LOCK:-0}" = 1 ]; then exec "${CMD[@]}"; fi
 exec flock "$REPO/work/gpu.lock" "${CMD[@]}"

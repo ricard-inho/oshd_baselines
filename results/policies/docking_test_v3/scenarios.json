@@ -1,0 +1,1865 @@
+{
+ "split": "test",
+ "benchmark": "v3",
+ "task": "docking",
+ "scenarios": [
+  {
+   "trajectory": "trajectory_hera2_000109",
+   "trajectories": [
+    "trajectory_hera2_000109",
+    "trajectory_hera2_000110",
+    "trajectory_hera2_000111"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_floating_docking_00038",
+   "seed": 1179302906,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.07",
+    "env.fill_light_intensity=23598",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.074,0.08]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000130",
+   "trajectories": [
+    "trajectory_hera2_000130",
+    "trajectory_hera2_000131",
+    "trajectory_hera2_000132"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_ceiling_docking_00043",
+   "seed": 422600803,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.55",
+    "env.fill_light_intensity=44775",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.073,0.078]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000238",
+   "trajectories": [
+    "trajectory_hera2_000238",
+    "trajectory_hera2_000239",
+    "trajectory_hera2_000240"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00078",
+   "seed": 1322839531,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.89",
+    "env.fill_light_intensity=33457",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.047,0.07]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000364",
+   "trajectories": [
+    "trajectory_hera2_000364",
+    "trajectory_hera2_000365",
+    "trajectory_hera2_000366"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00122",
+   "seed": 1380506607,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.04",
+    "env.fill_light_intensity=30615",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.065,0.065]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000526",
+   "trajectories": [
+    "trajectory_hera2_000526",
+    "trajectory_hera2_000527",
+    "trajectory_hera2_000528"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00175",
+   "seed": 349120044,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.84",
+    "env.fill_light_intensity=23873",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.075,0.079]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000568",
+   "trajectories": [
+    "trajectory_hera2_000568",
+    "trajectory_hera2_000569",
+    "trajectory_hera2_000570"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_ceiling_docking_00190",
+   "seed": 503983153,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.31",
+    "env.fill_light_intensity=45942",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.051,0.078]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000616",
+   "trajectories": [
+    "trajectory_hera2_000616",
+    "trajectory_hera2_000617",
+    "trajectory_hera2_000618"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00203",
+   "seed": 120914613,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.1",
+    "env.fill_light_intensity=59558",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.033,0.036]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000637",
+   "trajectories": [
+    "trajectory_hera2_000637",
+    "trajectory_hera2_000638",
+    "trajectory_hera2_000639"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00212",
+   "seed": 1750179092,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.94",
+    "env.fill_light_intensity=34083",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.042,0.065]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000727",
+   "trajectories": [
+    "trajectory_hera2_000727",
+    "trajectory_hera2_000728",
+    "trajectory_hera2_000729"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00243",
+   "seed": 1164623904,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.48",
+    "env.fill_light_intensity=20929",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.044,0.054]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000766",
+   "trajectories": [
+    "trajectory_hera2_000766",
+    "trajectory_hera2_000767",
+    "trajectory_hera2_000768"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00253",
+   "seed": 1126916339,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.92",
+    "env.fill_light_intensity=30070",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.063,0.075]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000781",
+   "trajectories": [
+    "trajectory_hera2_000781",
+    "trajectory_hera2_000782",
+    "trajectory_hera2_000783"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_floating_docking_00261",
+   "seed": 477637087,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.27",
+    "env.fill_light_intensity=54192",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.052,0.059]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_000946",
+   "trajectories": [
+    "trajectory_hera2_000946",
+    "trajectory_hera2_000947",
+    "trajectory_hera2_000948"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00316",
+   "seed": 737630709,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.86",
+    "env.fill_light_intensity=48353",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.06,0.077]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001027",
+   "trajectories": [
+    "trajectory_hera2_001027",
+    "trajectory_hera2_001028",
+    "trajectory_hera2_001029"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_ceiling_docking_00341",
+   "seed": 352375731,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.01",
+    "env.fill_light_intensity=25057",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.06,0.07]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001054",
+   "trajectories": [
+    "trajectory_hera2_001054",
+    "trajectory_hera2_001055",
+    "trajectory_hera2_001056"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00351",
+   "seed": 1912056452,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.89",
+    "env.fill_light_intensity=43843",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.03,0.071]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001060",
+   "trajectories": [
+    "trajectory_hera2_001060",
+    "trajectory_hera2_001061",
+    "trajectory_hera2_001062"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00353",
+   "seed": 808764970,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.19",
+    "env.fill_light_intensity=27239",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.031,0.038]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001357",
+   "trajectories": [
+    "trajectory_hera2_001357",
+    "trajectory_hera2_001358",
+    "trajectory_hera2_001359"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00452",
+   "seed": 101408856,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.95",
+    "env.fill_light_intensity=27551",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.032,0.063]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001393",
+   "trajectories": [
+    "trajectory_hera2_001393",
+    "trajectory_hera2_001394",
+    "trajectory_hera2_001395"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00463",
+   "seed": 118930051,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.8",
+    "env.fill_light_intensity=39378",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.037,0.078]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001405",
+   "trajectories": [
+    "trajectory_hera2_001405",
+    "trajectory_hera2_001406",
+    "trajectory_hera2_001407"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00465",
+   "seed": 1655080854,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.83",
+    "env.fill_light_intensity=59769",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.046,0.055]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001516",
+   "trajectories": [
+    "trajectory_hera2_001516",
+    "trajectory_hera2_001517",
+    "trajectory_hera2_001518"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_floating_docking_00508",
+   "seed": 1837885690,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.45",
+    "env.fill_light_intensity=39410",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.035,0.079]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001633",
+   "trajectories": [
+    "trajectory_hera2_001633",
+    "trajectory_hera2_001634",
+    "trajectory_hera2_001635"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00543",
+   "seed": 1768841377,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.8",
+    "env.fill_light_intensity=44450",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.057,0.066]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001657",
+   "trajectories": [
+    "trajectory_hera2_001657",
+    "trajectory_hera2_001658",
+    "trajectory_hera2_001659"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00555",
+   "seed": 2088354101,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.96",
+    "env.fill_light_intensity=23347",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.06,0.076]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001849",
+   "trajectories": [
+    "trajectory_hera2_001849",
+    "trajectory_hera2_001850",
+    "trajectory_hera2_001851"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00614",
+   "seed": 816235517,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.06",
+    "env.fill_light_intensity=39161",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.045,0.05]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001906",
+   "trajectories": [
+    "trajectory_hera2_001906",
+    "trajectory_hera2_001907",
+    "trajectory_hera2_001908"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00631",
+   "seed": 1718091064,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.96",
+    "env.fill_light_intensity=40634",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.074,0.079]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001945",
+   "trajectories": [
+    "trajectory_hera2_001945",
+    "trajectory_hera2_001946",
+    "trajectory_hera2_001947"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00646",
+   "seed": 692676092,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.13",
+    "env.fill_light_intensity=36315",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.039,0.053]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera2_001969",
+   "trajectories": [
+    "trajectory_hera2_001969",
+    "trajectory_hera2_001970",
+    "trajectory_hera2_001971"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_ceiling_docking_00657",
+   "seed": 434672891,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.02",
+    "env.fill_light_intensity=22500",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.038,0.055]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera3_001816",
+   "trajectories": [
+    "trajectory_hera3_001816",
+    "trajectory_hera3_001817",
+    "trajectory_hera3_001818"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_nasa_asteroid_golevka_arm_ceiling_docking_00351",
+   "seed": 796568523,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/nasa_asteroid_golevka.usdz",
+    "env.target_scale=0.14",
+    "env.target_attach_offset=[0.0,0.0,0.78]",
+    "env.fill_light_intensity=59628",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.06,0.071]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "usd",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera3_001843",
+   "trajectories": [
+    "trajectory_hera3_001843",
+    "trajectory_hera3_001844",
+    "trajectory_hera3_001845"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_nasa_asteroid_toutatis_arm_wall_docking_00652",
+   "seed": 2048030260,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/nasa_asteroid_toutatis.usdz",
+    "env.target_scale=0.1072",
+    "env.target_attach_offset=[0.0,0.0,0.303]",
+    "env.fill_light_intensity=40048",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.033,0.069]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "usd",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera3_001951",
+   "trajectories": [
+    "trajectory_hera3_001951",
+    "trajectory_hera3_001952",
+    "trajectory_hera3_001953"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_nasa_international_x_ray_observatory_floating_docking_00244",
+   "seed": 1662852420,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/nasa_international_x_ray_observatory.usdz",
+    "env.target_scale=0.068",
+    "env.target_attach_offset=[0.0,0.0,0.76]",
+    "env.fill_light_intensity=52756",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.04,0.056]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "usd",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera_000088",
+   "trajectories": [
+    "trajectory_hera_000088",
+    "trajectory_hera_000089",
+    "trajectory_hera_000090"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00030",
+   "seed": 1212556158,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.85",
+    "env.fill_light_intensity=41405",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.033,0.046]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000091",
+   "trajectories": [
+    "trajectory_hera_000091",
+    "trajectory_hera_000092",
+    "trajectory_hera_000093"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00028",
+   "seed": 938728888,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.97",
+    "env.fill_light_intensity=54490",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.043,0.054]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000094",
+   "trajectories": [
+    "trajectory_hera_000094",
+    "trajectory_hera_000095",
+    "trajectory_hera_000096"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00031",
+   "seed": 1565506117,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.06",
+    "env.fill_light_intensity=18359",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.039,0.039]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000259",
+   "trajectories": [
+    "trajectory_hera_000259",
+    "trajectory_hera_000260",
+    "trajectory_hera_000261"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00083",
+   "seed": 1034538678,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.48",
+    "env.fill_light_intensity=51273",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.045,0.053]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000346",
+   "trajectories": [
+    "trajectory_hera_000346",
+    "trajectory_hera_000347",
+    "trajectory_hera_000348"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_ceiling_docking_00113",
+   "seed": 1600360009,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.73",
+    "env.fill_light_intensity=18081",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.055,0.063]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000505",
+   "trajectories": [
+    "trajectory_hera_000505",
+    "trajectory_hera_000506",
+    "trajectory_hera_000507"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00169",
+   "seed": 60135778,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.8",
+    "env.fill_light_intensity=27539",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.035,0.038]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000571",
+   "trajectories": [
+    "trajectory_hera_000571",
+    "trajectory_hera_000572",
+    "trajectory_hera_000573"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00189",
+   "seed": 1231227846,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.98",
+    "env.fill_light_intensity=56472",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.064,0.069]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000910",
+   "trajectories": [
+    "trajectory_hera_000910",
+    "trajectory_hera_000911",
+    "trajectory_hera_000912"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_floating_docking_00303",
+   "seed": 1053301660,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.35",
+    "env.fill_light_intensity=16576",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.049,0.049]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000922",
+   "trajectories": [
+    "trajectory_hera_000922",
+    "trajectory_hera_000923",
+    "trajectory_hera_000924"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00306",
+   "seed": 1532170602,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.09",
+    "env.fill_light_intensity=15912",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.03,0.069]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000964",
+   "trajectories": [
+    "trajectory_hera_000964",
+    "trajectory_hera_000965",
+    "trajectory_hera_000966"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00320",
+   "seed": 1493285383,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.19",
+    "env.fill_light_intensity=48207",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.055,0.06]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_000985",
+   "trajectories": [
+    "trajectory_hera_000985",
+    "trajectory_hera_000986",
+    "trajectory_hera_000987"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00326",
+   "seed": 1859922245,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.96",
+    "env.fill_light_intensity=25524",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.038,0.056]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001177",
+   "trajectories": [
+    "trajectory_hera_001177",
+    "trajectory_hera_001178",
+    "trajectory_hera_001179"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_ceiling_docking_00393",
+   "seed": 691492398,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.41",
+    "env.fill_light_intensity=45490",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.043,0.054]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001180",
+   "trajectories": [
+    "trajectory_hera_001180",
+    "trajectory_hera_001181",
+    "trajectory_hera_001182"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00392",
+   "seed": 1536175063,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.08",
+    "env.fill_light_intensity=49109",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.039,0.052]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001216",
+   "trajectories": [
+    "trajectory_hera_001216",
+    "trajectory_hera_001217",
+    "trajectory_hera_001218"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00404",
+   "seed": 638710248,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.86",
+    "env.fill_light_intensity=32208",
+    "env.event_camera_preset=imx636_outdoor_sunlit",
+    "env.docking_speed_range=[0.034,0.069]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001468",
+   "trajectories": [
+    "trajectory_hera_001468",
+    "trajectory_hera_001469",
+    "trajectory_hera_001470"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00486",
+   "seed": 64924280,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.95",
+    "env.fill_light_intensity=54175",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.034,0.071]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001516",
+   "trajectories": [
+    "trajectory_hera_001516",
+    "trajectory_hera_001517",
+    "trajectory_hera_001518"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00504",
+   "seed": 1232003790,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.85",
+    "env.fill_light_intensity=40919",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.046,0.071]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001546",
+   "trajectories": [
+    "trajectory_hera_001546",
+    "trajectory_hera_001547",
+    "trajectory_hera_001548"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00516",
+   "seed": 6263745,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.98",
+    "env.fill_light_intensity=15646",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.035,0.049]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001621",
+   "trajectories": [
+    "trajectory_hera_001621",
+    "trajectory_hera_001622",
+    "trajectory_hera_001623"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00541",
+   "seed": 2007444668,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.15",
+    "env.fill_light_intensity=15036",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.043,0.07]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001714",
+   "trajectories": [
+    "trajectory_hera_001714",
+    "trajectory_hera_001715",
+    "trajectory_hera_001716"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00573",
+   "seed": 596471560,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=1.12",
+    "env.fill_light_intensity=47928",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.051,0.06]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001777",
+   "trajectories": [
+    "trajectory_hera_001777",
+    "trajectory_hera_001778",
+    "trajectory_hera_001779"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_floating_docking_00593",
+   "seed": 1265676645,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=floating",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.84",
+    "env.fill_light_intensity=27364",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.059,0.08]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "floating",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001801",
+   "trajectories": [
+    "trajectory_hera_001801",
+    "trajectory_hera_001802",
+    "trajectory_hera_001803"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00601",
+   "seed": 715072435,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.21",
+    "env.fill_light_intensity=29939",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.043,0.063]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_001813",
+   "trajectories": [
+    "trajectory_hera_001813",
+    "trajectory_hera_001814",
+    "trajectory_hera_001815"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00605",
+   "seed": 831127209,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.83",
+    "env.fill_light_intensity=47154",
+    "env.event_camera_preset=imx636_inspection",
+    "env.docking_speed_range=[0.035,0.08]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_002004",
+   "trajectories": [
+    "trajectory_hera_002004",
+    "trajectory_hera_002005",
+    "trajectory_hera_002006"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00670",
+   "seed": 1133635087,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.99",
+    "env.fill_light_intensity=20474",
+    "env.event_camera_preset=imx636_inspection",
+    "env.event_camera_backend=metavision",
+    "env.docking_speed_range=[0.068,0.071]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_002049",
+   "trajectories": [
+    "trajectory_hera_002049",
+    "trajectory_hera_002050",
+    "trajectory_hera_002051"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_wall_docking_00683",
+   "seed": 1458801887,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.99",
+    "env.fill_light_intensity=18958",
+    "env.event_camera_preset=imx636_inspection",
+    "env.event_camera_backend=metavision",
+    "env.docking_speed_range=[0.06,0.062]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "satellite_mockup",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_hera_002244",
+   "trajectories": [
+    "trajectory_hera_002244",
+    "trajectory_hera_002245",
+    "trajectory_hera_002246"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_cubesat_arm_wall_docking_00750",
+   "seed": 509795703,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_wall",
+    "env.target_kind=cubesat",
+    "env.target_scale=2.01",
+    "env.fill_light_intensity=41438",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "env.docking_speed_range=[0.038,0.05]",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_wall",
+   "target_kind": "cubesat",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_hera_002283",
+   "trajectories": [
+    "trajectory_hera_002283",
+    "trajectory_hera_002284",
+    "trajectory_hera_002285"
+   ],
+   "episodes": 3,
+   "scenario": "zerog_satellite_mockup_arm_ceiling_docking_00761",
+   "seed": 1959049970,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=arm_ceiling",
+    "env.target_kind=satellite_mockup",
+    "env.target_scale=0.91",
+    "env.fill_light_intensity=32571",
+    "env.event_camera_preset=imx636_evk4_lab",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "env.docking_speed_range=[0.052,0.058]",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.target_spin_rate_deg=[3.0,15.0]",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "arm_ceiling",
+   "target_kind": "satellite_mockup",
+   "spinning": true
+  },
+  {
+   "trajectory": "trajectory_twin_000005",
+   "trajectories": [
+    "trajectory_twin_000005",
+    "trajectory_twin_000006"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_1_solar_static_docking_00008",
+   "seed": 1704879070,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena_1_solar.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.6138,-1.7325,0.9223,-0.12729,-0.63399,0.26729,0.71443],[1.7438,-1.8275,0.7788,0.31516,-0.40532,-0.30963,0.80032],[1.743,-1.8276,0.7791,0.31498,-0.39638,-0.30826,0.80539],[1.9617,-1.9071,0.6548,0.44853,-0.33962,-0.57668,0.59239],[1.9718,-1.6723,0.7985,0.49484,-0.41946,-0.29682,0.70078],[2.0706,-1.7745,0.8605,-0.65766,-0.18208,0.7291,0.05237],[1.8596,-1.8347,0.6986,0.47736,-0.34297,-0.5144,0.62441],[1.9115,-1.7943,0.6701,0.56284,-0.28125,-0.46727,0.62111],[1.8179,-1.6469,0.6855,0.61759,-0.35933,-0.11286,0.69046],[1.8163,-1.6476,0.6808,0.70508,-0.14568,-0.30673,0.62254],[1.8357,-1.7439,0.5523,0.58737,-0.09902,-0.48731,0.63853],[1.7999,-1.8448,0.766,-0.47746,0.36284,0.57237,-0.55926],[1.7995,-1.8447,0.7648,-0.56307,0.26841,0.654,-0.42801],[1.9366,-1.9697,0.8379,0.24304,-0.55587,-0.32948,0.72345],[1.9252,-1.9715,0.7686,0.30959,-0.53132,-0.4029,0.67788],[1.8876,-1.8317,0.8013,0.07111,-0.58638,-0.03054,0.80633],[1.9311,-1.9311,0.7101,-0.05092,-0.59608,0.10754,0.79406],[1.689,-1.5157,0.704,-0.14492,-0.55827,0.68188,0.44986],[1.6096,-1.4578,0.6392,0.62995,0.24425,-0.42673,0.60117],[1.7523,-1.6684,0.7983,0.37785,0.04981,-0.45929,0.80237],[1.7671,-1.6617,0.8052,0.47925,-0.23771,-0.56682,0.62652],[1.7409,-1.7043,0.722,0.44731,-0.19899,-0.6028,0.63004],[1.7671,-1.7558,0.6614,0.24408,-0.42097,-0.44372,0.75254],[1.791,-1.571,0.8539,0.49014,-0.46031,-0.12952,0.72877],[1.7352,-1.638,0.7836,-0.1573,-0.62076,0.40468,0.6528],[1.7277,-1.5126,0.8523,-0.4324,-0.57557,0.65568,0.22766],[1.7212,-1.5041,0.8305,0.2892,0.63438,-0.61976,-0.36031],[1.6919,-1.4839,0.7633,-0.15602,-0.59642,0.62271,0.48184],[1.8134,-1.7744,0.757,-0.34397,-0.42078,0.60708,0.57973],[1.8139,-1.6445,0.7794,-0.22042,-0.53338,0.6002,0.55379],[1.7727,-1.551,0.7765,0.11647,0.58857,-0.5784,-0.5527],[1.6724,-1.6792,0.607,-0.62925,-0.07331,0.71919,-0.28536]]",
+    "++env.target_center_offset=[-0.25,0.1255,0.1573]",
+    "env.fill_light_intensity=50343",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.032,0.052]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000031",
+   "trajectories": [
+    "trajectory_twin_000031",
+    "trajectory_twin_000032"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_static_docking_00014",
+   "seed": 268652628,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.9866,-1.856,0.7392,0.47876,-0.31579,-0.5763,0.5822],[1.9779,-1.8655,0.7422,0.20707,-0.33315,-0.37453,0.84016],[1.8527,-2.0285,0.8175,0.08712,-0.61172,-0.45667,0.64005],[1.9065,-1.959,0.7835,-0.42067,0.64584,0.35068,-0.53193],[1.8187,-1.5555,0.6633,0.56988,-0.1519,-0.44459,0.67418],[1.8038,-1.631,0.6794,0.11482,-0.50932,0.16801,0.83617],[1.7911,-1.567,0.6889,0.10035,-0.5352,0.29492,0.78518],[1.7928,-1.5662,0.6886,0.10858,-0.54984,0.29069,0.77549],[1.8248,-1.8767,0.7042,0.44618,-0.36754,-0.48588,0.65556],[1.8261,-1.8766,0.7038,0.457,-0.37621,-0.47648,0.65006],[1.8236,-1.8761,0.7011,-0.55308,0.25238,0.61631,-0.50057],[1.8249,-1.8764,0.7015,-0.55954,0.25444,0.61066,-0.49927],[1.5514,-1.7453,0.8196,0.33033,-0.08529,-0.63128,0.69648],[1.5691,-1.7436,0.8219,-0.271,-0.44308,0.43745,0.73409],[1.5682,-1.7432,0.8201,-0.30041,-0.42685,0.4888,0.69901],[1.6611,-1.8133,0.8079,-0.40325,-0.45701,0.41797,0.67367],[1.4669,-1.7344,0.7678,-0.14431,-0.54294,0.25865,0.78581]]",
+    "++env.target_center_offset=[0,0.1255,0.1573]",
+    "env.fill_light_intensity=34336",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.067,0.07]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000047",
+   "trajectories": [
+    "trajectory_twin_000047",
+    "trajectory_twin_000048"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_static_docking_00021",
+   "seed": 1265894218,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.9866,-1.856,0.7392,0.47876,-0.31579,-0.5763,0.5822],[1.9779,-1.8655,0.7422,0.20707,-0.33315,-0.37453,0.84016],[1.8527,-2.0285,0.8175,0.08712,-0.61172,-0.45667,0.64005],[1.9065,-1.959,0.7835,-0.42067,0.64584,0.35068,-0.53193],[1.8187,-1.5555,0.6633,0.56988,-0.1519,-0.44459,0.67418],[1.8038,-1.631,0.6794,0.11482,-0.50932,0.16801,0.83617],[1.7911,-1.567,0.6889,0.10035,-0.5352,0.29492,0.78518],[1.7928,-1.5662,0.6886,0.10858,-0.54984,0.29069,0.77549],[1.8248,-1.8767,0.7042,0.44618,-0.36754,-0.48588,0.65556],[1.8261,-1.8766,0.7038,0.457,-0.37621,-0.47648,0.65006],[1.8236,-1.8761,0.7011,-0.55308,0.25238,0.61631,-0.50057],[1.8249,-1.8764,0.7015,-0.55954,0.25444,0.61066,-0.49927],[1.5514,-1.7453,0.8196,0.33033,-0.08529,-0.63128,0.69648],[1.5691,-1.7436,0.8219,-0.271,-0.44308,0.43745,0.73409],[1.5682,-1.7432,0.8201,-0.30041,-0.42685,0.4888,0.69901],[1.6611,-1.8133,0.8079,-0.40325,-0.45701,0.41797,0.67367],[1.4669,-1.7344,0.7678,-0.14431,-0.54294,0.25865,0.78581]]",
+    "++env.target_center_offset=[0,0.1255,0.1573]",
+    "env.fill_light_intensity=59958",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.037,0.076]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000055",
+   "trajectories": [
+    "trajectory_twin_000055",
+    "trajectory_twin_000056"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_1_solar_static_docking_00029",
+   "seed": 34813436,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena_1_solar.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.6138,-1.7325,0.9223,-0.12729,-0.63399,0.26729,0.71443],[1.7438,-1.8275,0.7788,0.31516,-0.40532,-0.30963,0.80032],[1.743,-1.8276,0.7791,0.31498,-0.39638,-0.30826,0.80539],[1.9617,-1.9071,0.6548,0.44853,-0.33962,-0.57668,0.59239],[1.9718,-1.6723,0.7985,0.49484,-0.41946,-0.29682,0.70078],[2.0706,-1.7745,0.8605,-0.65766,-0.18208,0.7291,0.05237],[1.8596,-1.8347,0.6986,0.47736,-0.34297,-0.5144,0.62441],[1.9115,-1.7943,0.6701,0.56284,-0.28125,-0.46727,0.62111],[1.8179,-1.6469,0.6855,0.61759,-0.35933,-0.11286,0.69046],[1.8163,-1.6476,0.6808,0.70508,-0.14568,-0.30673,0.62254],[1.8357,-1.7439,0.5523,0.58737,-0.09902,-0.48731,0.63853],[1.7999,-1.8448,0.766,-0.47746,0.36284,0.57237,-0.55926],[1.7995,-1.8447,0.7648,-0.56307,0.26841,0.654,-0.42801],[1.9366,-1.9697,0.8379,0.24304,-0.55587,-0.32948,0.72345],[1.9252,-1.9715,0.7686,0.30959,-0.53132,-0.4029,0.67788],[1.8876,-1.8317,0.8013,0.07111,-0.58638,-0.03054,0.80633],[1.9311,-1.9311,0.7101,-0.05092,-0.59608,0.10754,0.79406],[1.689,-1.5157,0.704,-0.14492,-0.55827,0.68188,0.44986],[1.6096,-1.4578,0.6392,0.62995,0.24425,-0.42673,0.60117],[1.7523,-1.6684,0.7983,0.37785,0.04981,-0.45929,0.80237],[1.7671,-1.6617,0.8052,0.47925,-0.23771,-0.56682,0.62652],[1.7409,-1.7043,0.722,0.44731,-0.19899,-0.6028,0.63004],[1.7671,-1.7558,0.6614,0.24408,-0.42097,-0.44372,0.75254],[1.791,-1.571,0.8539,0.49014,-0.46031,-0.12952,0.72877],[1.7352,-1.638,0.7836,-0.1573,-0.62076,0.40468,0.6528],[1.7277,-1.5126,0.8523,-0.4324,-0.57557,0.65568,0.22766],[1.7212,-1.5041,0.8305,0.2892,0.63438,-0.61976,-0.36031],[1.6919,-1.4839,0.7633,-0.15602,-0.59642,0.62271,0.48184],[1.8134,-1.7744,0.757,-0.34397,-0.42078,0.60708,0.57973],[1.8139,-1.6445,0.7794,-0.22042,-0.53338,0.6002,0.55379],[1.7727,-1.551,0.7765,0.11647,0.58857,-0.5784,-0.5527],[1.6724,-1.6792,0.607,-0.62925,-0.07331,0.71919,-0.28536]]",
+    "++env.target_center_offset=[-0.25,0.1255,0.1573]",
+    "env.fill_light_intensity=47675",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.043,0.057]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000081",
+   "trajectories": [
+    "trajectory_twin_000081",
+    "trajectory_twin_000082"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_static_docking_00037",
+   "seed": 1499120866,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.9866,-1.856,0.7392,0.47876,-0.31579,-0.5763,0.5822],[1.9779,-1.8655,0.7422,0.20707,-0.33315,-0.37453,0.84016],[1.8527,-2.0285,0.8175,0.08712,-0.61172,-0.45667,0.64005],[1.9065,-1.959,0.7835,-0.42067,0.64584,0.35068,-0.53193],[1.8187,-1.5555,0.6633,0.56988,-0.1519,-0.44459,0.67418],[1.8038,-1.631,0.6794,0.11482,-0.50932,0.16801,0.83617],[1.7911,-1.567,0.6889,0.10035,-0.5352,0.29492,0.78518],[1.7928,-1.5662,0.6886,0.10858,-0.54984,0.29069,0.77549],[1.8248,-1.8767,0.7042,0.44618,-0.36754,-0.48588,0.65556],[1.8261,-1.8766,0.7038,0.457,-0.37621,-0.47648,0.65006],[1.8236,-1.8761,0.7011,-0.55308,0.25238,0.61631,-0.50057],[1.8249,-1.8764,0.7015,-0.55954,0.25444,0.61066,-0.49927],[1.5514,-1.7453,0.8196,0.33033,-0.08529,-0.63128,0.69648],[1.5691,-1.7436,0.8219,-0.271,-0.44308,0.43745,0.73409],[1.5682,-1.7432,0.8201,-0.30041,-0.42685,0.4888,0.69901],[1.6611,-1.8133,0.8079,-0.40325,-0.45701,0.41797,0.67367],[1.4669,-1.7344,0.7678,-0.14431,-0.54294,0.25865,0.78581]]",
+    "++env.target_center_offset=[0,0.1255,0.1573]",
+    "env.fill_light_intensity=34924",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.037,0.078]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000113",
+   "trajectories": [
+    "trajectory_twin_000113",
+    "trajectory_twin_000114"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_1_solar_static_docking_00059",
+   "seed": 530154648,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena_1_solar.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.6138,-1.7325,0.9223,-0.12729,-0.63399,0.26729,0.71443],[1.7438,-1.8275,0.7788,0.31516,-0.40532,-0.30963,0.80032],[1.743,-1.8276,0.7791,0.31498,-0.39638,-0.30826,0.80539],[1.9617,-1.9071,0.6548,0.44853,-0.33962,-0.57668,0.59239],[1.9718,-1.6723,0.7985,0.49484,-0.41946,-0.29682,0.70078],[2.0706,-1.7745,0.8605,-0.65766,-0.18208,0.7291,0.05237],[1.8596,-1.8347,0.6986,0.47736,-0.34297,-0.5144,0.62441],[1.9115,-1.7943,0.6701,0.56284,-0.28125,-0.46727,0.62111],[1.8179,-1.6469,0.6855,0.61759,-0.35933,-0.11286,0.69046],[1.8163,-1.6476,0.6808,0.70508,-0.14568,-0.30673,0.62254],[1.8357,-1.7439,0.5523,0.58737,-0.09902,-0.48731,0.63853],[1.7999,-1.8448,0.766,-0.47746,0.36284,0.57237,-0.55926],[1.7995,-1.8447,0.7648,-0.56307,0.26841,0.654,-0.42801],[1.9366,-1.9697,0.8379,0.24304,-0.55587,-0.32948,0.72345],[1.9252,-1.9715,0.7686,0.30959,-0.53132,-0.4029,0.67788],[1.8876,-1.8317,0.8013,0.07111,-0.58638,-0.03054,0.80633],[1.9311,-1.9311,0.7101,-0.05092,-0.59608,0.10754,0.79406],[1.689,-1.5157,0.704,-0.14492,-0.55827,0.68188,0.44986],[1.6096,-1.4578,0.6392,0.62995,0.24425,-0.42673,0.60117],[1.7523,-1.6684,0.7983,0.37785,0.04981,-0.45929,0.80237],[1.7671,-1.6617,0.8052,0.47925,-0.23771,-0.56682,0.62652],[1.7409,-1.7043,0.722,0.44731,-0.19899,-0.6028,0.63004],[1.7671,-1.7558,0.6614,0.24408,-0.42097,-0.44372,0.75254],[1.791,-1.571,0.8539,0.49014,-0.46031,-0.12952,0.72877],[1.7352,-1.638,0.7836,-0.1573,-0.62076,0.40468,0.6528],[1.7277,-1.5126,0.8523,-0.4324,-0.57557,0.65568,0.22766],[1.7212,-1.5041,0.8305,0.2892,0.63438,-0.61976,-0.36031],[1.6919,-1.4839,0.7633,-0.15602,-0.59642,0.62271,0.48184],[1.8134,-1.7744,0.757,-0.34397,-0.42078,0.60708,0.57973],[1.8139,-1.6445,0.7794,-0.22042,-0.53338,0.6002,0.55379],[1.7727,-1.551,0.7765,0.11647,0.58857,-0.5784,-0.5527],[1.6724,-1.6792,0.607,-0.62925,-0.07331,0.71919,-0.28536]]",
+    "++env.target_center_offset=[-0.25,0.1255,0.1573]",
+    "env.fill_light_intensity=55318",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.045,0.048]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000119",
+   "trajectories": [
+    "trajectory_twin_000119",
+    "trajectory_twin_000120"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_static_docking_00061",
+   "seed": 775196184,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.9866,-1.856,0.7392,0.47876,-0.31579,-0.5763,0.5822],[1.9779,-1.8655,0.7422,0.20707,-0.33315,-0.37453,0.84016],[1.8527,-2.0285,0.8175,0.08712,-0.61172,-0.45667,0.64005],[1.9065,-1.959,0.7835,-0.42067,0.64584,0.35068,-0.53193],[1.8187,-1.5555,0.6633,0.56988,-0.1519,-0.44459,0.67418],[1.8038,-1.631,0.6794,0.11482,-0.50932,0.16801,0.83617],[1.7911,-1.567,0.6889,0.10035,-0.5352,0.29492,0.78518],[1.7928,-1.5662,0.6886,0.10858,-0.54984,0.29069,0.77549],[1.8248,-1.8767,0.7042,0.44618,-0.36754,-0.48588,0.65556],[1.8261,-1.8766,0.7038,0.457,-0.37621,-0.47648,0.65006],[1.8236,-1.8761,0.7011,-0.55308,0.25238,0.61631,-0.50057],[1.8249,-1.8764,0.7015,-0.55954,0.25444,0.61066,-0.49927],[1.5514,-1.7453,0.8196,0.33033,-0.08529,-0.63128,0.69648],[1.5691,-1.7436,0.8219,-0.271,-0.44308,0.43745,0.73409],[1.5682,-1.7432,0.8201,-0.30041,-0.42685,0.4888,0.69901],[1.6611,-1.8133,0.8079,-0.40325,-0.45701,0.41797,0.67367],[1.4669,-1.7344,0.7678,-0.14431,-0.54294,0.25865,0.78581]]",
+    "++env.target_center_offset=[0,0.1255,0.1573]",
+    "env.fill_light_intensity=23265",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.044,0.05]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000145",
+   "trajectories": [
+    "trajectory_twin_000145",
+    "trajectory_twin_000146"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_1_solar_static_docking_00074",
+   "seed": 310942454,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena_1_solar.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.6138,-1.7325,0.9223,-0.12729,-0.63399,0.26729,0.71443],[1.7438,-1.8275,0.7788,0.31516,-0.40532,-0.30963,0.80032],[1.743,-1.8276,0.7791,0.31498,-0.39638,-0.30826,0.80539],[1.9617,-1.9071,0.6548,0.44853,-0.33962,-0.57668,0.59239],[1.9718,-1.6723,0.7985,0.49484,-0.41946,-0.29682,0.70078],[2.0706,-1.7745,0.8605,-0.65766,-0.18208,0.7291,0.05237],[1.8596,-1.8347,0.6986,0.47736,-0.34297,-0.5144,0.62441],[1.9115,-1.7943,0.6701,0.56284,-0.28125,-0.46727,0.62111],[1.8179,-1.6469,0.6855,0.61759,-0.35933,-0.11286,0.69046],[1.8163,-1.6476,0.6808,0.70508,-0.14568,-0.30673,0.62254],[1.8357,-1.7439,0.5523,0.58737,-0.09902,-0.48731,0.63853],[1.7999,-1.8448,0.766,-0.47746,0.36284,0.57237,-0.55926],[1.7995,-1.8447,0.7648,-0.56307,0.26841,0.654,-0.42801],[1.9366,-1.9697,0.8379,0.24304,-0.55587,-0.32948,0.72345],[1.9252,-1.9715,0.7686,0.30959,-0.53132,-0.4029,0.67788],[1.8876,-1.8317,0.8013,0.07111,-0.58638,-0.03054,0.80633],[1.9311,-1.9311,0.7101,-0.05092,-0.59608,0.10754,0.79406],[1.689,-1.5157,0.704,-0.14492,-0.55827,0.68188,0.44986],[1.6096,-1.4578,0.6392,0.62995,0.24425,-0.42673,0.60117],[1.7523,-1.6684,0.7983,0.37785,0.04981,-0.45929,0.80237],[1.7671,-1.6617,0.8052,0.47925,-0.23771,-0.56682,0.62652],[1.7409,-1.7043,0.722,0.44731,-0.19899,-0.6028,0.63004],[1.7671,-1.7558,0.6614,0.24408,-0.42097,-0.44372,0.75254],[1.791,-1.571,0.8539,0.49014,-0.46031,-0.12952,0.72877],[1.7352,-1.638,0.7836,-0.1573,-0.62076,0.40468,0.6528],[1.7277,-1.5126,0.8523,-0.4324,-0.57557,0.65568,0.22766],[1.7212,-1.5041,0.8305,0.2892,0.63438,-0.61976,-0.36031],[1.6919,-1.4839,0.7633,-0.15602,-0.59642,0.62271,0.48184],[1.8134,-1.7744,0.757,-0.34397,-0.42078,0.60708,0.57973],[1.8139,-1.6445,0.7794,-0.22042,-0.53338,0.6002,0.55379],[1.7727,-1.551,0.7765,0.11647,0.58857,-0.5784,-0.5527],[1.6724,-1.6792,0.607,-0.62925,-0.07331,0.71919,-0.28536]]",
+    "++env.target_center_offset=[-0.25,0.1255,0.1573]",
+    "env.fill_light_intensity=20661",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.066,0.067]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000163",
+   "trajectories": [
+    "trajectory_twin_000163",
+    "trajectory_twin_000164"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_static_docking_00079",
+   "seed": 405260868,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.9866,-1.856,0.7392,0.47876,-0.31579,-0.5763,0.5822],[1.9779,-1.8655,0.7422,0.20707,-0.33315,-0.37453,0.84016],[1.8527,-2.0285,0.8175,0.08712,-0.61172,-0.45667,0.64005],[1.9065,-1.959,0.7835,-0.42067,0.64584,0.35068,-0.53193],[1.8187,-1.5555,0.6633,0.56988,-0.1519,-0.44459,0.67418],[1.8038,-1.631,0.6794,0.11482,-0.50932,0.16801,0.83617],[1.7911,-1.567,0.6889,0.10035,-0.5352,0.29492,0.78518],[1.7928,-1.5662,0.6886,0.10858,-0.54984,0.29069,0.77549],[1.8248,-1.8767,0.7042,0.44618,-0.36754,-0.48588,0.65556],[1.8261,-1.8766,0.7038,0.457,-0.37621,-0.47648,0.65006],[1.8236,-1.8761,0.7011,-0.55308,0.25238,0.61631,-0.50057],[1.8249,-1.8764,0.7015,-0.55954,0.25444,0.61066,-0.49927],[1.5514,-1.7453,0.8196,0.33033,-0.08529,-0.63128,0.69648],[1.5691,-1.7436,0.8219,-0.271,-0.44308,0.43745,0.73409],[1.5682,-1.7432,0.8201,-0.30041,-0.42685,0.4888,0.69901],[1.6611,-1.8133,0.8079,-0.40325,-0.45701,0.41797,0.67367],[1.4669,-1.7344,0.7678,-0.14431,-0.54294,0.25865,0.78581]]",
+    "++env.target_center_offset=[0,0.1255,0.1573]",
+    "env.fill_light_intensity=32932",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.035,0.074]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  },
+  {
+   "trajectory": "trajectory_twin_000187",
+   "trajectories": [
+    "trajectory_twin_000187",
+    "trajectory_twin_000188"
+   ],
+   "episodes": 2,
+   "scenario": "zerog_twin_antena_static_docking_00090",
+   "seed": 430339760,
+   "overrides": [
+    "env.mode=docking",
+    "env.goal_reached_pos_m=0.25",
+    "env.target_mount=static",
+    "env.target_kind=usd",
+    "++env.target_usd=/root/ws/assets/targets/usd/real_antena.usdz",
+    "env.target_scale=1.0",
+    "++env.target_static_poses=[[1.9866,-1.856,0.7392,0.47876,-0.31579,-0.5763,0.5822],[1.9779,-1.8655,0.7422,0.20707,-0.33315,-0.37453,0.84016],[1.8527,-2.0285,0.8175,0.08712,-0.61172,-0.45667,0.64005],[1.9065,-1.959,0.7835,-0.42067,0.64584,0.35068,-0.53193],[1.8187,-1.5555,0.6633,0.56988,-0.1519,-0.44459,0.67418],[1.8038,-1.631,0.6794,0.11482,-0.50932,0.16801,0.83617],[1.7911,-1.567,0.6889,0.10035,-0.5352,0.29492,0.78518],[1.7928,-1.5662,0.6886,0.10858,-0.54984,0.29069,0.77549],[1.8248,-1.8767,0.7042,0.44618,-0.36754,-0.48588,0.65556],[1.8261,-1.8766,0.7038,0.457,-0.37621,-0.47648,0.65006],[1.8236,-1.8761,0.7011,-0.55308,0.25238,0.61631,-0.50057],[1.8249,-1.8764,0.7015,-0.55954,0.25444,0.61066,-0.49927],[1.5514,-1.7453,0.8196,0.33033,-0.08529,-0.63128,0.69648],[1.5691,-1.7436,0.8219,-0.271,-0.44308,0.43745,0.73409],[1.5682,-1.7432,0.8201,-0.30041,-0.42685,0.4888,0.69901],[1.6611,-1.8133,0.8079,-0.40325,-0.45701,0.41797,0.67367],[1.4669,-1.7344,0.7678,-0.14431,-0.54294,0.25865,0.78581]]",
+    "++env.target_center_offset=[0,0.1255,0.1573]",
+    "env.fill_light_intensity=51409",
+    "env.event_camera_preset=imx636_evk4_lab2",
+    "env.event_camera_backend=v2e",
+    "++env.event_camera_input_image=rgb_hdr",
+    "++env.event_camera_spread_timestamps=true",
+    "++env.event_camera_hdr_gain=1000.0",
+    "++env.rgb_exposure_ev_range=[-2.0,1.5]",
+    "env.docking_speed_range=[0.032,0.057]"
+   ],
+   "episode_length_s": 40.0,
+   "target_mount": "static",
+   "target_kind": "usd",
+   "spinning": false
+  }
+ ]
+}

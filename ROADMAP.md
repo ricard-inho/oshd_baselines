@@ -42,9 +42,9 @@ Status legend: **done** · **running** · **ready** (code exists, only needs to 
 
 | # | Row | Owner | Status | Notes |
 |---|---|---|---|---|
-| 9 | PPO teacher (privileged), closed-loop docking in sim | Ricard | **adapt** | the policy that drove the docking recordings ships in `osh_dataset_pipeline/sim/policies/zerog_lab_inspection` (`env.mode=docking`). Needs an SRB eval script that logs success, final position/attitude error, contact velocity and thruster usage over N seeded episodes. Define success (paper TODO). |
-| 10 | BC students, one per modality (RGB, depth, events, LiDAR, fused) | Ricard | **new** | train from `steps` (observations, actions) + the sensor streams of `sim_zerog/docking/train`; evaluate closed loop in SRB with the #9 harness. 5 trainings. |
-| 11 | Modular: FoundationPose → PPO teacher, closed loop | Ricard | **new** | needs FoundationPose in the SRB loop: run it as a service (the Docker image of #1) that SRB queries per policy step, or use tracking mode (#2) for speed |
+| 9 | PPO teacher (privileged), closed-loop docking in sim | Ricard | **done** (success 97.8%, pos 2.75 cm, att 0.43°, contact 4.84 cm/s, thrust 43.8 s; 182 episodes) | `baselines/docking_policies` (closed loop on the 64 scenarios of the docking test split, recordings' physics and sensors; metrics and success definition in its README) |
+| 10 | BC students, one per modality (RGB, depth, events, LiDAR, fused) | Ricard | **trained; closed-loop evaluation queued** | `baselines/docking_policies` (`policy-bc-cache`, `policy-bc-train`, `policy-server` behind SRB's policy bridge); weights in `results/policies/bc/` |
+| 11 | Modular: FoundationPose → PPO teacher, closed loop | Ricard | **code ready; evaluation queued** | `baselines/foundationpose/fp_oshd/closed_loop.py` (register on the oracle mask when fully in view, track_one, re-register every 1 s; goal terms rebuilt by `oshd_policies.modular`) |
 
 ## Order
 
