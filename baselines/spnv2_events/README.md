@@ -8,12 +8,44 @@ counterpart is row #3 (`baselines/spnv2`, Aman). Setting **`TS`**.
 |---|---|
 | Upstream | https://github.com/tpark94/spnv2 pinned at `debee80c43f226a22dce857b0a136de62e9e939d` (2024-09-22), the same commit as `baselines/spnv2`. Paper: Park & D'Amico, *Robust multi-task learning and online refinement for spacecraft pose estimation across domain gap*, Adv. Space Res. 2023 |
 | Licence | MIT (`third_party/spnv2/LICENSE.md`, (c) 2022 SLAB Group). The ImageNet EfficientNet-B3 initialisation is torchvision's (BSD-3, ported from timm) |
-| Weights | trained here from the ImageNet EfficientNet-B3 backbone (upstream's own initialisation; `setup.sh` fetches it to `weights/torch/`). The trained checkpoint is `work/spnv2_events/runs/TS/model.pth.tar` (not in git, 2 GB with the optimizer-free state dict; ask Matteo) |
-| Environment | uv project, Python 3.11, torch 2.5.1+cu124, `albumentations==1.1.0` as upstream. No upstream file is patched: everything that differs lives in `src/spnv2_events/` |
+| Weights | trained here from the ImageNet EfficientNet-B3 backbone (upstream's own initialisation; `setup.sh` fetches it to `weights/torch/`). The trained checkpoint is `work/spnv2_events/runs/TS/model.pth.tar` (not in git, 53 MB state dict + config; ask Matteo) |
+| Environment | uv project, Python 3.10, torch 2.5.1+cu124, `albumentations==1.1.0` as upstream. No upstream file is patched: everything that differs lives in `src/spnv2_events/` |
 | Data | `benchmark_v3` (oshd 1.1.0, Hub `c8e5ca0`): the 384 `satellite_mockup` runs of `sim_zerog/docking/train` for training, the shared test list `results/sim/sim_zerog_docking_test_v2/` (its 99 mockup runs, 7467 samples) for the numbers |
 | Scoring | `oshd-bench sim-eval --subset "object == 'satellite_mockup'" --name TS_mockup` |
 
-RESULTS_PLACEHOLDER
+## Results (`results/sim_zerog_docking_test_v2/RESULTS_TS_mockup.md`, commit of this PR)
+
+**Paper row (means, rotation up to the measured symmetries): e_t = 6.55 cm, e_q = 15.2°, S = 0.359**,
+7467 / 7467 mockup samples predicted (coverage 1), 99 trajectories.
+
+| method, same 7467 samples | input | e_t mean (cm) | e_t med (cm) | e_q sym mean (°) | e_q sym med (°) | S sym | 5cm/5° sym | ADD-S<0.1d | Hz |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| SPNv2 `TS` (this folder) | events, 50 ms time surface, oracle mask at train time only | 6.55 | 3.43 | 15.2 | 3.6 | 0.359 | 0.405 | 0.901 | 43 |
+| FoundationPose `ORACLE_MASK` (`baselines/foundationpose`) | RGB-D + oracle mask | 3.65 | | 34.8 | | 0.690 | | | |
+
+* **Rotation** is where the time surfaces pay off: the median symmetric rotation error is 3.6°,
+  and the mean (15.2°) is driven by the `floating` mount (31.6° mean, 18° median, against ~10° / 3° on the
+  arm mounts; not analysed further) and by the two far range bins. Without the
+  symmetry reduction the median error is 136°: the network does predict one of the four flip-equivalent
+  poses, as the canonicalisation intends, but not always the canonical one.
+* **Translation** is worse than FoundationPose's depth-based estimate (6.55 vs 3.65 cm mean) and
+  grows with range: 3–4 cm mean below 1 m, 15.7 cm at 1–2 m, 43 cm beyond 2 m (168 samples). The
+  monocular depth comes from the EfficientPose regression head (the heatmap PnP translation is not
+  used, per upstream's final convention); the median is 3.4 cm.
+* The heatmap PnP pose was accepted on 21 % of the samples (`heatmap_pose_rate` in
+  `predictions_TS.json`); the other 79 % use the EfficientPose regression for rotation too (fewer than
+  5 keypoints above the adaptive threshold, or PnP rejected). Not analysed further.
+* **Speed**: 23 ms median per sample on the RTX 4070 (43 Hz in `sim-eval`'s `Hz` column) for the
+  time-surface build, warp, network and PnP; reading the 50 ms event window from parquet adds 10 ms
+  (median) and is not counted. Predicting the 7467 samples took 4 min.
+* Inference reads `samples.parquet` only (`trajectory`, `t_ns`, `scale`, `object`); `gt.parquet`
+  is touched by `sim-eval` alone. Twelve overlays (time surface, predicted wireframe, heatmap peaks)
+  are in `overlays_TS/`.
+
+Timings (RTX 4070 12 GB, 12-core host): download 12 + 40 GB ≈ 1 h at ~30 MB/s; `sim-prepare` of
+the train split ≈ 3 min; time-surface conversion of the 28 814 training samples 85 s with 10
+workers (8 GB of PNGs under `work/spnv2_events/data/`); `spnv2ev-check` < 1 min; training 7.0 h;
+prediction 4 min; `sim-eval` < 1 min.
 
 ## Method
 
@@ -51,7 +83,14 @@ with these inputs and labels:
 * **Training**: upstream's recipe. AdamW, lr 1e-3 stepped ×0.1 at epochs 15 and 18 of 20, AMP,
   batch 4 (upstream: 4 per GPU × 4 GPUs), upstream's augmentations (brightness/contrast, random
   erase, sun flare, blur, noise; no style randomisation). No tuning was done on this input.
-  TRAINING_PLACEHOLDER
+  **Run here**: 28 814 time surfaces (the 384 mockup train runs at 2 Hz, every 10th rgb frame, like
+  the test list), 7203 it/epoch, 144 060 iterations in **7.0 h on one RTX 4070 12 GB** (175 ms/it,
+  5.7 it/s, 8.8 GB of VRAM; batch 8 does not fit). Per-epoch mean losses went hmap 5.60 → 0.78,
+  pose 0.93 → 0.23, seg 0.20 → 0.04, cls 0.97 → 0.007, box 0.11 → 0.034 (epochs 1 → 19);
+  in epoch 20 one batch produced a non-finite box/pose loss (the AMP scaler skips such steps, the
+  heatmap and segmentation means kept improving and every weight of the final checkpoint is finite),
+  so the epoch-20 mean of those two terms is `nan` in `train.log`. The checkpoint is the one after
+  epoch 20; no model selection was done (no validation split).
 * **Inference** (`spnv2ev-predict`): upstream's final-pose convention (`docs/BUGFIX_20230725.md`):
   rotation from the heatmap keypoints by EPnP-RANSAC + LM refinement (keypoints at the heatmap
   cell centre), translation from the EfficientPose head; the full regression pose when fewer than
@@ -80,7 +119,7 @@ uv run --project bench oshd-bench sim-prepare --domain sim_zerog --task docking 
 P="uv run --project baselines/spnv2_events"
 L="flock work/gpu.lock"
 $P spnv2ev-check --run-dir results/sim/sim_zerog_docking_train_v3 --n 8    # label overlays + PnP round trip (work/debug/spnv2_events)
-$L $P spnv2ev-train --run-dir results/sim/sim_zerog_docking_train_v3 STRIDE_PLACEHOLDER     # converts the data first
+$L $P spnv2ev-train --run-dir results/sim/sim_zerog_docking_train_v3     # converts the data first
 $L $P spnv2ev-predict --run-dir results/sim/sim_zerog_docking_test_v2                     # -> results/sim_zerog_docking_test_v2/predictions_TS.parquet
 uv run --project bench oshd-bench sim-eval --run-dir results/sim/sim_zerog_docking_test_v2 \
     --pred baselines/spnv2_events/results/sim_zerog_docking_test_v2/predictions_TS.parquet \
