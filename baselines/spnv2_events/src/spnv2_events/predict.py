@@ -223,6 +223,13 @@ def resolve(path) -> Path:
     return p if p.is_absolute() or p.exists() else repo_root() / p
 
 
+def default_checkpoint(setting: str = SETTING) -> Path:
+    """``<work>/runs/<setting>/model_best.pth.tar`` (best validation epoch) if it exists, else
+    ``model.pth.tar`` (last epoch)."""
+    best = run_dir(setting) / "model_best.pth.tar"
+    return best if best.exists() else run_dir(setting) / "model.pth.tar"
+
+
 def predict(run: Path, setting: str = SETTING, checkpoint: Path | None = None, limit: int | None = None,
             stride: int = 1, pose_source: str = "fused", overlays: int = 12, overlay_dir: Path | None = None,
             out: Path | None = None) -> Path:
@@ -236,7 +243,7 @@ def predict(run: Path, setting: str = SETTING, checkpoint: Path | None = None, l
         samples = samples.iloc[:: max(1, len(samples) // limit)].iloc[:limit]  # spread over the split
     if not len(samples):
         raise SystemExit(f"no {OBJECT} samples in {run}")
-    ckpt = Path(checkpoint or run_dir(setting) / "model.pth.tar")
+    ckpt = Path(checkpoint or default_checkpoint(setting))
     model = Model(ckpt)
 
     ds = open_dataset()
@@ -247,6 +254,7 @@ def predict(run: Path, setting: str = SETTING, checkpoint: Path | None = None, l
                  f"(tau {TAU_NS / 1e6:.0f} ms; channels neg / pos / log count), "
                  f"warped to {model.vcam.width}x{model.vcam.height}",
         "upstream_commit": model.ck.get("upstream_commit"), "checkpoint": str(ckpt),
+        "checkpoint_epoch": model.ck.get("epoch"), "val": model.ck.get("val"),
         "train_run": model.ck.get("train_run"), "train_iterations": model.ck.get("iterations"),
         "pose_source": pose_source, "sample_limit": limit, "sample_stride": stride, "sample_list": str(run),
         "runtime": "time-surface build + warp + normalisation + network + post-processing + PnP "
@@ -296,7 +304,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--run-dir", default=f"results/sim/{TEST_RUN}", help="oshd-bench sim sample list")
     ap.add_argument("--setting", default=SETTING, choices=[SETTING])
-    ap.add_argument("--checkpoint", default=None, help="default <work>/runs/<setting>/model.pth.tar")
+    ap.add_argument("--checkpoint", default=None, help="default <work>/runs/<setting>/model_best.pth.tar, else model.pth.tar")
     ap.add_argument("--limit", type=int, default=None, help="evenly spaced subset of N samples")
     ap.add_argument("--stride", type=int, default=1, help="use every n-th sample of the list")
     ap.add_argument("--pose-source", default="fused", choices=["fused", "heatmap", "regression"])

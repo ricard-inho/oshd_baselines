@@ -4,9 +4,13 @@ One setting, ``TS``: from ImageNet EfficientNet-B3 (or ``--init`` a SPEED+ / ear
 checkpoint, shape-matched), on the time surfaces of the ``satellite_mockup`` samples of an
 ``oshd-bench sim-prepare`` train list (default ``results/sim/sim_zerog_docking_train_v3``).
 
-Architecture, losses, augmentations, optimiser, AMP and the per-epoch loop are upstream's
+Architecture, augmentations, optimiser, AMP and the per-epoch loop are upstream's
 (``nets.build_spnv2``, ``engine.trainer.do_train``, ``solver.*``, ``dataset.transforms``).
-Only the data comes from ``spnv2_events.convert`` (run automatically, idempotent).
+The data comes from ``spnv2_events.convert`` (run automatically, idempotent). The heatmap and
+pose-regression losses are upstream's taken as a min over the flip-equivalent targets
+(``spnv2_events.symloss``; ``--no-sym-loss`` keeps upstream's). After each epoch the checkpoint
+is scored on the held-out validation trajectories (``spnv2_events.validate``) and the best one
+(lowest symmetric SPEED score) is kept as ``model_best.pth.tar``.
 """
 
 from __future__ import annotations
@@ -16,10 +20,12 @@ import itertools
 import json
 import logging
 import math
+import shutil
 import time
 from pathlib import Path
 
 from .common import (
+    CORNER_SIGNS,
     SETTING,
     UPSTREAM_COMMIT,
     TargetFrame,
@@ -101,10 +107,11 @@ def resolve(path) -> Path:
 def train(train_run: Path, setting: str = SETTING, epochs: int = EPOCHS, max_iters: int | None = None,
           batch: int | None = None, lr: float = LR, lr_steps: list | None = None, init: str | None = None,
           stride: int = 1, limit: int | None = None, workers: int = 8, out: Path | None = None,
-          opts: list | None = None) -> Path:
+          opts: list | None = None, sym_loss: bool = True, val: bool = True, val_limit: int = 800) -> Path:
     import torch
 
     from .convert import convert, data_root, sensor_folder
+    from .validate import val_run_dir, validate
 
     train_run = resolve(train_run)
     out = Path(out or run_dir(setting))
@@ -134,6 +141,12 @@ def train(train_run: Path, setting: str = SETTING, epochs: int = EPOCHS, max_ite
 
     set_seeds_cudnn(cfg, seed=cfg.SEED)
     model = build_spnv2(cfg)  # ImageNet EfficientNet-B3 backbone (torchvision weights)
+    if sym_loss:
+        set_sym_losses(model, tf)
+        log.info(f"losses are symmetry-aware over {len(tf.rots) - 1} flips ({', '.join(tf.symmetries)}): "
+                 f"heatmap and pose losses = min over the {len(tf.rots)} equivalent targets")
+    else:
+        log.info("upstream losses (no symmetry handling beyond the canonical labels)")
     if init:
         st = torch.load(init, map_location="cpu", weights_only=False)
         st = st.get("state_dict", st.get("best_state_dict", st))
@@ -153,7 +166,10 @@ def train(train_run: Path, setting: str = SETTING, epochs: int = EPOCHS, max_ite
              f"batch {cfg.TRAIN.IMAGES_PER_GPU}, "
              f"{n_per_epoch} it/epoch, {ep} epochs, lr {cfg.TRAIN.LR} steps {list(cfg.TRAIN.LR_STEP)}, "
              f"max_iters={max_iters}")
-    done, t0, timing = 0, time.time(), []
+    vdir = val_run_dir(train_run, val_limit) if val else None
+    if vdir:
+        log.info(f"validation on {vdir} (up to {val_limit} samples)")
+    done, t0, timing, history, best = 0, time.time(), [], [], None
     for epoch in range(ep):
         adjust_learning_rate(optimizer, epoch, cfg)
         n = n_per_epoch if not max_iters else min(n_per_epoch, max_iters - done)
@@ -168,12 +184,38 @@ def train(train_run: Path, setting: str = SETTING, epochs: int = EPOCHS, max_ite
         log.info(f"epoch {epoch + 1}/{ep}: {n} it in {dt:.0f} s "
                  f"({n / dt:.2f} it/s, {1000 * dt / n:.0f} ms/it), "
                  f"lr {optimizer.param_groups[0]['lr']:.1e}")
-        save(out, model, cfg, vcam, canon, tf, setting, epoch + 1, done, train_run.name, timing)
-    log.info(f"done: {done} iterations in {time.time() - t0:.0f} s -> {out / 'model.pth.tar'}")
+        args = (out, model, cfg, vcam, canon, tf, setting, epoch + 1, done, train_run.name, timing, sym_loss)
+        save(*args)
+        if not vdir:
+            continue
+        m = validate(vdir, out / "model.pth.tar", out / "val", epoch + 1)
+        improved = math.isfinite(m["speed_sym_mean"]) and (best is None or m["speed_sym_mean"] < best[1])
+        if improved:
+            best = (epoch + 1, m["speed_sym_mean"])
+        history.append({"epoch": epoch + 1, **m})
+        (out / "val.json").write_text(json.dumps(history, indent=2))
+        bs = f"epoch {best[0]}, S_sym {best[1]:.4f}" if best else "none"
+        log.info(f"val epoch {epoch + 1}: e_t {m['e_t_cm_mean']:.2f} cm, e_q_sym {m['e_q_sym_deg_mean']:.2f} deg, "
+                 f"S_sym {m['speed_sym_mean']:.4f}, coverage {m['coverage']:.3f} (best: {bs})")
+        save(*args, extra={"val": m, "best_epoch": best[0] if best else None})
+        if improved:
+            shutil.copy(out / "model.pth.tar", out / "model_best.pth.tar")
+    log.info(f"done: {done} iterations in {time.time() - t0:.0f} s -> {out / 'model.pth.tar'}"
+             + (f", best epoch {best[0]} -> {out / 'model_best.pth.tar'}" if best else ""))
     return out / "model.pth.tar"
 
 
-def save(out, model, cfg, vcam, canon, tf, setting, epoch, iters, train_run, timing) -> None:
+def set_sym_losses(model, tf: TargetFrame) -> None:
+    """Replace the heatmap head's and the EfficientPose head's pose loss by the symmetry-aware ones."""
+    from .symloss import SymHeatmapLoss, SymSPEEDLoss, corner_perms
+
+    names = list(model.head_names)
+    model.heads[names.index("heatmap")].loss = SymHeatmapLoss(corner_perms(tf.rots, CORNER_SIGNS))
+    model.heads[names.index("efficientpose")].pose_loss = SymSPEEDLoss(tf.rots)
+
+
+def save(out, model, cfg, vcam, canon, tf, setting, epoch, iters, train_run, timing, sym_loss,
+         extra: dict | None = None) -> None:
     import torch
 
     wall = sum(t["wall_s"] for t in timing)
@@ -181,9 +223,10 @@ def save(out, model, cfg, vcam, canon, tf, setting, epoch, iters, train_run, tim
     torch.save({
         "state_dict": model.state_dict(), "cfg": cfg.dump(), "vcam": vcam.to_dict(), "R_ref": canon["R_ref"],
         "target": tf.to_dict(), "setting": setting, "epoch": epoch, "iterations": iters,
-        "upstream_commit": UPSTREAM_COMMIT, "train_run": train_run,
+        "upstream_commit": UPSTREAM_COMMIT, "train_run": train_run, "sym_loss": sym_loss,
         "timing": {"epochs": timing, "wall_s": round(wall, 1),
                    "ms_per_it": round(1000 * wall / max(n, 1), 1)},
+        **(extra or {}),
     }, out / "model.pth.tar")
 
 
@@ -204,10 +247,13 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, default=None, help="use n evenly spaced samples (smoke tests)")
     ap.add_argument("--workers", type=int, default=8, help="conversion processes")
     ap.add_argument("--out", default=None, help="default <work>/runs/<setting>")
+    ap.add_argument("--no-sym-loss", action="store_true", help="upstream's losses (ablation)")
+    ap.add_argument("--no-val", action="store_true", help="no per-epoch validation / model_best")
+    ap.add_argument("--val-limit", type=int, default=800, help="validation samples per epoch")
     ap.add_argument("opts", nargs=argparse.REMAINDER, help="extra yacs KEY VALUE overrides")
     a = ap.parse_args(argv)
     train(Path(a.run_dir), a.setting, a.epochs, a.max_iters, a.batch, a.lr, a.lr_steps, a.init, a.stride,
-          a.limit, a.workers, a.out, a.opts)
+          a.limit, a.workers, a.out, a.opts, not a.no_sym_loss, not a.no_val, a.val_limit)
     return 0
 
 

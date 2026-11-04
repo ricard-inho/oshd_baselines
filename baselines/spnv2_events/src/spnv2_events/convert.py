@@ -18,12 +18,15 @@ closest, in the viewing-ray frame, to a fixed reference orientation (``canon.jso
 mean of the training set converted first). Keypoint identities are then a function of the image
 appearance, except near the cell boundaries. See README.md.
 
+The validation trajectories (``configs/val_trajectories.txt``) are left out (``read_train_list``).
+
 This reads the GT ``T`` column of the run, so it is only ever run on *train* lists.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from multiprocessing import get_context
 from pathlib import Path
@@ -34,6 +37,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from .common import (
+    BASELINE_DIR,
     OBJECT,
     SENSOR,
     R_to_q_wxyz,
@@ -88,9 +92,21 @@ def load_or_make_target(ds, traj_name: str) -> TargetFrame:
     return tf
 
 
+VAL_LIST = BASELINE_DIR / "configs" / "val_trajectories.txt"
+
+
+def val_trajectories() -> set[str]:
+    """The held-out validation trajectories (``configs/val_trajectories.txt``, made by
+    ``scripts/make_val_split.py``)."""
+    if not VAL_LIST.exists():
+        raise SystemExit(f"{VAL_LIST} missing: run baselines/spnv2_events/scripts/make_val_split.py")
+    return set(VAL_LIST.read_text().split())
+
+
 def read_train_list(run_dir: Path, stride: int = 1, limit: int | None = None) -> pd.DataFrame:
+    """The ``satellite_mockup`` rows of the train list, without the validation trajectories."""
     gt = pd.read_parquet(run_dir / "gt.parquet")
-    gt = gt[gt["object"] == OBJECT].iloc[::stride]
+    gt = gt[(gt["object"] == OBJECT) & ~gt["trajectory"].isin(val_trajectories())].iloc[::stride]
     if limit:
         gt = gt.iloc[:: max(1, len(gt) // limit)].iloc[:limit]  # spread over the trajectories
     if not len(gt):
@@ -191,7 +207,9 @@ def convert(run_dir: Path, stride: int = 1, limit: int | None = None, workers: i
     sub = root / run_dir.name
     csv = sub / "labels" / "labels.csv"
     meta_p = sub / "meta.json"
-    key = {"n_gt": len(gt), "stride": stride, "limit": limit, "vcam": vcam.to_dict(), "R_ref": R_ref.tolist()}
+    val = sorted(val_trajectories())
+    key = {"n_gt": len(gt), "stride": stride, "limit": limit, "vcam": vcam.to_dict(), "R_ref": R_ref.tolist(),
+           "val_excluded": len(val), "val_sha1": hashlib.sha1("\n".join(val).encode()).hexdigest()}
     if csv.exists() and meta_p.exists() and not overwrite and json.loads(meta_p.read_text()).get("key") == key:
         print(f"{csv}: up to date")
         return csv.relative_to(root)
