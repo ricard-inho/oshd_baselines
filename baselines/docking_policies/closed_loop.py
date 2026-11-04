@@ -53,7 +53,10 @@ def run(sc: dict, a, idx: int) -> str:
         return f"{tag}: done"
     # The scenario's episodes run side by side (one environment each, one episode per
     # environment): one simulator process renders all of them.
-    num_envs, per_env = (episodes, 1) if a.parallel else (1, episodes)
+    # With the recorder on (--sensors), several environments are laid out apart and only one of
+    # them gets the lab scenery and its lights: sensor runs use one environment per process.
+    parallel = a.parallel and not a.sensors
+    num_envs, per_env = (episodes, 1) if parallel else (1, episodes)
     cmd = ["srb", "agent", "eval", "--headless", "-e", "zerog_lab_inspection", "--algo", "rsl_rl_ppo",
            f"env.num_envs={num_envs}", f"env.episode_length_s={sc['episode_length_s']}", f"env.seed={sc['seed']}",
            *sc["overrides"], *a.extra]
@@ -109,7 +112,8 @@ def main() -> None:
     ap.add_argument("--timeout", type=float, default=3600)
     ap.add_argument("--retries", type=int, default=2)
     ap.add_argument("--sequential", dest="parallel", action="store_false",
-                    help="one environment, the episodes one after the other (default: side by side)")
+                    help="one environment, the episodes one after the other (default: side by side without "
+                         "--sensors; always sequential with --sensors)")
     ap.add_argument("extra", nargs="*", help="extra Hydra overrides")
     a = ap.parse_args()
     scenarios = json.loads(a.scenarios.read_text())["scenarios"]

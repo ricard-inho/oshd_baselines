@@ -21,6 +21,13 @@ its recorded Hydra overrides and seed. Its episodes run side by side, one enviro
 gives the split's targets, mounts, scales, spins, lighting and docking speeds, none of which the
 students saw in training.
 
+**Start in view.** The recordings spawn the platform with a uniformly random heading, so
+the target is often behind it. For the perception rows, every episode starts with the onboard
+camera (base +x, 70° horizontal field of view) facing the target centre within ±10°
+(`+env.spawn_face_target=true`, SRB `TaskCfg.spawn_face_target`). The heading's random draw is
+reused as the offset, so the rest of the episode (target, spin, goals) is as recorded. The task
+is then rendezvous and docking from a target in view, not a search.
+
 **Physics and sensors.** `closed_loop.py --sensors` turns on the dataset recorder, writing into a
 scratch directory that is deleted afterwards, so every row runs with the recordings' settings:
 

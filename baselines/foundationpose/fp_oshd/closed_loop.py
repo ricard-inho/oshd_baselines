@@ -15,13 +15,19 @@ Per agent step (10 Hz), on the bridge's RGB-D frame:
    from the previous pose;
 2. **target centre** in the world: ``T_world_robot T_body_cam T_cam_target`` and the target's
    centre offset (the scenario's ``target_center_offset``; zero for arm-held and floating
-   targets). The robot's own pose is known (as for the BC students);
+   targets), fused over time with ``oshd_policies.modular.StaticTargetFilter`` (as the learned
+   estimators; std ``--register-sd`` / ``--track-sd``). The robot's own pose is known;
 3. **teacher**: the docking goal from the centre and the docking command
    (``oshd_policies.modular``), the PPO teacher's 41-d observation with these goal terms, and its
    action.
 
-Before the first estimate the teacher is given a goal at the robot's position turned by
-``--search-yaw-deg``: it turns in place until the target comes into view.
+Before the first estimate the teacher is given a goal at the robot's position, turned towards
+the target's pixels if some are in view (else by ``--search-yaw-deg``), and ``--back-off-m``
+behind it if the target is large and cut by the image border: it turns (and backs away) until
+the target is fully in view. While the target is out of view (``--min-visible-px``) there is no
+estimate and tracking is dropped (``track_one`` would drift without it); the filter keeps the
+last fused centre. (A search that turns away from a small, visible target never gets
+close enough to register: the first smoke test with a 2000 px threshold spun in place.)
 The target CAD is the scenario's (``tag`` -> the test trajectory's ``target_mesh()``).
 """
 
@@ -71,7 +77,7 @@ class Session:
 
     def __init__(self, tag: str, shared, a):
         from oshd import OshDataset
-        from oshd_policies.modular import GoalTracker
+        from oshd_policies.modular import GoalTracker, StaticTargetFilter
 
         FoundationPose = shared["FoundationPose"]
         traj = OshDataset()[tag]
@@ -84,6 +90,7 @@ class Session:
         self.T_body_cam = np.asarray(cal.T_body_cam("rgb"), float)
         self.offset = center_offset(traj.metadata)
         self.goal = GoalTracker(dt=0.1)
+        self.filter = StaticTargetFilter()
         self.a = a
         self.reset()
         self.stats = {"register": 0, "track": 0, "search": 0, "register_ms": 0.0, "track_ms": 0.0}
@@ -92,7 +99,11 @@ class Session:
         self.tracking = False
         self.searching = True
         self.since_register = 0
+        self.last_px = 0
+        self.partial = False
+        self.last_sides = ""
         self.goal.reset()
+        self.filter.reset()
 
     def target_center_w(self, msg: dict) -> np.ndarray | None:
         from scipy.spatial.transform import Rotation as R
@@ -100,9 +111,46 @@ class Session:
         rgb = np.asarray(msg["rgb"][0], np.uint8)
         depth = np.asarray(msg["depth"][0], np.float32)
         mask = np.asarray(msg["target_mask"][0], bool)
-        full = fully_in_view(mask, self.a.init_min_px) and int(((depth >= 0.001) & mask).sum()) >= 4
+        px = int(mask.sum())
+        self.last_px = px
+        self.partial = False
+        self.last_sides = ""
+        if px < self.a.min_visible_px:  # out of view: no estimate, and tracking is lost
+            self.tracking = False
+            return None
+        has_depth = int(((depth >= 0.001) & mask).sum()) >= 4
+        full = fully_in_view(mask, self.a.init_min_px) and has_depth
+        # a large target that never fits in view (cut by one image side, e.g. a scaled target
+        # above the camera): register from the partial view, with a larger std
+        m = 2
+        sides = [bool(e.any()) for e in (mask[:m], mask[-m:], mask[:, :m], mask[:, -m:])]  # top bottom left right
+        self.last_sides = "".join("tblr"[i] for i, c in enumerate(sides) if c)
+        # cut by one side, or two adjacent sides (a corner), but not across the image
+        partial = (not full and has_depth and px >= self.a.partial_min_px
+                   and len(self.last_sides) <= 2 and self.last_sides not in ("tb", "lr"))
+        self.partial = partial
         t0 = time.perf_counter()
-        if full and (not self.tracking or self.since_register >= self.a.reregister_every):
+        import torch
+
+        try:
+            T = self._estimate(rgb, depth, mask, full or partial, t0)
+        except torch.OutOfMemoryError:  # the GPU is shared with the simulators: no estimate this step
+            torch.cuda.empty_cache()
+            self.tracking = False
+            self.stats["oom"] = self.stats.get("oom", 0) + 1
+            return None
+        if T is None:
+            return None
+        T = np.asarray(T.cpu() if hasattr(T, "cpu") else T, float)
+        rp = np.asarray(msg["robot_pose"][0], float)
+        T_wr = np.eye(4)
+        T_wr[:3, :3] = R.from_quat(rp[3:]).as_matrix()
+        T_wr[:3, 3] = rp[:3]
+        T_wt = T_wr @ self.T_body_cam @ T
+        return T_wt[:3, 3] + T_wt[:3, :3] @ self.offset
+
+    def _estimate(self, rgb, depth, mask, can_register: bool, t0: float):
+        if can_register and (not self.tracking or self.since_register >= self.a.reregister_every):
             T = self.est.register(K=self.K, rgb=rgb, depth=depth, ob_mask=mask, iteration=self.a.refine_iters)
             self.tracking, self.since_register = True, 0
             self.stats["register"] += 1
@@ -114,13 +162,7 @@ class Session:
             self.stats["track_ms"] += (time.perf_counter() - t0) * 1000
         else:
             return None
-        T = np.asarray(T.cpu() if hasattr(T, "cpu") else T, float)
-        rp = np.asarray(msg["robot_pose"][0], float)
-        T_wr = np.eye(4)
-        T_wr[:3, :3] = R.from_quat(rp[3:]).as_matrix()
-        T_wr[:3, 3] = rp[:3]
-        T_wt = T_wr @ self.T_body_cam @ T
-        return T_wt[:3, 3] + T_wt[:3, :3] @ self.offset
+        return T
 
     def act(self, msg: dict, teacher) -> np.ndarray:
         import torch
@@ -130,22 +172,52 @@ class Session:
             self.reset()
         rp = np.asarray(msg["robot_pose"][0], float)
         command = np.asarray(msg["command"][0], float)
-        centre = self.target_center_w(msg)
+        measured = self.target_center_w(msg)
+        # std: grows as the target gets smaller in the image (far away), and for tracked poses
+        # (Table I: register vs track)
+        sd = self.a.register_sd * float(np.sqrt(self.a.ref_px / max(self.last_px, 1)))
+        sd = float(np.clip(sd, self.a.register_sd, 0.3)) * (1.0 if self.since_register == 0 else self.a.track_factor)
+        if self.partial:
+            sd *= self.a.partial_factor
+        centre = self.filter.update(measured, sd if measured is not None else np.inf)
         if (centre is None) != self.searching:  # no goal velocity across a switch
             self.goal.reset()
             self.searching = centre is None
         if centre is None:
-            # search: turn in place (goal at the robot, rotated)
-            yaw = R.from_quat(rp[3:]).as_euler("xyz")[2] + np.radians(self.a.search_yaw_deg)
-            b = yaw - np.pi  # GoalTracker faces b + pi
-            centre = rp[:3] - 1e-6 * np.array([np.cos(b), np.sin(b), 0.0])
-            command = np.array([np.cos(b), np.sin(b), 1e-6])
+            from oshd_policies.modular import search_terms
+
+            # turn in place towards the target's pixels if some are in view, else by --search-yaw-deg
+            mask = np.asarray(msg["target_mask"][0], bool)
+            step, back = np.radians(self.a.search_yaw_deg), 0.0
+            if mask.any():
+                cx = np.nonzero(mask)[1].mean()
+                # camera x right = robot -y: a target right of centre needs a negative yaw step
+                step = float(np.clip(-np.arctan((cx - self.K[0, 2]) / self.K[0, 0]), -step, step))
+                # a large target cut by the image border: back away until it fits in view
+                if int(mask.sum()) >= self.a.init_min_px and not fully_in_view(mask, self.a.init_min_px):
+                    back = self.a.back_off_m
+            goal_terms = search_terms(self.goal, rp, step, back)
             self.stats["search"] += 1
+        else:
+            goal_terms = self.goal.terms(rp, centre, command)
         terms = {k: np.asarray(v[0], np.float32) for k, v in msg["proprio"].items()}
-        terms.update(self.goal.terms(rp, centre, command))
+        true_goal = {k: terms[k].copy() for k in ("tf_pos_robot_to_goal", "vel_lin_goal")}
+        terms.update(goal_terms)
         obs = torch.from_numpy(teacher.observation(terms)[None]).to(teacher.mean.device)
         with torch.no_grad():
-            return teacher(obs).cpu().numpy().astype(np.float32)
+            action = teacher(obs).cpu().numpy().astype(np.float32)
+        if self.a.debug_log:
+            true_c = np.asarray(msg["privileged"]["target_center"][0], float)
+            rec = {"t_ns": int(msg["t_ns"]), "searching": self.searching, "tracking": self.tracking,
+                   "mask_px": int(np.asarray(msg["target_mask"][0]).sum()), "sides": self.last_sides,
+                   "partial": self.partial,
+                   "centre_err": None if self.searching else (centre - true_c).round(4).tolist(),
+                   "goal_pos_est": terms["tf_pos_robot_to_goal"].round(4).tolist(),
+                   "goal_pos_true": true_goal["tf_pos_robot_to_goal"].round(4).tolist(),
+                   "vel_goal_est": terms["vel_lin_goal"].round(4).tolist(), "action": action[0].round(3).tolist()}
+            with open(self.a.debug_log, "a") as f:
+                f.write(json.dumps(rec) + "\n")
+        return action
 
 
 def main(argv=None) -> int:
@@ -155,10 +227,22 @@ def main(argv=None) -> int:
     ap.add_argument("--port", type=int, default=5602)
     ap.add_argument("--refine-iters", type=int, default=5)
     ap.add_argument("--track-iters", type=int, default=2)
-    ap.add_argument("--init-min-px", type=int, default=2000)
+    ap.add_argument("--init-min-px", type=int, default=400,
+                    help="register once the mask has this many pixels and is off the border (Table I tracking: 2000; "
+                         "the closed loop starts ~2.5 m away, where the target covers ~1000 px)")
     ap.add_argument("--reregister-every", type=int, default=10, help="agent steps (1 s) between re-registrations")
     ap.add_argument("--search-yaw-deg", type=float, default=30.0)
+    ap.add_argument("--register-sd", type=float, default=0.03,
+                    help="filter: std of a registered estimate (m) at --ref-px mask pixels; grows as 1/sqrt(px)")
+    ap.add_argument("--ref-px", type=float, default=20000)
+    ap.add_argument("--track-factor", type=float, default=1.5, help="filter: std factor of a tracked estimate")
+    ap.add_argument("--min-visible-px", type=int, default=200, help="fewer mask pixels: no estimate, tracking lost")
+    ap.add_argument("--partial-min-px", type=int, default=2000,
+                    help="register a target cut by one image side if its mask is this large")
+    ap.add_argument("--partial-factor", type=float, default=2.0, help="filter: std factor of a partial view")
+    ap.add_argument("--back-off-m", type=float, default=0.3, help="search: back away when the target is cut")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--debug-log", default=None, help="jsonl: per-step estimate vs. the simulator's target")
     a = ap.parse_args(argv)
     sys.path.insert(0, str(FP_DIR))
     from estimater import FoundationPose, PoseRefinePredictor, ScorePredictor, dr, set_seed  # upstream

@@ -24,6 +24,7 @@ policy-metrics = "oshd_policies.metrics:main"
 policy-bc-cache = "oshd_policies.build_cache:main"
 policy-bc-train = "oshd_policies.bc:main"
 policy-server = "oshd_policies.server:main"
+policy-estimator-train = "oshd_policies.estimator:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/oshd_policies"]
