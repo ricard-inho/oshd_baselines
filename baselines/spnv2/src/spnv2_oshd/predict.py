@@ -61,7 +61,9 @@ def read_samples(path: Path) -> pd.DataFrame:
 
 
 class Model:
-    def __init__(self, ckpt_path: Path, device="cuda", odr_opts: list | None = None):
+    def __init__(self, ckpt_path: Path, device="cuda", odr_opts: list | None = None,
+                 vertices: np.ndarray | None = None):
+        """``vertices``: the target's CAD vertices (model frame) for the assets; default the cube's."""
         import torch
 
         ensure_upstream_on_path()
@@ -77,9 +79,11 @@ class Model:
         cfg = CfgNode.load_cfg(ck["cfg"])
         # the EfficientPose head reads camera.json at build time: re-create it next to the checkpoint
         assets = Path(ckpt_path).parent / "assets"
-        from oshd_bench import open_dataset
+        if vertices is None:
+            from oshd_bench import open_dataset
 
-        write_camera_files(assets, self.vcam, self.kp, open_dataset().objects[OBJECT], self.c)
+            vertices = open_dataset().objects[OBJECT].vertices
+        write_camera_files(assets, self.vcam, self.kp, vertices, self.c)
         cfg.defrost()
         cfg.DATASET.CAMERA = str(assets / "camera.json")
         cfg.DATASET.KEYPOINTS = str(assets / "cube_keypoints.mat")
@@ -198,6 +202,36 @@ class _ImageSet:
         return torch.from_numpy(x.transpose(2, 0, 1).copy())
 
 
+def odr_options(n_samples: int = 1024) -> list:
+    """Upstream experiments/odr_phi3_B4_N1024.yaml: segmentation entropy only, gradient batches of
+    4 single images, AdamW lr 1e-4 without weight decay, fp32. Pass as ``Model(odr_opts=...)``."""
+    return ["ODR.MIN_ENTROPY", True, "ODR.NUM_TRAIN_SAMPLES", n_samples, "ODR.IMAGES_PER_BATCH", 4,
+            "MODEL.HEAD.LOSS_HEADS", [], "MODEL.HEAD.LOSS_FACTORS", [], "TRAIN.IMAGES_PER_GPU", 1,
+            "TRAIN.LR", 1.0e-4, "TRAIN.WD", 0.0, "FP16", False]
+
+
+def run_adabn(model: Model, rows, sensor: str, batch: int = 8) -> None:
+    """AdaBN (Li et al., 2016): the backbone's BatchNorm running statistics re-estimated as the
+    cumulative average over ``rows`` (unlabelled target-domain images); no weight changes. The
+    heads use GroupNorm and are untouched, as in ODR."""
+    import torch
+
+    bns = [m for m in model.net.backbone.modules() if isinstance(m, torch.nn.BatchNorm2d)]
+    momenta = [m.momentum for m in bns]
+    for m in bns:
+        m.reset_running_stats()
+        m.momentum = None  # cumulative average
+        m.train()  # only the BN layers: drop-connect etc. stay in eval mode
+    loader = torch.utils.data.DataLoader(_ImageSet(rows, sensor, model), batch_size=batch, shuffle=False,
+                                         num_workers=4)
+    with torch.no_grad():
+        for x in tqdm(loader, desc="AdaBN"):
+            model.net(x.to(model.device), is_train=False, gpu=model.device)
+    for m, mo in zip(bns, momenta):
+        m.momentum = mo
+        m.eval()
+
+
 def run_odr(model: Model, rows, sensor: str, n_samples: int, lr: float = 1e-4, batch: int = 4) -> None:
     """upstream tools/odr.py main_worker + engine/adapter.do_adapt, on the evaluation images."""
     import torch
@@ -292,12 +326,7 @@ def predict(sensor: str, setting: str, domain: str = "real", split: str = "test"
     if limit:
         samples = samples.iloc[:: max(1, len(samples) // limit)].iloc[:limit]  # spread over the split
     ckpt = Path(checkpoint or run_dir(sensor, setting) / "model.pth.tar")
-    odr_opts = None
-    if odr:
-        odr_opts = ["ODR.MIN_ENTROPY", True, "ODR.NUM_TRAIN_SAMPLES", odr_samples, "ODR.IMAGES_PER_BATCH", 4,
-                    "MODEL.HEAD.LOSS_HEADS", [], "MODEL.HEAD.LOSS_FACTORS", [], "TRAIN.IMAGES_PER_GPU", 1,
-                    "TRAIN.LR", 1.0e-4, "TRAIN.WD", 0.0, "FP16", False]
-    model = Model(ckpt, odr_opts=odr_opts)
+    model = Model(ckpt, odr_opts=odr_options(odr_samples) if odr else None)
     out_setting = f"{setting}_ODR" if odr else setting
     if odr:
         run_odr(model, list(zip(samples["trajectory"], samples["index"])), sensor, odr_samples)

@@ -24,6 +24,7 @@ dependencies = [
 spnv2-convert = "spnv2_oshd.convert:main"
 spnv2-train = "spnv2_oshd.train:main"
 spnv2-predict = "spnv2_oshd.predict:main"
+spnv2-list = "spnv2_oshd.lists:main"
 
 [build-system]
 requires = ["hatchling>=1.21"]
