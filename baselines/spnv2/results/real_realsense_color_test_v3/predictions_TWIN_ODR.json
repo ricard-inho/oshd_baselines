@@ -1,0 +1,98 @@
+{
+  "hardware": {
+    "host": "ll205",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 4070"
+  },
+  "method": "SPNv2",
+  "upstream": "https://github.com/tpark94/spnv2",
+  "commit": "debee80c43f226a22dce857b0a136de62e9e939d",
+  "setting": "TWIN_ODR",
+  "experiment": "twin",
+  "checkpoints": {
+    "antena": {
+      "checkpoint": "/home/aman/projects/pooh_dataset/oshd_baselines/work/spnv2/r3m3c3--oshd/runs/twin/antena/model.pth.tar",
+      "epoch": 20,
+      "iterations": 60820,
+      "n_train": 12167,
+      "train_list": "results/sim/twin_train_v3",
+      "symmetries": [],
+      "n_keypoints": 32,
+      "adapt": {
+        "method": "odr",
+        "list": "real_realsense_color_train_v3",
+        "sensor": "realsense_color",
+        "n_images": 1024,
+        "n_trajectories": 22,
+        "wall_s": 38
+      }
+    },
+    "antena_1_solar": {
+      "checkpoint": "/home/aman/projects/pooh_dataset/oshd_baselines/work/spnv2/r3m3c3--oshd/runs/twin/antena_1_solar/model.pth.tar",
+      "epoch": 20,
+      "iterations": 60820,
+      "n_train": 12165,
+      "train_list": "results/sim/twin_train_v3",
+      "symmetries": [],
+      "n_keypoints": 32,
+      "adapt": {
+        "method": "odr",
+        "list": "real_realsense_color_train_v3",
+        "sensor": "realsense_color",
+        "n_images": 1024,
+        "n_trajectories": 38,
+        "wall_s": 39
+      }
+    }
+  },
+  "pose_source": "fused",
+  "input": "real realsense_color, undistorted + resampled to a 640x512 pinhole virtual camera, grayscale x3",
+  "vcam": {
+    "sensor": "sim_rgb_x2",
+    "width": 640,
+    "height": 512,
+    "K": [
+      [
+        454.5454545454545,
+        0.0,
+        320.5
+      ],
+      [
+        0.0,
+        454.5454545454545,
+        256.5
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "scale": "translation x the sample's scale (trained on t / scale)",
+  "runtime": "warp + network + post-processing + PnP on a decoded frame (JPEG decode excluded)",
+  "prepare": {
+    "benchmark": "v3",
+    "revision": "c8e5ca0d6f38cea943dfc60009dbfff9f7bf026f",
+    "domain": "real",
+    "task": null,
+    "split": "test",
+    "sensor": "realsense_color",
+    "stride": 1,
+    "n_trajectories": 16,
+    "n_samples": 14594,
+    "objects": {
+      "antena_1_solar": 10853,
+      "antena": 3741
+    }
+  },
+  "stride": 1,
+  "limit": null,
+  "adapt": "odr",
+  "n_samples": 14594,
+  "n_attempted": 14594,
+  "n_predicted": 14594,
+  "n_no_pose": 0,
+  "heatmap_pose_rate": 0.4201041523913937,
+  "wall_s": 366
+}

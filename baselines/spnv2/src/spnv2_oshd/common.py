@@ -251,8 +251,10 @@ def build_cfg(sensor: str, vcam: VirtualCamera, data_root: Path, yaml_file: Path
     return cfg
 
 
-def write_camera_files(folder: Path, vcam: VirtualCamera, kp_net: np.ndarray, obj, c: np.ndarray) -> None:
-    """SPEED+-style camera.json, keypoint .mat ([3, K] 'tango3Dpoints') and a .ply (mm) model."""
+def write_camera_files(folder: Path, vcam: VirtualCamera, kp_net: np.ndarray, vertices: np.ndarray,
+                       c: np.ndarray) -> None:
+    """SPEED+-style camera.json, keypoint .mat ([3, K] 'tango3Dpoints') and a .ply (mm) model
+    (``vertices``: the CAD's, model frame, metres)."""
     from scipy.io import savemat
 
     folder.mkdir(parents=True, exist_ok=True)
@@ -262,7 +264,7 @@ def write_camera_files(folder: Path, vcam: VirtualCamera, kp_net: np.ndarray, ob
            "ccx": K[0, 2], "ccy": K[1, 2], "cameraMatrix": K.tolist(), "distCoeffs": [0.0] * 5}
     (folder / "camera.json").write_text(json.dumps(cam, indent=2))
     savemat(folder / "cube_keypoints.mat", {"tango3Dpoints": kp_net.T.astype(np.float64)})
-    v = (np.asarray(obj.vertices) - c) * 1000.0
+    v = (np.asarray(vertices) - c) * 1000.0
     rng = np.random.default_rng(0)
     v = v[rng.choice(len(v), size=min(len(v), 5000), replace=False)]
     with open(folder / "cube.ply", "w") as f:

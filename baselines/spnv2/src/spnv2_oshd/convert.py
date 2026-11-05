@@ -136,7 +136,7 @@ def convert(sensor: str, domain: str, split: str, stride: int = 1, limit: int | 
     c, kp, rots = cube_frame(obj, sym_cfg)
     vcam = load_or_make_vcam(ds, sensor, gt["trajectory"].iloc[0])
     root = sensor_folder(sensor)
-    write_camera_files(root, vcam, kp, obj, c)
+    write_camera_files(root, vcam, kp, obj.vertices, c)
 
     canon_p = root / "canon.json"
     if canon_p.exists():
