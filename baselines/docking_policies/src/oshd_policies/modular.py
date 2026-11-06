@@ -72,14 +72,16 @@ class StaticTargetFilter:
     """
 
     def __init__(self, q: float = 0.0005, gate: float = 3.0, init_sd: float = 0.3, max_sd: float = 0.5,
-                 reset_after: int = 200):
+                 reset_after: int = 200, init_n: int = 1):
         self.q, self.gate, self.init_sd, self.max_sd, self.reset_after = q, gate, init_sd, max_sd, reset_after
+        self.init_n = init_n
         self.reset()
 
     def reset(self) -> None:
         self.x: np.ndarray | None = None
         self.P = 0.0
         self.rejected = 0
+        self.pending: list[tuple[np.ndarray, float]] = []
         self.stats = {"fused": 0, "rejected": 0, "skipped": 0, "resets": 0}
 
     def update(self, centre_w: np.ndarray | None, sd: float) -> np.ndarray | None:
@@ -90,8 +92,15 @@ class StaticTargetFilter:
             return self.x
         c = np.asarray(centre_w, float)
         if self.x is None:
+            # start from the (component-wise) median of the first ``init_n`` confident
+            # measurements: a single confident outlier does not set the estimate
             if sd <= self.init_sd:
-                self.x, self.P = c.copy(), sd ** 2
+                self.pending.append((c, sd))
+            if len(self.pending) >= self.init_n:
+                cs = np.stack([p[0] for p in self.pending])
+                self.x = np.median(cs, 0)
+                self.P = float(np.median([p[1] for p in self.pending])) ** 2
+                self.pending = []
             return self.x
         d = np.linalg.norm((c - self.x)[:2]) / np.sqrt(self.P + sd ** 2)
         if d > self.gate:

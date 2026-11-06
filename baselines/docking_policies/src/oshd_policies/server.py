@@ -93,7 +93,9 @@ class Policy:
             self.oracle_goal = a.oracle_goal
             self.log_path, self.plog = a.perception_log, {}
             self.search_yaw = np.radians(a.search_yaw_deg)
-            self.filter_kw = {"q": a.filter_q, "reset_after": a.filter_reset_after}
+            self.filter_kw = {"q": a.filter_q, "reset_after": a.filter_reset_after,
+                              "init_sd": a.filter_init_sd, "max_sd": a.filter_max_sd}
+            self.hold_steps = a.hold_steps
         elif self.kind in ("teacher", "shadow", "perception"):
             from .teacher import Teacher
 
@@ -224,6 +226,7 @@ def _estimate_then_control(self, msg: dict) -> np.ndarray:
     for e, (filt, goal) in enumerate(self.envs):
         if bool(np.asarray(msg["new_episode"])[e]):
             filt.reset()
+            filt.waited = 0
             goal.reset()
         rp = np.asarray(msg["robot_pose"][e], float)
         centre_w = rp[:3] + R.from_quat(rp[3:]).apply(mu[e])
@@ -245,7 +248,13 @@ def _estimate_then_control(self, msg: dict) -> np.ndarray:
             self.plog.setdefault("visible", []).append(bool(visible[e]))
         if (x is not None) != was:
             goal.reset()  # no goal velocity across the switch from searching
-        terms = search_terms(goal, rp, self.search_yaw) if x is None else goal.terms(rp, x, np.asarray(msg["command"][e]))
+        if x is None:
+            # the episode starts with the target in view: hold still while the filter gathers a
+            # confident estimate, and search (turn in place) only after --hold-steps without one
+            filt.waited = getattr(filt, "waited", 0) + 1
+            terms = search_terms(goal, rp, 0.0 if filt.waited <= self.hold_steps else self.search_yaw)
+        else:
+            terms = goal.terms(rp, x, np.asarray(msg["command"][e]))
         for k, v in terms.items():
             terms_all[k][e] = v
     with torch.no_grad():
@@ -270,6 +279,10 @@ def main(argv=None) -> int:
     ap.add_argument("--filter-q", type=float, default=0.0005, help="estimator: filter process noise per step (m)")
     ap.add_argument("--filter-reset-after", type=int, default=200,
                     help="estimator: consecutive rejected measurements before the filter restarts")
+    ap.add_argument("--filter-init-sd", type=float, default=1.0, help="estimator: largest std that starts the filter")
+    ap.add_argument("--filter-max-sd", type=float, default=1.0, help="estimator: larger std: no measurement")
+    ap.add_argument("--hold-steps", type=int, default=30,
+                    help="estimator: steps to hold still before searching while there is no estimate")
     ap.add_argument("--oracle-goal", action="store_true", help="perception: keep the true goal terms (check)")
     ap.add_argument("--dump", default=None, help="directory: save every --dump-every-th request (debugging)")
     ap.add_argument("--dump-every", type=int, default=50)
