@@ -42,9 +42,9 @@ Status legend: **done** · **running** · **ready** (code exists, only needs to 
 
 | # | Row | Owner | Status | Notes |
 |---|---|---|---|---|
-| 9 | PPO teacher (privileged), closed-loop docking in sim | Ricard | **done** (success 97.8%, pos 2.75 cm, att 0.43°, contact 4.84 cm/s, thrust 43.8 s; 182 episodes) | `baselines/docking_policies` (closed loop on the 64 scenarios of the docking test split, recordings' physics and sensors; metrics and success definition in its README) |
-| 10 | BC students, one per modality (RGB, depth, events, LiDAR, fused) | Ricard | **trained; closed-loop evaluation queued** | `baselines/docking_policies` (`policy-bc-cache`, `policy-bc-train`, `policy-server` behind SRB's policy bridge); weights in `results/policies/bc/` |
-| 11 | Modular: FoundationPose → PPO teacher, closed loop | Ricard | **code ready; evaluation queued** | `baselines/foundationpose/fp_oshd/closed_loop.py` (register on the oracle mask when fully in view, track_one, re-register every 1 s; goal terms rebuilt by `oshd_policies.modular`) |
+| 9 | PPO teacher (privileged), closed-loop docking in sim | Ricard | **done** (success 98.9%, pos 2.24 cm, att 0.40°, contact 4.82 cm/s, thrust 40.4 s; 182 episodes, target in view at the start) | `baselines/docking_policies`; `results/policies/docking_test_v3/teacher_face` |
+| 10 | Learned estimator → PPO teacher, one per modality (RGB, depth, events, LiDAR, fused) | Ricard | **done** (success: depth 67.0%, fused 56.0%, LiDAR 44.5%, RGB 25.8%, events 15.4%; 182 episodes each). Replaces end-to-end BC (dropped) | `oshd_policies/estimator.py` (`policy-estimator-train`), `policy-server --policy estimator` (static-target Kalman filter → goal terms → teacher); `results/policies/docking_test_v3/est_*` |
+| 11 | Modular: FoundationPose → PPO teacher, closed loop | Ricard | **done** (success 69.8%, pos 15.7 cm, att 1.56°, contact 5.04 cm/s, thrust 43.9 s; 182 episodes) | `baselines/foundationpose/fp_oshd/closed_loop.py`; `results/policies/docking_test_v3/fp_ppo` |
 
 ## Order
 
