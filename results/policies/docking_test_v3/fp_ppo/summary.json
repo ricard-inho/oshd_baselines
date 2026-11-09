@@ -1,0 +1,41 @@
+{
+ "episodes": 182,
+ "success_pct": 69.78021978021978,
+ "pos_err_cm": 15.699724197387695,
+ "att_err_deg": 1.5572105825131575,
+ "contact_vel_cms": 5.0373872144277705,
+ "thruster_usage_s": 43.85402395437052,
+ "pos_err_cm_median": 3.3891024589538574,
+ "att_err_deg_median": 0.40239374339580536,
+ "contact_vel_cms_median": 5.105422258377075,
+ "thruster_usage_s_median": 40.518442153930664,
+ "reached_standoff_pct": 94.5054945054945,
+ "criteria": {
+  "pos_tol_m": 0.05,
+  "att_tol_deg": 5.0,
+  "vel_tol_mps": 0.02
+ },
+ "overlap_pct": 35.16483516483517,
+ "by_mount": {
+  "arm_ceiling": {
+   "n": 57,
+   "success_pct": 70.17543859649122,
+   "pos_err_cm": 11.421964645385742
+  },
+  "arm_wall": {
+   "n": 66,
+   "success_pct": 78.78787878787878,
+   "pos_err_cm": 7.997743606567383
+  },
+  "floating": {
+   "n": 39,
+   "success_pct": 64.1025641025641,
+   "pos_err_cm": 10.347423553466797
+  },
+  "static": {
+   "n": 20,
+   "success_pct": 50.0,
+   "pos_err_cm": 63.7448616027832
+  }
+ }
+}
