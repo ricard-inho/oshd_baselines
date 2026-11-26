@@ -1,0 +1,34 @@
+{
+  "hardware": {
+    "host": "ll204",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 4070"
+  },
+  "method": "SPNv2",
+  "setting": "TS",
+  "sensor": "events",
+  "object": "satellite_mockup",
+  "input": "sim events, time surface of the 50 ms window ending at t_ns (tau 25 ms; channels neg / pos / log count), warped to 640x512",
+  "upstream_commit": "debee80c43f226a22dce857b0a136de62e9e939d",
+  "checkpoint": "/home/matteo/Projects/oshd_baselines/work/spnv2_events/runs/TS/model_best.pth.tar",
+  "checkpoint_epoch": 19,
+  "val": {
+    "speed_sym_mean": 0.34593934646214913,
+    "e_t_cm_mean": 6.3374472538382225,
+    "e_q_sym_deg_mean": 14.888097135833066,
+    "coverage": 1.0,
+    "n_samples": 602.0
+  },
+  "train_run": "sim_zerog_docking_train_v3",
+  "train_iterations": 125438,
+  "pose_source": "regression",
+  "sample_limit": null,
+  "sample_stride": 1,
+  "sample_list": "results/sim/sim_zerog_docking_test_v2",
+  "runtime": "time-surface build + warp + normalisation + network + post-processing + PnP (event read from disk excluded, see event_read_ms_median)",
+  "n_samples": 7467,
+  "n_poses": 7467,
+  "heatmap_pose_rate": 0.22137404580152673,
+  "runtime_ms_median": 23.22792197810486,
+  "event_read_ms_median": 9.749767021276057
+}

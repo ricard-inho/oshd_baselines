@@ -1,0 +1,46 @@
+[project]
+name = "spnv2-events"
+version = "0.1.0"
+description = "SPNv2 (Park & D'Amico) on event time surfaces of the simulated OSHD docking runs (Table I, row 4)."
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "oshd-bench",
+    "torch==2.5.1",
+    "torchvision==0.20.1",
+    "numpy>=1.23,<2",
+    "opencv-python-headless>=4.8,<4.11",
+    "yacs==0.1.8",
+    "albumentations==1.1.0",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "pyarrow>=14",
+    "plyfile>=0.7.4",
+    "trimesh>=4.0",
+    "torchinfo",
+    "matplotlib",
+    "tqdm",
+    "pillow",
+]
+
+[project.scripts]
+spnv2ev-convert = "spnv2_events.convert:main"
+spnv2ev-train = "spnv2_events.train:main"
+spnv2ev-predict = "spnv2_events.predict:main"
+spnv2ev-check = "spnv2_events.check:main"
+
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spnv2_events"]
+
+[tool.uv.sources]
+oshd-bench = { path = "../../bench", editable = true }
+torch = { index = "pytorch-cu124" }
+torchvision = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
