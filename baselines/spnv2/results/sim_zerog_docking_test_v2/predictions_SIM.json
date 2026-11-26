@@ -1,0 +1,97 @@
+{
+  "hardware": {
+    "host": "ll205",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 4070"
+  },
+  "method": "SPNv2",
+  "upstream": "https://github.com/tpark94/spnv2",
+  "commit": "debee80c43f226a22dce857b0a136de62e9e939d",
+  "setting": "SIM",
+  "experiment": "sim",
+  "checkpoints": {
+    "satellite_mockup": {
+      "checkpoint": "/home/aman/projects/pooh_dataset/oshd_baselines/work/spnv2/r3m3c3--oshd/runs/sim/satellite_mockup/model.pth.tar",
+      "epoch": 20,
+      "iterations": 288920,
+      "n_train": 57785,
+      "train_list": "results/sim/sim_zerog_docking_train_v2",
+      "symmetries": [
+        "Rx180",
+        "Ry180",
+        "Rz180"
+      ],
+      "n_keypoints": 32
+    }
+  },
+  "pose_source": "fused",
+  "input": "sim_zerog rgb, undistorted + resampled to a 640x512 pinhole virtual camera, grayscale x3",
+  "vcam": {
+    "sensor": "sim_rgb_x2",
+    "width": 640,
+    "height": 512,
+    "K": [
+      [
+        454.5454545454545,
+        0.0,
+        320.5
+      ],
+      [
+        0.0,
+        454.5454545454545,
+        256.5
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "scale": "translation x the sample's scale (trained on t / scale)",
+  "runtime": "warp + network + post-processing + PnP on a decoded frame (JPEG decode excluded)",
+  "prepare": {
+    "benchmark": "v2",
+    "revision": "df3530bfbd77572522fcea4699e793e4d7282bec",
+    "domain": "sim_zerog",
+    "task": "docking",
+    "split": "test",
+    "sensor": "rgb",
+    "stride": 10,
+    "min_mask_px": 100,
+    "n_trajectories": 162,
+    "n_samples": 12237,
+    "objects": {
+      "satellite_mockup": 7467,
+      "nasa_asteroid_golevka": 236,
+      "cubesat1179302906": 234,
+      "cubesat1164623904": 234,
+      "cubesat509795703": 234,
+      "cubesat1600360009": 232,
+      "cubesat477637087": 231,
+      "nasa_asteroid_toutatis": 231,
+      "cubesat422600803": 230,
+      "cubesat434672891": 230,
+      "cubesat1232003790": 230,
+      "cubesat1034538678": 229,
+      "cubesat1859922245": 229,
+      "cubesat715072435": 228,
+      "cubesat352375731": 226,
+      "cubesat1053301660": 226,
+      "cubesat118930051": 225,
+      "nasa_international_x_ray_observatory": 222,
+      "cubesat1380506607": 218,
+      "cubesat691492398": 217,
+      "cubesat1837885690": 215,
+      "cubesat503983153": 213
+    }
+  },
+  "stride": 1,
+  "limit": null,
+  "n_samples": 12237,
+  "n_attempted": 7467,
+  "n_predicted": 7467,
+  "n_no_pose": 0,
+  "heatmap_pose_rate": 0.9189768313914557,
+  "wall_s": 168
+}

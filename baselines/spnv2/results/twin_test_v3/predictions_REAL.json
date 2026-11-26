@@ -1,0 +1,82 @@
+{
+  "hardware": {
+    "host": "ll205",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 4070"
+  },
+  "method": "SPNv2",
+  "upstream": "https://github.com/tpark94/spnv2",
+  "commit": "debee80c43f226a22dce857b0a136de62e9e939d",
+  "setting": "REAL",
+  "experiment": "real",
+  "checkpoints": {
+    "antena": {
+      "checkpoint": "/home/aman/projects/pooh_dataset/oshd_baselines/work/spnv2/r3m3c3--oshd/runs/real/antena/model.pth.tar",
+      "epoch": 20,
+      "iterations": 43660,
+      "n_train": 8732,
+      "train_list": "results/real/real_realsense_color_train_v3",
+      "symmetries": [],
+      "n_keypoints": 32
+    },
+    "antena_1_solar": {
+      "checkpoint": "/home/aman/projects/pooh_dataset/oshd_baselines/work/spnv2/r3m3c3--oshd/runs/real/antena_1_solar/model.pth.tar",
+      "epoch": 20,
+      "iterations": 79740,
+      "n_train": 15949,
+      "train_list": "results/real/real_realsense_color_train_v3",
+      "symmetries": [],
+      "n_keypoints": 32
+    }
+  },
+  "pose_source": "fused",
+  "input": "twin rgb, undistorted + resampled to a 640x512 pinhole virtual camera, grayscale x3",
+  "vcam": {
+    "sensor": "sim_rgb_x2",
+    "width": 640,
+    "height": 512,
+    "K": [
+      [
+        454.5454545454545,
+        0.0,
+        320.5
+      ],
+      [
+        0.0,
+        454.5454545454545,
+        256.5
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "scale": "translation x the sample's scale (trained on t / scale)",
+  "runtime": "warp + network + post-processing + PnP on a decoded frame (JPEG decode excluded)",
+  "prepare": {
+    "benchmark": "v3",
+    "revision": "c8e5ca0d6f38cea943dfc60009dbfff9f7bf026f",
+    "domain": "twin",
+    "task": null,
+    "split": "test",
+    "sensor": "rgb",
+    "stride": 10,
+    "min_mask_px": 100,
+    "n_trajectories": 40,
+    "n_samples": 3038,
+    "objects": {
+      "real_antena_1_solar": 1527,
+      "real_antena": 1511
+    }
+  },
+  "stride": 1,
+  "limit": null,
+  "n_samples": 3038,
+  "n_attempted": 3038,
+  "n_predicted": 3038,
+  "n_no_pose": 0,
+  "heatmap_pose_rate": 0.2784726793943384,
+  "wall_s": 73
+}

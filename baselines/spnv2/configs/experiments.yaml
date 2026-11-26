@@ -1,0 +1,55 @@
+# SPNv2 on the shared oshd-bench sample lists (src/spnv2_oshd/lists.py, `spnv2-list`).
+# One network per (experiment, target). A test sample goes to the network whose `objects` hold its
+# `object`; the real mockup and its lab twin share one CAD frame, so one network serves both names.
+
+# Farthest-point samples of the CAD surface. SPEED+ uses 11 for Tango, but the docking runs are
+# close (median range 0.47 m for a 1.3 m mockup): with 11 only 55% of the mockup test samples have
+# the 5 keypoints in view that the heatmap pose needs, with 24 99.1%, with 32 99.6%.
+num_keypoints: 32
+
+# Virtual pinhole cameras the networks see (W and H divisible by 128). K follows oshd's
+# CameraIntrinsics.resized pixel-centre convention: c' = (c + 0.5) * s - 0.5, + padding offset.
+vcams:
+  # sim / twin rgb 320x240, f 227.27 (FoV 70.3 x 55.7 deg) -> x2 = 640x480, 16 black rows top and
+  # bottom. Also the real <-> twin camera: the RealSense colour frames (1280x720, FoV 89.7 x 58.6
+  # deg) are undistorted and area-downscaled into it, i.e. cropped to the twin's field of view
+  # (98% of the real train samples keep the mockup centre in view, 99% >= 5 keypoints).
+  sim_rgb_x2:
+    width: 640
+    height: 512
+    K: [[454.5454545454545, 0.0, 320.5], [0.0, 454.5454545454545, 256.5], [0.0, 0.0, 1.0]]
+
+targets:
+  satellite_mockup:
+    cad: models/sim/satellite_mockup/model.obj
+    objects: [satellite_mockup]
+    symmetries: [Rx180, Ry180, Rz180]        # measured by oshd-bench sim-eval (checked at convert time)
+  antena:
+    cad: models/real/antena/model.obj
+    objects: [antena, real_antena]           # real name, lab-twin name
+    symmetries: []
+  antena_1_solar:
+    cad: models/real/antena_1_solar/model.obj
+    objects: [antena_1_solar, real_antena_1_solar]
+    symmetries: []
+
+experiments:
+  sim:                       # Table I row 3: sim_zerog docking train (satellite mockup runs) -> test
+    train_list: results/sim/sim_zerog_docking_train_v2
+    vcam: sim_rgb_x2
+    targets: [satellite_mockup]
+    stride: 1                # the list is every 5th rgb frame (4 Hz): 57 789 samples, ~ SPEED+ synthetic
+  real:                      # Table II: real train split (RealSense colour) -> twin test (and real test)
+    train_list: results/real/real_realsense_color_train_v3
+    vcam: sim_rgb_x2
+    targets: [antena, antena_1_solar]
+    stride: 2                # 30 Hz -> 15 Hz: 24 692 samples, about the twin train list's 24 332
+    # `predict --adapt adabn|odr` only (unsupervised domain adaptation, separate RESULTS_<SETTING>_<ADAPT>):
+    # unlabelled images of the target domain's *train* split, never the test list
+    adapt_list: results/sim/twin_train_v3
+  twin:                      # Table II: twin train split (sim rgb) -> real test (and twin test)
+    train_list: results/sim/twin_train_v3   # sim-prepare --benchmark v3 --domain twin --task all --split train --stride 5
+    vcam: sim_rgb_x2
+    targets: [antena, antena_1_solar]
+    stride: 1
+    adapt_list: results/real/real_realsense_color_train_v3
