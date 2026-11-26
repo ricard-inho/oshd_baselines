@@ -55,7 +55,7 @@ def open_dataset(cfg: dict | None = None) -> OshDataset:
     d = cfg.get("dataset", {})
     bench = os.environ.get("OSHD_BENCHMARK", d.get("benchmark"))
     return OshDataset(os.environ.get("OSH_DATASET_ROOT") or d.get("root"),
-                       repo_id=d.get("repo_id", "r3m3c3/oshd"),
+                       repo_id=d.get("repo_id", "OSHDataset/oshd"),
                        benchmark=None if bench in (None, "", "none") else str(bench))
 
 

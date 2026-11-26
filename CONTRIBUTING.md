@@ -38,7 +38,7 @@ uv run --project bench oshd splits --benchmark v3         # train / test traject
 hf auth login                                             # the dataset is public; login avoids rate limits
 ```
 
-The dataset goes to `~/.cache/oshd/r3m3c3--oshd` (`$OSHD_DATA_DIR` moves it). Download only the
+The dataset goes to `~/.cache/oshd/OSHDataset--oshd` (`$OSHD_DATA_DIR` moves it). Download only the
 modalities you need, for one split at a time:
 
 ```bash

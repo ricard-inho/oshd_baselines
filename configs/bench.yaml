@@ -3,7 +3,7 @@
 
 dataset:
   root: null            # null = oshd's default cache (~/.cache/oshd/<repo>)
-  repo_id: r3m3c3/oshd
+  repo_id: OSHDataset/oshd
   # Frozen split for the paper: oshd's benchmark_v3 (Hub revision c8e5ca0, its train /
   # test lists). Download its data with `oshd download --benchmark v3 ...`. $OSHD_BENCHMARK
   # overrides it ("none": the dataset's own splits.json, e.g. the dev dataset).

@@ -7,7 +7,7 @@ the real calibration exists. Numbers produced with it are meaningless.
 Also marks trajectory_008 as `synthetic` so sim-training code paths can be exercised:
 train = 007 (real) + 008 ("synthetic"), test = 009 (real).
 
-    uv run --project bench python scripts/make_dev_dataset.py [--src ~/.cache/oshd/r3m3c3--oshd]
+    uv run --project bench python scripts/make_dev_dataset.py [--src ~/.cache/oshd/OSHDataset--oshd]
     export OSH_DATASET_ROOT=$PWD/work/dev_dataset OSHD_BENCH_RESULTS=$PWD/work/dev_results OSHD_BENCHMARK=none
 """
 
@@ -32,7 +32,7 @@ def _tf(T: np.ndarray, note: str) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--src", default=str(Path.home() / ".cache/oshd/r3m3c3--oshd"))
+    ap.add_argument("--src", default=str(Path.home() / ".cache/oshd/OSHDataset--oshd"))
     ap.add_argument("--out", default="work/dev_dataset")
     a = ap.parse_args()
     src, out = Path(a.src).expanduser(), Path(a.out)
