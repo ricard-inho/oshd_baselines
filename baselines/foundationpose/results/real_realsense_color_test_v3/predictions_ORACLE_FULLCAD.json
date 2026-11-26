@@ -1,0 +1,36 @@
+{
+  "hardware": {
+    "host": "hera",
+    "cpu": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "method": "FoundationPose",
+  "upstream": "https://github.com/NVlabs/FoundationPose",
+  "commit": "a1b694b83e633c2cb6115b9063d940a687759392",
+  "weights": {
+    "refiner": "2023-10-28-18-33-37",
+    "scorer": "2024-01-11-20-02-45"
+  },
+  "mode": "per-frame register() (no tracking)",
+  "refine_iters": 5,
+  "cad": "full",
+  "detector": "oracle",
+  "detector_setting": "GT",
+  "detections": "/home/ricard/osh_dataset/oshd_baselines/work/fp_real_v3/detections/realsense_color/oracle/GT/real_test.parquet",
+  "detector_meta": {
+    "hardware": {
+      "host": "hera",
+      "cpu": "x86_64"
+    },
+    "detector": "oracle"
+  },
+  "input": "realsense_color RGB + realsense_depth registered into colour, undistorted (same K)",
+  "runtime": "detector + undistort + register (+ ICP); excludes decoding and depth registration",
+  "split": "test",
+  "domain": "real",
+  "row": "foundationpose",
+  "n_samples": 4865,
+  "n_with_detection": 4865,
+  "n_with_depth": 3915,
+  "n_with_depth_in_mask": 3915
+}

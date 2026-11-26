@@ -47,6 +47,9 @@ def parse_args(argv=None):
                     help="setting of the detections file (default: --setting for maskrcnn, GT for oracle)")
     ap.add_argument("--methods", default="foundationpose,foundationpose_icp",
                     help="comma list of rows to write: foundationpose, foundationpose_icp")
+    ap.add_argument("--cad", default="labels", choices=["labels", "full"],
+                    help="labels: oshd's label mesh (simplified, colours only if it is the file); full: the textured "
+                         "mesh file of the object (obj.mesh_path), as the simulated twin renders it")
     ap.add_argument("--refine-iters", type=int, default=5, help="refiner iterations in register() (upstream: 5)")
     ap.add_argument("--min-score", type=float, default=0.0, help="ignore detections below this score")
     ap.add_argument("--limit", type=int, default=None, help="only the first N samples (smoke tests)")
@@ -100,7 +103,7 @@ def main(argv=None) -> int:
     estimators, cad = {}, {}
     for name in sorted(samples["object"].unique()):
         obj = ds.objects[name]
-        mesh = load_cad(obj)
+        mesh = load_cad(obj, full=a.cad == "full")
         pts, fidx = mesh.sample(20000, return_index=True)
         cad[name] = dict(mesh=mesh, pts=np.asarray(pts), normals=np.asarray(mesh.face_normals[fidx]),
                          corners=np.asarray(obj.click_points), diameter=float(obj.diameter))
@@ -114,7 +117,7 @@ def main(argv=None) -> int:
     meta = {"method": "FoundationPose", "upstream": "https://github.com/NVlabs/FoundationPose",
             "commit": "a1b694b83e633c2cb6115b9063d940a687759392",
             "weights": {"refiner": "2023-10-28-18-33-37", "scorer": "2024-01-11-20-02-45"},
-            "mode": "per-frame register() (no tracking)", "refine_iters": a.refine_iters,
+            "mode": "per-frame register() (no tracking)", "refine_iters": a.refine_iters, "cad": a.cad,
             "detector": a.detector, "detector_setting": det_setting, "detections": str(det_file),
             "detector_meta": det_meta, "input": "realsense_color RGB + realsense_depth registered into colour, "
             "undistorted (same K)", "runtime": "detector + undistort + register (+ ICP); excludes decoding and "

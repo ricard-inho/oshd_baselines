@@ -1,0 +1,33 @@
+{
+  "benchmark": "v3",
+  "revision": "c8e5ca0d6f38cea943dfc60009dbfff9f7bf026f",
+  "domain": "sim_zerog",
+  "task": "inspection",
+  "split": "test",
+  "sensor": "rgb",
+  "stride": 1,
+  "min_mask_px": 100,
+  "n_trajectories": 164,
+  "n_samples": 123683,
+  "objects": {
+    "satellite_mockup": 72345,
+    "real_antena_1_solar": 9138,
+    "real_antena": 6017,
+    "cubesat506906202": 2358,
+    "cubesat1838650269": 2354,
+    "cubesat2146204093": 2331,
+    "cubesat635749242": 2317,
+    "cubesat436450454": 2317,
+    "esa_bepi_mcs": 2289,
+    "cubesat1310721260": 2288,
+    "cubesat447547671": 2274,
+    "cubesat1246800582": 2265,
+    "cubesat1418165174": 2248,
+    "cubesat1789001421": 2239,
+    "cubesat2096562327": 2231,
+    "cubesat1980435199": 2229,
+    "cubesat2062690999": 2182,
+    "cubesat924440075": 2164,
+    "cubesat1892402960": 2097
+  }
+}

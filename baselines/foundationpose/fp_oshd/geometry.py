@@ -9,13 +9,25 @@ import trimesh
 __all__ = ["load_cad", "Undistorter", "icp_refine", "visible_model_points", "draw_overlay"]
 
 
-def load_cad(obj) -> trimesh.Trimesh:
+def load_cad(obj, full: bool = False) -> trimesh.Trimesh:
     """The oshd ObjectModel as a trimesh FoundationPose can use.
+
+    ``full``: the object's mesh file itself (``obj.mesh_path``, metres, the model frame of
+    ``obj.vertices``) with its texture, instead of oshd's label mesh (simplified for the real
+    mockups, so without their texture).
 
     ``obj.vertices`` are already in metres (``mesh_scale`` applied by oshd); the file is
     reloaded only for its material colours, which become vertex colours (the OBJ has
     per-group ``Kd`` colours but no texture image, which FoundationPose's renderer can't use).
     """
+    if full:
+        if obj.mesh_path is None:
+            raise ValueError(f"{obj.name}: no mesh file")
+        m = trimesh.load(obj.mesh_path, force="mesh")
+        ext = m.extents
+        if not 0.01 < ext.max() < 2.0:
+            raise ValueError(f"{obj.name}: mesh extent {ext} m does not look like metres")
+        return m
     v = np.asarray(obj.vertices, np.float64)
     f = np.asarray(obj.faces, np.int64)
     ext = v.max(0) - v.min(0)
